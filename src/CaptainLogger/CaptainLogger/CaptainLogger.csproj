@@ -18,6 +18,7 @@
 		<GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
 		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 		<TreatSpecificWarningsAsErrors />
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<PropertyGroup>
