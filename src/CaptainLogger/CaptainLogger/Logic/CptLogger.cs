@@ -1,7 +1,7 @@
 ﻿
 namespace CaptainLogger.Logic;
 
-internal class CptLogger : ILogger
+internal class CptLogger : ILogger, IDisposable
 {
     private const string INDENT = "                                ";
 
@@ -15,6 +15,8 @@ internal class CptLogger : ILogger
 
     private static bool _isWriting = false;
 
+    public bool Disposed { get; private set; }
+
     public CptLogger(
         string name,
         Func<LoggerConfigOptions> getCurrentConfig)
@@ -22,6 +24,8 @@ internal class CptLogger : ILogger
         _name = name;
         _getCurrentConfig = getCurrentConfig;
     }
+
+    ~CptLogger() => Dispose(false);
 
     public IDisposable BeginScope<TState>(TState state) => state as IDisposable ?? null!;
 
@@ -152,5 +156,31 @@ internal class CptLogger : ILogger
                 config,
                 counter.GetValueOrDefault() + 1);
         }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (Disposed)
+            return;
+
+        if (disposing)
+        {
+            //No private members
+        }
+
+        _fs.CloseAndDispose();
+        _sw.CloseAndDispose();
+
+        _fs = null;
+        _sw = null;
+        _currentLog = null;
+
+        Disposed = true;
     }
 }
