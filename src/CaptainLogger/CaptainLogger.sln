@@ -5,11 +5,17 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger", "CaptainLogger\CaptainLogger.csproj", "{E32D628B-814F-4D73-B6E6-371BB5038573}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.Tests", "CaptainLogger.Tests\CaptainLogger.Tests.csproj", "{E7F13A46-4B54-4D6E-A070-88AAC09F2ADA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Tests", "CaptainLogger.Tests\CaptainLogger.Tests.csproj", "{E7F13A46-4B54-4D6E-A070-88AAC09F2ADA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.Tests.ConsoleApp", "CaptainLogger.Tests.ConsoleApp\CaptainLogger.Tests.ConsoleApp.csproj", "{85D06848-7186-46AD-B8C7-15C99E301FC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Tests.ConsoleApp", "CaptainLogger.Tests.ConsoleApp\CaptainLogger.Tests.ConsoleApp.csproj", "{85D06848-7186-46AD-B8C7-15C99E301FC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.Tests.ConsoleApp.Concurrency", "CaptainLogger.Tests.ConsoleApp.Concurrency\CaptainLogger.Tests.ConsoleApp.Concurrency.csproj", "{D131FA9F-FC52-4981-B0F5-54521A14D72E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Tests.ConsoleApp.Concurrency", "CaptainLogger.Tests.ConsoleApp.Concurrency\CaptainLogger.Tests.ConsoleApp.Concurrency.csproj", "{D131FA9F-FC52-4981-B0F5-54521A14D72E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{35F9EC95-1109-402E-8723-0826ABFD5898}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\.github\workflows\dotnet.yml = ..\..\.github\workflows\dotnet.yml
+		..\..\.github\GetBuildVersion.psm1 = ..\..\.github\GetBuildVersion.psm1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
