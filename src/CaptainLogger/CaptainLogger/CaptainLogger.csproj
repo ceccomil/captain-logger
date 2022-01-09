@@ -11,8 +11,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<AssemblyName>CaptainLogger</AssemblyName>
 		<PackageId>CaptainLogger</PackageId>
-		<PackageTags>captainlogger;logger;logging</PackageTags>
-		<PackageIcon>icon.png</PackageIcon>
+		<PackageTags>captainlogger;logger;logging;console;logfile;log</PackageTags>
 		<IsPackable>True</IsPackable>
 		<PackageProjectUrl>https://github.com/ceccomil/captain-logger</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -29,7 +28,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\..\assets\icon.png" Pack="true" Visible="false" PackagePath="" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="6.0.0" />
