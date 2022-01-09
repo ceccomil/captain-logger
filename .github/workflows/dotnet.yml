@@ -42,7 +42,4 @@ jobs:
 
     - name: Publish
       if: startsWith(github.ref, 'refs/tags/v')
-      run:
-        nuget push **/*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.CECCOMIL_NUGET }}
-        nuget push **/*.snupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.CECCOMIL_NUGET }}
-
+      run: nuget push **/*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.CECCOMIL_NUGET }}
