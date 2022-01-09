@@ -20,7 +20,17 @@ public class LoggerConfigOptions
     /// <summary>
     /// 
     /// </summary>
+    public ConsoleColor DefaultColor { get; set; } = Console.ForegroundColor;
+
+    /// <summary>
+    /// 
+    /// </summary>
     public bool TimeIsUtc { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public bool DoNotAppendException { get; set; } 
 
     /// <summary>
     /// 

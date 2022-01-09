@@ -1,5 +1,4 @@
-﻿
-namespace CaptainLogger.Logic;
+﻿namespace CaptainLogger.Logic;
 
 internal class CptLogger : ILogger, IDisposable
 {
@@ -13,7 +12,7 @@ internal class CptLogger : ILogger, IDisposable
     private static string _timeSuffix = "";
     private static StreamWriter? _sw = default;
 
-    private static bool _isWriting = false;
+    private static readonly object _consoleLock = new();
 
     public bool Disposed { get; private set; }
 
@@ -51,13 +50,16 @@ internal class CptLogger : ILogger, IDisposable
         if (config.TimeIsUtc)
             now = DateTime.UtcNow;
 
+        lock (_consoleLock)
+        {
             //Do not wait!
             _ = WriteLog(now,
-            config,
-            logLevel,
-            state,
-            exception,
-            formatter);
+                config,
+                logLevel,
+                state,
+                exception,
+                formatter);
+        }
     }
 
     private async Task WriteLog<TState>(
@@ -68,65 +70,110 @@ internal class CptLogger : ILogger, IDisposable
         Exception? ex,
         Func<TState, Exception?, string> formatter)
     {
-        // Make sure the entire log message is written in one iteration
-        // otherwise other async calls could inject words into the unit
-        while (_isWriting)
-            await Task.Delay(50);
+        var row = GetRow(
+            time,
+            state,
+            config.DefaultColor,
+            config.LogLevels[level],
+            level,
+            ex,
+            config.DoNotAppendException,
+            formatter);
 
-        _isWriting = true;
+        if (config.LogRecipients.HasFlag(Recipients.Console))
+            WriteToConsole(row);
 
-        CheckLogFileName(time, config);
+        if (config.LogRecipients.HasFlag(Recipients.File))
+            await WriteToLogFile(row, config);
+    }
+
+    private static void WriteToConsole(RowParts row)
+    {
+        Console.ForegroundColor = row.TimeStamp.Color;
+        Console.Write(row.TimeStamp);
+
+        Console.ForegroundColor = row.Level.Color;
+        Console.Write(row.Level);
+
+        Console.ForegroundColor = row.Message.Color;
+        Console.Write(row.Message);
+
+        Console.ForegroundColor = row.Category.Color;
+        Console.Write(row.Category);
+
+        Console.ForegroundColor = row.Spacer.Color;
+        Console.Write(row.Spacer);
+    }
+
+    private static async Task WriteToLogFile(
+        RowParts row,
+        LoggerConfigOptions config)
+    {
+        CheckLogFileName(row.Time, config);
 
         if (_sw is null || _fs is null)
             throw new NullReferenceException($"Log filestream must be valid!");
 
-        var originalColor = Console.ForegroundColor;
+        await _sw.WriteAsync(row.ToString());
 
-        Console.ForegroundColor = ConsoleColor.DarkCyan;
-        var timeStr = $"[{time:yyyy-MM-dd HH:mm:ss.fff}] ";
-        Console.Write(timeStr);
-        await _sw.WriteAsync(timeStr);
+        _sw.Flush();
+        _fs.Flush();
+    }
 
-        Console.ForegroundColor = config.LogLevels[level];
-        var levelStr = $"[{level.ToCaptainLoggerString()}] ";
-        Console.Write(levelStr);
-        await _sw.WriteAsync(levelStr);
+    private RowParts GetRow<TState>(
+        DateTime time,
+        TState state,
+        ConsoleColor defaultColor,
+        ConsoleColor levelColor,
+        LogLevel level,
+        Exception? ex,
+        bool doNotAppendEx,
+        Func<TState, Exception?, string> formatter)
+    {
+        var row = new RowParts()
+        {
+            Time = time,
+            TimeStamp = new(
+                $"[{time:yyyy-MM-dd HH:mm:ss.fff}] ",
+                ConsoleColor.DarkCyan),
+            Level = new(
+                $"[{level.ToCaptainLoggerString()}] ",
+                levelColor),
+            Message = new(
+                GetLogMessage(
+                    state,
+                    ex,
+                    doNotAppendEx,
+                    formatter),
+                defaultColor),
+            Category = new(
+                $"{INDENT}[{_name}]{Environment.NewLine}",
+                ConsoleColor.Magenta),
+            Spacer = new(
+                Environment.NewLine,
+                defaultColor)
+        };
 
-        Console.ForegroundColor = originalColor;
+        return row;
+    }
 
+    private static string GetLogMessage<TState>(
+        TState state,
+        Exception? ex,
+        bool doNotAppendEx,
+        Func<TState, Exception?, string> formatter)
+    {
         var mex = formatter(state, ex)
             .Replace("\r", "")
             .Replace("\n", $"\n{INDENT}");
 
-        Console.Write(mex);
-        await _sw.WriteAsync(mex);
-        Console.WriteLine();
-        await _sw.WriteLineAsync();
+        if (ex is not null && !doNotAppendEx)
+            mex += Environment.NewLine +
+                $"{INDENT}{ex}"
+                .Replace("\r", "")
+                .Replace("\n", $"\n{INDENT}");
 
-        if (ex is not null)
-        {
-            var exStr = $"{INDENT}{ex}"
-            .Replace("\r", "")
-            .Replace("\n", $"\n{INDENT}");
-
-            Console.Write(exStr);
-            await _sw.WriteAsync(exStr);
-            Console.WriteLine();
-            await _sw.WriteLineAsync();
-        }
-
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        var name = $"{INDENT}[{_name}]\r\n";
-        Console.Write(name);
-        await _sw.WriteAsync(name);
-        Console.ForegroundColor = originalColor;
-        Console.WriteLine();
-        await _sw.WriteLineAsync();
-
-        _sw.Flush();
-        _fs.Flush();
-
-        _isWriting = false;
+        return mex + Environment.NewLine;
     }
 
     private static void CheckLogFileName(

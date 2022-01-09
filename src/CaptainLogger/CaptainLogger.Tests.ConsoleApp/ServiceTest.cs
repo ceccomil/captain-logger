@@ -27,9 +27,65 @@ public class ServiceTest : IServiceTest
 
     private async Task RandomLogs()
     {
+        var rng = _rng.Next(1, 4);
+
+        var additionalMex = "";
+        if (rng == 1)
+        {
+            var json = JsonSerializer.Serialize(
+            new
+            {
+                TestValue1 = rng,
+                TestValue2 = "TestValue2",
+                TestValue3 = DateTime.Now
+            },
+            new JsonSerializerOptions(JsonSerializerDefaults.Web)
+            {
+                WriteIndented = true
+            });
+
+            additionalMex = $"{Environment.NewLine}Json:{Environment.NewLine}{json}";
+        }
+
+        Exception? ex = null;
+        if (rng == 3)
+        {
+            try
+            {
+                throw new ApplicationException("ApplicationException Example Message!");
+            }
+            catch (Exception ex1)
+            {
+                try
+                {
+                    throw new NotImplementedException("NotImplementedException!", ex1);
+                }
+                catch (Exception ex2)
+                {
+                    ex = ex2;
+                }
+            }
+        }
+
         var iteration = $"{_iteration:000}";
         _iteration++;
-        _logger.LogInformation("[{Iteration}] Instance {InstanceId}", iteration, InstanceId);
+
+        if (ex is null)
+            _logger
+                .LogInformation(
+                "[{Iteration}] Instance {InstanceId}{AdditionalMex}",
+                iteration,
+                InstanceId,
+                additionalMex);
+        else
+            _logger
+                .LogError(
+                ex,
+                "[{Iteration}] Instance {InstanceId}{AdditionalMex}",
+                iteration,
+                InstanceId,
+                additionalMex);
+
         await Task.Delay(_rng.Next(10, 100));
     }
 }

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.Tests", "Capt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.Tests.ConsoleApp", "CaptainLogger.Tests.ConsoleApp\CaptainLogger.Tests.ConsoleApp.csproj", "{85D06848-7186-46AD-B8C7-15C99E301FC7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.Tests.ConsoleApp.Concurrency", "CaptainLogger.Tests.ConsoleApp.Concurrency\CaptainLogger.Tests.ConsoleApp.Concurrency.csproj", "{D131FA9F-FC52-4981-B0F5-54521A14D72E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{85D06848-7186-46AD-B8C7-15C99E301FC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85D06848-7186-46AD-B8C7-15C99E301FC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85D06848-7186-46AD-B8C7-15C99E301FC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D131FA9F-FC52-4981-B0F5-54521A14D72E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D131FA9F-FC52-4981-B0F5-54521A14D72E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D131FA9F-FC52-4981-B0F5-54521A14D72E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D131FA9F-FC52-4981-B0F5-54521A14D72E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
