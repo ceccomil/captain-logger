@@ -1,7 +1,7 @@
 ﻿namespace CaptainLogger.Options;
 
 /// <summary>
-/// 
+/// Options used to configure behavior for <c>CaptainLogger</c>.
 /// </summary>
 public class LoggerConfigOptions
 {
@@ -18,32 +18,37 @@ public class LoggerConfigOptions
     };
 
     /// <summary>
-    /// 
+    /// Default Color for messages written on the Console.
     /// </summary>
     public ConsoleColor DefaultColor { get; set; } = Console.ForegroundColor;
 
     /// <summary>
-    /// 
+    /// If set to <c>True</c> log lines timestamps will be UTC
     /// </summary>
     public bool TimeIsUtc { get; set; }
 
     /// <summary>
-    /// 
+    /// If set to <c>True</c> a valid exception passed, won't be appended
+    /// <para><c>Formatter</c> function won't be affected
+    /// <see cref="ILogger.Log{TState}(LogLevel, Microsoft.Extensions.Logging.EventId, TState, Exception?, Func{TState, Exception?, string})"/></para> 
     /// </summary>
-    public bool DoNotAppendException { get; set; } 
+    public bool DoNotAppendException { get; set; }
 
     /// <summary>
-    /// 
+    /// Determines where log lines should be written.
+    /// <para>The default is <see cref="Recipients.File"/> and <see cref="Recipients.Console"/> </para>
     /// </summary>
     public Recipients LogRecipients { get; set; } = Recipients.Console | Recipients.File;
 
     /// <summary>
-    /// 
+    /// Log file path
+    /// <para>The default is <c>./Logs/AssmeblyName.log</c> </para>
     /// </summary>
     public string FilePath { get; set; } = $".//Logs/{AppDomain.CurrentDomain.FriendlyName.Replace(".", "-")}.log";
 
     /// <summary>
-    /// 
+    /// Appends the specified interval onto the log file name before the <c>extension</c>
+    /// <para>The default is <see cref="LogRotation.Hour"/> </para>
     /// </summary>
     public LogRotation FileRotation { get; set; } = LogRotation.Hour;
 
