@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-2022
 
     steps:
     - uses: actions/checkout@v2
@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ./src/CaptainLogger
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build ./src/CaptainLogger --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test ./src/CaptainLogger/CaptainLogger.Tests --no-build --verbosity normal
