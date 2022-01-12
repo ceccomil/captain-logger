@@ -29,7 +29,7 @@ public static class Program
             .Configure<CaptainLoggerOptions>(x =>
             {
                 x.TimeIsUtc = true;
-                x.ArgumentsCount = LogArguments.One;
+                x.ArgumentsCount = LogArguments.Seven;
             })
             .AddScoped<IServiceTest, ServiceTestConsoleGenerator>();
     }

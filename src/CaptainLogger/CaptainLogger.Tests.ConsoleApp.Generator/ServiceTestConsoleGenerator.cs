@@ -16,7 +16,7 @@ public class ServiceTestConsoleGenerator : IServiceTest
 
     public async Task RunAsync()
     {
-        _logger.InfoLog("Simple message no arguments!");
+        _logger.InformationLog("Simple message no arguments!");
 
         await Task.Delay(1000);
 
@@ -30,7 +30,7 @@ public class ServiceTestConsoleGenerator : IServiceTest
 
         await Task.Delay(1000);
 
-        _logger.TraceLog("Simple error message 1 argument {Guid}",
+        _logger.ErrorLog("Simple error message 1 argument {Guid}",
             Guid.NewGuid(),
             new NotImplementedException("Test Exception"));
 

@@ -8,82 +8,82 @@ namespace CaptainLogger;
 
 internal class CaptainLogger<TCategory> : ICaptainLogger<TCategory>
 {
-    public ILogger Logger { get; }
+    public ILogger RuntimeLogger { get; }
 
     public CaptainLogger(ILogger<TCategory> logger)
     {
-       Logger = logger;
+        RuntimeLogger = logger;
     }
 
     public void TraceLog(string message)
     {
-        if (Logger.IsEnabled(LogLevel.Trace))
-            Logger.LogTrace(message);
+        if (RuntimeLogger.IsEnabled(LogLevel.Trace))
+            RuntimeLogger.LogTrace(message);
     }
 
     public void TraceLog(string message, Exception exception)
     {
-        if (Logger.IsEnabled(LogLevel.Trace))
-            Logger.LogTrace(exception, message);
+        if (RuntimeLogger.IsEnabled(LogLevel.Trace))
+            RuntimeLogger.LogTrace(exception, message);
     }
 
     public void DebugLog(string message)
     {
-        if (Logger.IsEnabled(LogLevel.Debug))
-            Logger.LogDebug(message);
+        if (RuntimeLogger.IsEnabled(LogLevel.Debug))
+            RuntimeLogger.LogDebug(message);
     }
 
     public void DebugLog(string message, Exception exception)
     {
-        if (Logger.IsEnabled(LogLevel.Debug))
-            Logger.LogDebug(exception, message);
+        if (RuntimeLogger.IsEnabled(LogLevel.Debug))
+            RuntimeLogger.LogDebug(exception, message);
     }
 
-    public void InfoLog(string message)
+    public void InformationLog(string message)
     {
-        if (Logger.IsEnabled(LogLevel.Information))
-            Logger.LogInformation(message);
+        if (RuntimeLogger.IsEnabled(LogLevel.Information))
+            RuntimeLogger.LogInformation(message);
     }
 
-    public void InfoLog(string message, Exception exception)
+    public void InformationLog(string message, Exception exception)
     {
-        if (Logger.IsEnabled(LogLevel.Information))
-            Logger.LogInformation(exception, message);
+        if (RuntimeLogger.IsEnabled(LogLevel.Information))
+            RuntimeLogger.LogInformation(exception, message);
     }
 
     public void WarningLog(string message)
     {
-        if (Logger.IsEnabled(LogLevel.Warning))
-            Logger.LogWarning(message);
+        if (RuntimeLogger.IsEnabled(LogLevel.Warning))
+            RuntimeLogger.LogWarning(message);
     }
 
     public void WarningLog(string message, Exception exception)
     {
-        if (Logger.IsEnabled(LogLevel.Warning))
-            Logger.LogWarning(exception, message);
+        if (RuntimeLogger.IsEnabled(LogLevel.Warning))
+            RuntimeLogger.LogWarning(exception, message);
     }
 
     public void ErrorLog(string message)
     {
-        if (Logger.IsEnabled(LogLevel.Error))
-            Logger.LogError(message);
+        if (RuntimeLogger.IsEnabled(LogLevel.Error))
+            RuntimeLogger.LogError(message);
     }
 
     public void ErrorLog(string message, Exception exception)
     {
-        if (Logger.IsEnabled(LogLevel.Error))
-            Logger.LogError(exception, message);
+        if (RuntimeLogger.IsEnabled(LogLevel.Error))
+            RuntimeLogger.LogError(exception, message);
     }
 
     public void CriticalLog(string message)
     {
-        if (Logger.IsEnabled(LogLevel.Critical))
-            Logger.LogCritical(message);
+        if (RuntimeLogger.IsEnabled(LogLevel.Critical))
+            RuntimeLogger.LogCritical(message);
     }
 
     public void CriticalLog(string message, Exception exception)
     {
-        if (Logger.IsEnabled(LogLevel.Critical))
-            Logger.LogCritical(exception, message);
+        if (RuntimeLogger.IsEnabled(LogLevel.Critical))
+            RuntimeLogger.LogCritical(exception, message);
     }
 }

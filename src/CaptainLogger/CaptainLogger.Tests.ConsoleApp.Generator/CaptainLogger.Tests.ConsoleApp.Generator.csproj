@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CaptainLogger.Contracts.Generator" Version="0.2.2-alpha" />
+	  <PackageReference Include="CaptainLogger.Extensions.Generator" Version="0.2.14-alpha" />
 	</ItemGroup>
 
 	<ItemGroup>

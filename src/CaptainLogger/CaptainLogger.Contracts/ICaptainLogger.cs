@@ -1,4 +1,6 @@
-﻿namespace CaptainLogger;
+﻿using Microsoft.Extensions.Logging;
+
+namespace CaptainLogger;
 
 /// <summary>
 /// 
@@ -8,7 +10,7 @@ public interface ICaptainLogger
     /// <summary>
     /// 
     /// </summary>
-    ILogger Logger { get; }
+    ILogger RuntimeLogger { get; }
 
     /// <summary>
     /// TraceLog
@@ -40,14 +42,14 @@ public interface ICaptainLogger
     /// 
     /// </summary>
     /// <param name="message"></param>
-    void InfoLog(string message);
+    void InformationLog(string message);
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="message"></param>
     /// <param name="exception"></param>
-    void InfoLog(string message, Exception exception);
+    void InformationLog(string message, Exception exception);
 
     /// <summary>
     /// 

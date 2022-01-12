@@ -1,4 +1,4 @@
-﻿namespace CaptainLogger.Contracts.Generator;
+﻿namespace CaptainLogger.Extensions.Generator;
 
 public class SyntaxReceiver : ISyntaxContextReceiver
 {
