@@ -96,7 +96,7 @@ public static class CptLoggerExtensions
             _ => "Info"
         };
 
-        var comment = GetComments($"Extends <c>{level}</c> log.", 1);
+        var comment = GetComments($"If enabled, write a <see cref=\"LogLevel.{level}\"/> log entry", 1);
 
         AddMethods(sb, arguments, level, comment);
     }
@@ -107,7 +107,7 @@ public static class CptLoggerExtensions
         string level,
         string comment)
     {
-        for (int i = 0; i <= arguments; i++)
+        for (int i = 0; i < arguments; i++)
         {
 
             sb.Append(@$"

@@ -85,6 +85,9 @@ internal class CptLogger : ILogger, IDisposable
 
         if (config.LogRecipients.HasFlag(Recipients.File))
             await WriteToLogFile(row, config);
+
+        if (config.LogRecipients.HasFlag(Recipients.Stream))
+            await WriteToBuffer(row, config);
     }
 
     private static void WriteToConsole(RowParts row)
@@ -118,6 +121,19 @@ internal class CptLogger : ILogger, IDisposable
 
         _sw.Flush();
         _fs.Flush();
+    }
+
+    private static async Task WriteToBuffer(
+        RowParts row,
+        CaptainLoggerOptions config)
+    {
+        if (config.LoggerBuffer is null)
+            throw new NullReferenceException($"Log Buffer stream must be a valid opened `System.Stream`!");
+
+        var buffer = Encoding.UTF8.GetBytes(row.ToString());
+        await config.LoggerBuffer.WriteAsync(buffer);
+
+        config.LoggerBuffer.Flush();
     }
 
     private RowParts GetRow<TState>(
