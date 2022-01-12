@@ -5,7 +5,7 @@ internal class CptLogger : ILogger, IDisposable
     private const string INDENT = "                                ";
 
     private readonly string _name;
-    private readonly Func<LoggerConfigOptions> _getCurrentConfig;
+    private readonly Func<CaptainLoggerOptions> _getCurrentConfig;
 
     private static FileStream? _fs;
     private static FileInfo? _currentLog = default;
@@ -18,7 +18,7 @@ internal class CptLogger : ILogger, IDisposable
 
     public CptLogger(
         string name,
-        Func<LoggerConfigOptions> getCurrentConfig)
+        Func<CaptainLoggerOptions> getCurrentConfig)
     {
         _name = name;
         _getCurrentConfig = getCurrentConfig;
@@ -64,7 +64,7 @@ internal class CptLogger : ILogger, IDisposable
 
     private async Task WriteLog<TState>(
         DateTime time,
-        LoggerConfigOptions config,
+        CaptainLoggerOptions config,
         LogLevel level,
         TState state,
         Exception? ex,
@@ -107,7 +107,7 @@ internal class CptLogger : ILogger, IDisposable
 
     private static async Task WriteToLogFile(
         RowParts row,
-        LoggerConfigOptions config)
+        CaptainLoggerOptions config)
     {
         CheckLogFileName(row.Time, config);
 
@@ -178,7 +178,7 @@ internal class CptLogger : ILogger, IDisposable
 
     private static void CheckLogFileName(
         DateTime time,
-        LoggerConfigOptions config,
+        CaptainLoggerOptions config,
         int? counter = default)
     {
         var tSuffix = config.GetTimeSuffix(time);

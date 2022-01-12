@@ -5,13 +5,13 @@ namespace CaptainLogger;
 internal sealed class LoggerProvider : ILoggerProvider
 {
     private readonly IDisposable _onChangeToken;
-    private LoggerConfigOptions _currentConfig;
+    private CaptainLoggerOptions _currentConfig;
     private readonly ConcurrentDictionary<string, CptLogger> _loggers = new();
 
     private bool _disposed;
 
     public LoggerProvider(
-        IOptionsMonitor<LoggerConfigOptions> config)
+        IOptionsMonitor<CaptainLoggerOptions> config)
     {
         _currentConfig = config.CurrentValue;
         _onChangeToken = config.OnChange(updatedConfig => _currentConfig = updatedConfig);
@@ -22,7 +22,7 @@ internal sealed class LoggerProvider : ILoggerProvider
     public ILogger CreateLogger(string categoryName) => _loggers
         .GetOrAdd(categoryName, name => new CptLogger(name, GetCurrentConfig));
 
-    private LoggerConfigOptions GetCurrentConfig() => _currentConfig;
+    private CaptainLoggerOptions GetCurrentConfig() => _currentConfig;
 
     public void Dispose()
     {

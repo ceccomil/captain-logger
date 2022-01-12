@@ -30,6 +30,6 @@ public static class TestEnvironment
                 .AddCaptainLogger()
                 .AddFilter("System", LogLevel.Trace)
                 .AddFilter("Microsoft", LogLevel.Trace)
-                .AddFilter(typeof(TestEnvironment).Namespace, LogLevel.Information);
+                .AddFilter(typeof(TestEnvironment).Namespace, LogLevel.Trace);
         });
 }

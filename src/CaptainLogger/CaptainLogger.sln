@@ -14,8 +14,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{35F9EC95-1109-402E-8723-0826ABFD5898}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\.github\workflows\dotnet.yml = ..\..\.github\workflows\dotnet.yml
-		..\..\.github\GetBuildVersion.psm1 = ..\..\.github\GetBuildVersion.psm1
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Contracts.Generator", "CaptainLogger.Contracts.Generator\CaptainLogger.Contracts.Generator.csproj", "{B12DC3DC-5B61-4C98-B513-6FB4F5ECEFA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.Tests.ConsoleApp.Generator", "CaptainLogger.Tests.ConsoleApp.Generator\CaptainLogger.Tests.ConsoleApp.Generator.csproj", "{DFCB51AF-4815-441F-A683-80E55E588E54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +42,14 @@ Global
 		{D131FA9F-FC52-4981-B0F5-54521A14D72E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D131FA9F-FC52-4981-B0F5-54521A14D72E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D131FA9F-FC52-4981-B0F5-54521A14D72E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B12DC3DC-5B61-4C98-B513-6FB4F5ECEFA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B12DC3DC-5B61-4C98-B513-6FB4F5ECEFA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B12DC3DC-5B61-4C98-B513-6FB4F5ECEFA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B12DC3DC-5B61-4C98-B513-6FB4F5ECEFA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFCB51AF-4815-441F-A683-80E55E588E54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFCB51AF-4815-441F-A683-80E55E588E54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFCB51AF-4815-441F-A683-80E55E588E54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFCB51AF-4815-441F-A683-80E55E588E54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

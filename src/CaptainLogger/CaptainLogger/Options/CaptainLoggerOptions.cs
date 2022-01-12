@@ -3,7 +3,7 @@
 /// <summary>
 /// Options used to configure behavior for <c>CaptainLogger</c>.
 /// </summary>
-public class LoggerConfigOptions
+public class CaptainLoggerOptions
 {
     internal int EventId { get; } = 0;
 
@@ -51,6 +51,14 @@ public class LoggerConfigOptions
     /// <para>The default is <see cref="LogRotation.Hour"/> </para>
     /// </summary>
     public LogRotation FileRotation { get; set; } = LogRotation.Hour;
+
+    /// <summary>
+    /// Add log extensions methods equal to the <see cref="LogArguments"/> count specified.
+    /// <para><see cref="LogArguments.One"/> -> <c>InfoLog(string message, T0 arg0)</c></para>
+    /// <para><see cref="LogArguments.Two"/> -> <c>InfoLog(string message, T0 arg0, T1 arg1)</c>...</para>
+    /// <para>!!Requires <c>CaptainLogger.Contracts.Generator</c> package.</para>
+    /// </summary>
+    public LogArguments ArgumentsCount { get; set; } = LogArguments.Zero;
 
     internal FileInfo GetLogFile(DateTime time, int? counter = default)
     {

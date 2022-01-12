@@ -23,7 +23,7 @@ public enum Recipients
 }
 
 /// <summary>
-/// If the current configuration (<see cref="LoggerConfigOptions"/>) has flag <see cref="Recipients.File"/>,
+/// If the current configuration (<see cref="CaptainLoggerOptions"/>) has flag <see cref="Recipients.File"/>,
 /// intervals will be applied to the log fileName
 /// </summary>
 public enum LogRotation
@@ -57,4 +57,50 @@ public enum LogRotation
     /// FileName change every Minute
     /// </summary>
     Minute = 5
+}
+
+/// <summary>
+/// 
+/// </summary>
+public enum LogArguments
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    Zero = 0,
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    One = 1,
+
+    /// <summary>
+    /// 
+    /// </summary>
+    Two = 2,
+
+    /// <summary>
+    /// 
+    /// </summary>
+    Three = 3,
+
+    /// <summary>
+    /// 
+    /// </summary>
+    Four = 4,
+
+    /// <summary>
+    /// 
+    /// </summary>
+    Five = 5,
+
+    /// <summary>
+    /// 
+    /// </summary>
+    Six = 6,
+
+    /// <summary>
+    /// 
+    /// </summary>
+    Seven = 7
 }
