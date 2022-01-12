@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CaptainLogger.Extensions.Generator\CaptainLogger.Extensions.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\CaptainLogger.Tests.ConsoleApp.Concurrency\CaptainLogger.Tests.ConsoleApp.Concurrency.csproj" />
+    <ProjectReference Include="..\CaptainLogger\CaptainLogger.csproj" />
   </ItemGroup>
 
 </Project>

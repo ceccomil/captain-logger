@@ -5,7 +5,7 @@ internal class CptLogger : ILogger, IDisposable
     private const string INDENT = "                                ";
 
     private readonly string _name;
-    private readonly Func<LoggerConfigOptions> _getCurrentConfig;
+    private readonly Func<CaptainLoggerOptions> _getCurrentConfig;
 
     private static FileStream? _fs;
     private static FileInfo? _currentLog = default;
@@ -18,7 +18,7 @@ internal class CptLogger : ILogger, IDisposable
 
     public CptLogger(
         string name,
-        Func<LoggerConfigOptions> getCurrentConfig)
+        Func<CaptainLoggerOptions> getCurrentConfig)
     {
         _name = name;
         _getCurrentConfig = getCurrentConfig;
@@ -64,7 +64,7 @@ internal class CptLogger : ILogger, IDisposable
 
     private async Task WriteLog<TState>(
         DateTime time,
-        LoggerConfigOptions config,
+        CaptainLoggerOptions config,
         LogLevel level,
         TState state,
         Exception? ex,
@@ -85,6 +85,9 @@ internal class CptLogger : ILogger, IDisposable
 
         if (config.LogRecipients.HasFlag(Recipients.File))
             await WriteToLogFile(row, config);
+
+        if (config.LogRecipients.HasFlag(Recipients.Stream))
+            await WriteToBuffer(row, config);
     }
 
     private static void WriteToConsole(RowParts row)
@@ -107,7 +110,7 @@ internal class CptLogger : ILogger, IDisposable
 
     private static async Task WriteToLogFile(
         RowParts row,
-        LoggerConfigOptions config)
+        CaptainLoggerOptions config)
     {
         CheckLogFileName(row.Time, config);
 
@@ -118,6 +121,19 @@ internal class CptLogger : ILogger, IDisposable
 
         _sw.Flush();
         _fs.Flush();
+    }
+
+    private static async Task WriteToBuffer(
+        RowParts row,
+        CaptainLoggerOptions config)
+    {
+        if (config.LoggerBuffer is null)
+            throw new NullReferenceException($"Log Buffer stream must be a valid opened `System.Stream`!");
+
+        var buffer = Encoding.UTF8.GetBytes(row.ToString());
+        await config.LoggerBuffer.WriteAsync(buffer);
+
+        config.LoggerBuffer.Flush();
     }
 
     private RowParts GetRow<TState>(
@@ -178,7 +194,7 @@ internal class CptLogger : ILogger, IDisposable
 
     private static void CheckLogFileName(
         DateTime time,
-        LoggerConfigOptions config,
+        CaptainLoggerOptions config,
         int? counter = default)
     {
         var tSuffix = config.GetTimeSuffix(time);

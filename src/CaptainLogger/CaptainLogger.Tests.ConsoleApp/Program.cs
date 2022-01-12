@@ -30,11 +30,13 @@ public static class Program
 
         static IServiceCollection AddConcurrentService(IServiceCollection s) => s
             .Configure<ServiceTestOptions>(x => x.InstanceId = _appId)
-            .Configure<LoggerConfigOptions>(x =>
+            .Configure<CaptainLoggerOptions>(x =>
             {
                 x.TimeIsUtc = true;
                 if (!string.IsNullOrEmpty(_logPath))
                     x.FilePath = _logPath;
+
+                x.ArgumentsCount = LogArguments.Five;
             })
             .AddScoped<IServiceTest, ServiceTest>();
     }

@@ -1,4 +1,4 @@
-﻿namespace CaptainLogger.Tests.ConsoleApp.Concurrency;
+﻿namespace CaptainLogger.Tests.ConsoleApp.Generator;
 
 public static class Program
 {
@@ -29,8 +29,8 @@ public static class Program
             .Configure<CaptainLoggerOptions>(x =>
             {
                 x.TimeIsUtc = true;
-                //x.LogRecipients = Recipients.Console;
+                x.ArgumentsCount = LogArguments.One;
             })
-            .AddScoped<IServiceTest, ServiceTestConsoleConcurrency>();
+            .AddScoped<IServiceTest, ServiceTestConsoleGenerator>();
     }
 }

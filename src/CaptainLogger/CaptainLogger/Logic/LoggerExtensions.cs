@@ -34,10 +34,11 @@ public static class LoggerExtensions
 
         builder
             .Services
+            .AddSingleton(typeof(ICaptainLogger<>), typeof(CaptainLogger<>))
             .TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, LoggerProvider>());
 
         LoggerProviderOptions
-            .RegisterProviderOptions<LoggerConfigOptions, LoggerProvider>(builder.Services);
+            .RegisterProviderOptions<CaptainLoggerOptions, LoggerProvider>(builder.Services);
 
         return builder;
     }

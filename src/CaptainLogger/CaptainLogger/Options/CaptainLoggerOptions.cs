@@ -3,8 +3,10 @@
 /// <summary>
 /// Options used to configure behavior for <c>CaptainLogger</c>.
 /// </summary>
-public class LoggerConfigOptions
+public class CaptainLoggerOptions : IDisposable
 {
+    private bool _disposed;
+
     internal int EventId { get; } = 0;
 
     internal IDictionary<LogLevel, ConsoleColor> LogLevels { get; } = new Dictionary<LogLevel, ConsoleColor>()
@@ -52,6 +54,29 @@ public class LoggerConfigOptions
     /// </summary>
     public LogRotation FileRotation { get; set; } = LogRotation.Hour;
 
+    /// <summary>
+    /// Add log extensions methods equal to the <see cref="LogArguments"/> count specified.
+    /// <para><see cref="LogArguments.One"/> -> <c>InformationLog(string message, T0 arg0)</c></para>
+    /// <para><see cref="LogArguments.Two"/> -> <c>InforomationLog(string message, T0 arg0, T1 arg1)</c>...</para>
+    /// <para>!!Requires <c>CaptainLogger.Extensions.Generator</c> package.</para>
+    /// </summary>
+    public LogArguments ArgumentsCount { get; set; } = LogArguments.Zero;
+
+    /// <summary>
+    /// A stream to catch the logs if <see cref="LogRecipients"/> has flag <see cref="Recipients.Stream"/>
+    /// </summary>
+    public Stream? LoggerBuffer { get; set; }
+
+    /// <summary>
+    /// Default constructor
+    /// </summary>
+    public CaptainLoggerOptions() { }
+
+    /// <summary>
+    /// Finalizer
+    /// </summary>
+    ~CaptainLoggerOptions() => Dispose(false);
+
     internal FileInfo GetLogFile(DateTime time, int? counter = default)
     {
         var pathDirectory = Path.GetDirectoryName(FilePath);
@@ -77,7 +102,6 @@ public class LoggerConfigOptions
         return new FileInfo($"{fileNoExt}{ext}");
     }
 
-
     internal string GetTimeSuffix(DateTime time) => FileRotation switch
     {
         LogRotation.Year => $"-{time:yyyy}",
@@ -87,4 +111,30 @@ public class LoggerConfigOptions
         LogRotation.Minute => $"-{time:yyyyMMddHHmm}",
         _ => ""
     };
+
+    private void Dispose(bool disposing)
+    {
+        if (_disposed)
+            return;
+
+        if (disposing) { }
+
+        if (LoggerBuffer is not null)
+        {
+            LoggerBuffer.Close();
+            LoggerBuffer.Close();
+            LoggerBuffer = null;
+        }
+
+        _disposed = true;
+    }
+
+    /// <summary>
+    /// Dispose managed and unmanaged members
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 }
