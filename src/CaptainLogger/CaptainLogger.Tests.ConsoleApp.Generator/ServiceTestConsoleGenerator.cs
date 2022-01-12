@@ -24,7 +24,7 @@ public class ServiceTestConsoleGenerator : IServiceTest
 
         await Task.Delay(1000);
 
-        _logger.TraceLog(
+        _logger.InformationLog(
             "Simple message 1 argument {Guid}!",
             Guid.NewGuid());
 

@@ -9,10 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CaptainLogger.Extensions.Generator" Version="0.2.14-alpha" />
-	</ItemGroup>
-
-	<ItemGroup>
+		<ProjectReference Include="..\CaptainLogger.Extensions.Generator\CaptainLogger.Extensions.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\CaptainLogger.Tests.ConsoleApp\CaptainLogger.Tests.ConsoleApp.csproj" />
 	</ItemGroup>
 
