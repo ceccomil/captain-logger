@@ -71,6 +71,14 @@ public static class CptLoggerExtensions
     {
         for (int i = 0; i < arguments; i++)
         {
+            sb.Append(@$"
+{comment}");
+
+            sb.Append(@$"
+    public static void {level}Log<{GetGenericArgs(i)}>(
+        this ICaptainLogger cpt,{GetSignatureArgs(i)}) => CptLoggerMessagesDefinitions{i + 1}<{GetGenericArgs(i)}>
+            .{level}Log(cpt.{LOGGER_PROP},{GetCallParamArgs(i)});
+");
 
             sb.Append(@$"
 {comment}");
@@ -78,7 +86,7 @@ public static class CptLoggerExtensions
             sb.Append(@$"
     public static void {level}Log<{GetGenericArgs(i)}>(
         this ICaptainLogger cpt,{GetSignatureArgs(i)},
-        Exception? ex = default) => CptLoggerMessagesDefinitions{i + 1}<{GetGenericArgs(i)}>
+        Exception ex) => CptLoggerMessagesDefinitions{i + 1}<{GetGenericArgs(i)}>
             .{level}Log(cpt.{LOGGER_PROP},{GetCallParamArgs(i)},
                 ex);
 ");

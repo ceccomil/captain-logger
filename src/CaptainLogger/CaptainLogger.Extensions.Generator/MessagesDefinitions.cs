@@ -53,14 +53,20 @@ internal static class CptLoggerMessagesDefinitions{i + 1}<{GetGenericArgs(i)}>
         string level,
         string[] templates)
     {
+
         sb.Append(@$"
     private static readonly Action<ILogger, {GetGenericArgs(arguments)}, Exception?> {level}Action{arguments + 1} = LoggerMessage
         .Define<{GetGenericArgs(arguments)}>(LogLevel.{level}, 0, {templates[arguments]});
 ");
 
         sb.Append($@"
+    internal static void {level}Log(ILogger logger, {GetSignatureArgs(arguments)}) => {level}Action{arguments + 1}(logger, {GetCallParamArgs(arguments)},
+                null);
+");
+
+        sb.Append($@"
     internal static void {level}Log(ILogger logger, {GetSignatureArgs(arguments)},
-        Exception? ex = default) => {level}Action{arguments + 1}(logger, {GetCallParamArgs(arguments)},
+        Exception ex) => {level}Action{arguments + 1}(logger, {GetCallParamArgs(arguments)},
                 ex);
 ");
     }
