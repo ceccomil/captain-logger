@@ -63,6 +63,12 @@ public class CaptainLoggerOptions : IDisposable
     public LogArguments ArgumentsCount { get; set; } = LogArguments.Zero;
 
     /// <summary>
+    /// If <see cref="ArgumentsCount"/> is greater than zero, a custom list of templates can be provided.
+    /// <para>i.e. <see cref="LogArguments.One"/> template: <c>`This is the log template used for one argument: {Arg0}`</c></para>
+    /// </summary>
+    public IDictionary<LogArguments, string> Templates { get; } = new Dictionary<LogArguments, string>();
+
+    /// <summary>
     /// A stream to catch the logs if <see cref="LogRecipients"/> has flag <see cref="Recipients.Stream"/>
     /// </summary>
     public Stream? LoggerBuffer { get; set; }

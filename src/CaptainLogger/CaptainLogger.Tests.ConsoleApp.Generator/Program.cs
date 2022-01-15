@@ -29,7 +29,9 @@ public static class Program
             .Configure<CaptainLoggerOptions>(x =>
             {
                 x.TimeIsUtc = true;
-                x.ArgumentsCount = LogArguments.One;
+                x.ArgumentsCount = LogArguments.Three;
+                //x.Templates.Add(LogArguments.One, "The value: {Arg0}" + Environment.NewLine + "Example log template");
+                x.Templates.Add(LogArguments.Two, "Simple mex for two values ({Val1}, {Val2})");
             })
             .AddScoped<IServiceTest, ServiceTestConsoleGenerator>();
     }

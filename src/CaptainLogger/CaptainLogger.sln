@@ -18,9 +18,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Tests.ConsoleApp.Generator", "CaptainLogger.Tests.ConsoleApp.Generator\CaptainLogger.Tests.ConsoleApp.Generator.csproj", "{DFCB51AF-4815-441F-A683-80E55E588E54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.Contracts", "CaptainLogger.Contracts\CaptainLogger.Contracts.csproj", "{E83C1757-3989-4FE1-913A-9676AB8F9E74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Contracts", "CaptainLogger.Contracts\CaptainLogger.Contracts.csproj", "{E83C1757-3989-4FE1-913A-9676AB8F9E74}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Extensions.Generator", "CaptainLogger.Extensions.Generator\CaptainLogger.Extensions.Generator.csproj", "{2C1165F9-7384-47EE-8B91-340C3E0969BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.Benchmarks", "CaptainLogger.Benchmarks\CaptainLogger.Benchmarks.csproj", "{1DD6505F-5342-4BD5-A867-FF9C1C911702}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +58,10 @@ Global
 		{2C1165F9-7384-47EE-8B91-340C3E0969BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C1165F9-7384-47EE-8B91-340C3E0969BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C1165F9-7384-47EE-8B91-340C3E0969BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DD6505F-5342-4BD5-A867-FF9C1C911702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DD6505F-5342-4BD5-A867-FF9C1C911702}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DD6505F-5342-4BD5-A867-FF9C1C911702}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DD6505F-5342-4BD5-A867-FF9C1C911702}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

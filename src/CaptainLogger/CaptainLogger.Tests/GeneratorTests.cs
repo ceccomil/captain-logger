@@ -15,10 +15,11 @@ public class GeneratorTests
         var guid = Guid.NewGuid();
 
         writer
-            .WarningLog("I am logging a new guid {Guid}", arg0: guid);
+            .WarningLog("I am logging a new guid", arg1: guid);
 
         var log = Encoding.UTF8.GetString(reader.ToArray());
-        Assert.Contains($"I am logging a new guid {guid}", log);
+        Assert.Contains($"I am logging a new guid", log);
+        Assert.Contains($"{guid}", log);
 
         reader.SetLength(0);
 
@@ -27,13 +28,19 @@ public class GeneratorTests
         var n = new Random().Next(0, 1000);
 
         writer
-            .InformationLog("I am logging a random int {Number}", arg0: n);
+            .InformationLog(typeof(Random).Name, "Next(0, 1000)", n);
 
         writer
             .ErrorLog("Test exception", new Exception("Exception"));
 
         log = Encoding.UTF8.GetString(reader.ToArray());
-        Assert.DoesNotContain($"I am logging a random int {n}", log);
+        Assert.DoesNotContain($"This is a log for", log);
+
+        writer
+            .WarningLog(typeof(Random).Name, "Next(0, 1000)", n);
+
+        log = Encoding.UTF8.GetString(reader.ToArray());
+        Assert.Contains($"This is a log for", log);
     }
 
     private class TestService
@@ -58,7 +65,8 @@ public class GeneratorTests
             })
             .Configure<CaptainLoggerOptions>(opts =>
             {
-                opts.ArgumentsCount = LogArguments.One;
+                opts.ArgumentsCount = LogArguments.Three;
+                opts.Templates.Add(LogArguments.Three, "This is a log for `{Class}`, `{Method}` which resulted in {Result}");
                 opts.LogRecipients = Recipients.Stream;
                 opts.LoggerBuffer = reader;
             })
