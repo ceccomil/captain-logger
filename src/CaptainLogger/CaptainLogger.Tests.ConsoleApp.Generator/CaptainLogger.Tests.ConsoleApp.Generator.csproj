@@ -13,5 +13,10 @@
 		<ProjectReference Include="..\CaptainLogger.Tests.ConsoleApp\CaptainLogger.Tests.ConsoleApp.csproj" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>CodeGenDebug</CompilerGeneratedFilesOutputPath>
+	</PropertyGroup>
+
 
 </Project>
