@@ -35,3 +35,26 @@ var app = builder.Build();
 ...
 ```
 See example: CaptainLogger.MinimalApi
+
+Static templates configuration:
+
+```csharp
+...
+.Configure<CaptainLoggerOptions>(opts =>
+{
+    opts.TimeIsUtc = true;
+    opts.ArgumentsCount = LogArguments.Four;
+    opts.Templates.Add(LogArguments.Three, "Request subbmitted by user id {UserId}, of department [{DepId}] - client id {ClientId}");
+    opts.Templates.Add(LogArguments.Four, "Method [{Method}] - URL: {Hostname}:{Port} - status code returned: {StatusCode}");
+    opts.LogRecipients = Recipients.Console | Recipients.File;
+})
+.AddLogging(builder =>
+{
+    builder
+        .ClearProviders()
+        .AddCaptainLogger()
+        .AddFilter(typeof(Program).Namespace, LogLevel.Information);
+})
+...
+```
+See example: CaptainLogger.Templates
