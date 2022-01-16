@@ -29,6 +29,7 @@ internal class CptLogger : ILogger, IDisposable
     public IDisposable BeginScope<TState>(TState state) => state as IDisposable ?? null!;
 
     //Default rule and Category Filters still apply
+    //TODO consider a "bypass filters in the config options"
     public bool IsEnabled(LogLevel logLevel) => true;
 
     public void Log<TState>(
