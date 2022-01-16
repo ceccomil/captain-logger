@@ -10,11 +10,19 @@ public class ServiceTest : IServiceTest
 
     public ServiceTest(
         ILogger<ServiceTest> logger,
-        IOptions<ServiceTestOptions> opts)
+        IOptions<ServiceTestOptions> opts,
+        IServiceCollection services)
     {
         _logger = logger;
         _rng = new Random();
         InstanceId = opts.Value.InstanceId;
+
+        foreach (var service in services)
+            _logger
+                .LogDebug("Injected service type: {ServiceType}, implementation type: {ImplementationType}",
+                service.ServiceType.Name,
+                service.ImplementationType?.Name
+                ?? "implementation type is null");
     }
 
     public async Task RunAsync()

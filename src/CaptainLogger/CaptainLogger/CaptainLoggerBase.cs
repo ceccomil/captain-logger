@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace CaptainLogger;
 
-internal class CaptainLogger<TCategory> : ICaptainLogger<TCategory>
+internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>
 {
     private static readonly Action<ILogger, string, Exception?> Trace = LoggerMessage
         .Define<string>(LogLevel.Trace, 0, "{Message}");
@@ -28,7 +23,7 @@ internal class CaptainLogger<TCategory> : ICaptainLogger<TCategory>
 
     public ILogger RuntimeLogger { get; }
 
-    public CaptainLogger(ILogger<TCategory> logger)
+    public CaptainLoggerBase(ILogger<TCategory> logger)
     {
         RuntimeLogger = logger;
     }

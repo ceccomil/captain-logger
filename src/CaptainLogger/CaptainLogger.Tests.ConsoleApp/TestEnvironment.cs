@@ -12,7 +12,8 @@ public static class TestEnvironment
         var services = SetServices();
 
         if (addServices is not null)
-            services = addServices(services);
+            services = addServices(services)
+                .AddSingleton(services);
 
         using var sp = services
             .BuildServiceProvider(true);
