@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace CaptainLogger;
 
 #nullable enable
-{GetComments("CptLoggerExtensions: Extension Methods creation is bound to <c>LogArguments<c/> count provided in the configuration")}
+{GetComments("CptLoggerExtensions: Extension Methods creation is bound to <c>LogArguments</c> count provided in the configuration")}
 public static class CptLoggerExtensions
 {{
 ");
@@ -29,7 +29,7 @@ public static class CptLoggerExtensions
 
         return sb.ToString();
     }
-     
+
     private static string GetIndent(int indentation)
     {
         var indent = "";
