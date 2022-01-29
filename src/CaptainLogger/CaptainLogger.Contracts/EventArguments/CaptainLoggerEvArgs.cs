@@ -14,7 +14,7 @@ public class CaptainLoggerEvArgs<TState> : EventArgs
 
     /// <summary>
     /// Creation time of the log entry.
-    /// <para>Based on <see cref="CaptainLoggerOptions.TimeIsUtc"/> could be local or UTC</para>
+    /// <para>Depending on the configuration, could be local or UTC</para>
     /// </summary>
     public DateTime LogTime { get; }
 

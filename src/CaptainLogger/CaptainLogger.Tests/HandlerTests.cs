@@ -2,7 +2,7 @@
 
 public class HandlerTests
 {
-    private static IFixture _fixture = new Fixture();
+    private static readonly IFixture _fixture = new Fixture();
     private readonly IServiceProvider _sp = Substitute.For<IServiceProvider>();
     private readonly CaptainLoggerOptions _options = _fixture
         .Build<CaptainLoggerOptions>()
