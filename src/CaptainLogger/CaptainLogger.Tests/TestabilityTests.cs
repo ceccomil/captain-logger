@@ -39,7 +39,7 @@ public class TestabilityTests
 
         public int Width { get; }
         public int Height { get; }
-        public bool IsSquare { get => GetIsSquare(); }
+        public bool IsSquare => GetIsSquare();
 
         public Rectangle(
             ICaptainLogger<Rectangle> logger,

@@ -86,7 +86,7 @@ public interface ICaptainLogger
 }
 
 /// <summary>
-/// CaptainLogger where logger category name is derived by the <see cref="TCategory"/> Type
+/// CaptainLogger where logger category name is derived by the <typeparamref name="TCategory"/> Type
 /// </summary>
 /// <typeparam name="TCategory"></typeparam>
 public interface ICaptainLogger<out TCategory> : ICaptainLogger { }
