@@ -5,3 +5,5 @@ global using Microsoft.Extensions.Options;
 global using CaptainLogger.Options;
 global using CaptainLogger.Logic;
 global using CaptainLogger.Helper;
+global using CaptainLogger.Contracts;
+global using Microsoft.Extensions.DependencyInjection;

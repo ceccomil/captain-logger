@@ -14,14 +14,23 @@ internal class CptLogger : ILogger, IDisposable
 
     private static readonly object _consoleLock = new();
 
+    private readonly List<ICaptainLoggerHandler> _handlers = new();
+
     public bool Disposed { get; private set; }
 
     public CptLogger(
         string name,
-        Func<CaptainLoggerOptions> getCurrentConfig)
+        Func<CaptainLoggerOptions> getCurrentConfig,
+        IServiceProvider sp)
     {
         _name = name;
         _getCurrentConfig = getCurrentConfig;
+
+        var handlers = sp
+            .TryGetServices<ICaptainLoggerHandler>();
+
+        _handlers
+            .AddRange(handlers);
     }
 
     ~CptLogger() => Dispose(false);
@@ -53,14 +62,39 @@ internal class CptLogger : ILogger, IDisposable
 
         lock (_consoleLock)
         {
-            //Do not wait!
-            _ = WriteLog(now,
+            _ = LogHasBeenRequested(
+                now,
+                logLevel,
+                state,
+                eventId,
+                exception);
+
+            _ = WriteLog(
+                now,
                 config,
                 logLevel,
                 state,
                 exception,
                 formatter);
         }
+    }
+
+    private async Task LogHasBeenRequested<TState>(
+        DateTime time,
+        LogLevel level,
+        TState state,
+        EventId eventId,
+        Exception? ex)
+    {
+        foreach (var handler in _handlers)
+            await handler
+                .LogEntryRequested<TState>(new(
+                    state,
+                    time,
+                    eventId,
+                    _name,
+                    level,
+                    ex));
     }
 
     private async Task WriteLog<TState>(

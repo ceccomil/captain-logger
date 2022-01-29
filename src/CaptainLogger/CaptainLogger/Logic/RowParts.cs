@@ -1,6 +1,6 @@
 ﻿namespace CaptainLogger.Logic;
 
-internal class RowParts
+internal struct RowParts
 {
     internal DateTime Time { get; set; }
     internal RowPart TimeStamp { get; set; }

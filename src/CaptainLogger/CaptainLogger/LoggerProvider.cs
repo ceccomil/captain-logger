@@ -10,17 +10,21 @@ internal sealed class LoggerProvider : ILoggerProvider
 
     private bool _disposed;
 
+    private readonly IServiceProvider _sp;
+
     public LoggerProvider(
-        IOptionsMonitor<CaptainLoggerOptions> config)
+        IOptionsMonitor<CaptainLoggerOptions> config,
+        IServiceProvider sp)
     {
         _currentConfig = config.CurrentValue;
         _onChangeToken = config.OnChange(updatedConfig => _currentConfig = updatedConfig);
+        _sp = sp;
     }
 
     ~LoggerProvider() => Dispose(false);
 
     public ILogger CreateLogger(string categoryName) => _loggers
-        .GetOrAdd(categoryName, name => new CptLogger(name, GetCurrentConfig));
+        .GetOrAdd(categoryName, name => new CptLogger(name, GetCurrentConfig, _sp));
 
     private CaptainLoggerOptions GetCurrentConfig() => _currentConfig;
 
