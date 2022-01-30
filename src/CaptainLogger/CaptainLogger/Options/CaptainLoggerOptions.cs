@@ -74,6 +74,18 @@ public class CaptainLoggerOptions : IDisposable
     public Stream? LoggerBuffer { get; set; }
 
     /// <summary>
+    /// If set to false, <see cref="ICaptainLogger.LogEntryRequestedAsync"/> won't be triggered!
+    /// <para>Default value: True</para>
+    /// </summary>
+    public bool TriggerAsyncEvents { get; set; } = true;
+
+    /// <summary>
+    /// If set to false, <see cref="ICaptainLogger.LogEntryRequested"/> won't be triggered!
+    /// <para>Default value: False</para>
+    /// </summary>
+    public bool TriggerEvents { get; set; }
+
+    /// <summary>
     /// Default constructor
     /// </summary>
     public CaptainLoggerOptions() { }

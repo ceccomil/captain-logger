@@ -14,7 +14,13 @@ public class ServiceTestConsoleHandlers : IServiceTest
     {
         _logger = logger;
         InstanceId = opts.Value.InstanceId;
+
+        _logger.LogEntryRequestedAsync += LogEntryRequestedAsync;
     }
+
+    private async Task LogEntryRequestedAsync(CaptainLoggerEvArgs<object> evArgs) =>
+        //Some long operation
+        await Task.Delay(1000);
 
     public async Task RunAsync()
     {
@@ -24,6 +30,6 @@ public class ServiceTestConsoleHandlers : IServiceTest
 
         _logger.ErrorLog("Simple error message", new NotImplementedException("Test Exception"));
 
-        await Task.Delay(4_000);
+        await Task.Delay(4000);
     }
 }

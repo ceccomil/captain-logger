@@ -1,8 +1,9 @@
-﻿
-namespace CaptainLogger;
+﻿namespace CaptainLogger;
 
-internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>
+internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDisposable
 {
+    private bool _disposed;
+
     private static readonly Action<ILogger, string, Exception?> Trace = LoggerMessage
         .Define<string>(LogLevel.Trace, 0, "{Message}");
 
@@ -21,11 +22,80 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>
     private static readonly Action<ILogger, string, Exception?> Critical = LoggerMessage
         .Define<string>(LogLevel.Critical, 0, "{Message}");
 
+    public event LogEntryRequestedHandler? LogEntryRequested;
+    public event LogEntryRequestedAsyncHandler? LogEntryRequestedAsync;
+
+    private readonly ConcurrentDictionary<string, CptLogger> _loggers;
+    private readonly CaptainLoggerOptions _options;
+
+    private readonly List<string> _subscribedAsync = new();
+    private readonly List<string> _subscribed = new();
+
     public ILogger RuntimeLogger { get; }
 
-    public CaptainLoggerBase(ILogger<TCategory> logger)
+    public CaptainLoggerBase(
+        ILogger logger,
+        ILoggerProvider loggerProvider)
     {
         RuntimeLogger = logger;
+        _loggers = ((CaptainLoggerProvider)loggerProvider).Loggers;
+
+        _options = ((CaptainLoggerProvider)loggerProvider).CurrentConfig;
+
+        if (_options.TriggerEvents)
+            SetupSubs(_loggers.Values);
+
+        if (_options.TriggerAsyncEvents)
+            SetupAsyncSubs(_loggers.Values);
+    }
+
+    private void SetupSubs(ICollection<CptLogger> loggers)
+    {
+        foreach (var cpt in loggers)
+        {
+            if (_subscribed.Contains(cpt.Category))
+                continue;
+
+            _subscribed.Add(cpt.Category);
+            cpt.OnLogRequested += CptLoggerOnLogRequested;
+        }
+    }
+
+    private void SetupAsyncSubs(ICollection<CptLogger> loggers)
+    {
+        foreach (var cpt in loggers)
+        {
+            if (_subscribedAsync.Contains(cpt.Category))
+                continue;
+
+            _subscribedAsync.Add(cpt.Category);
+            cpt.OnLogRequestedAsync += CptLoggerOnLogRequestedAsync;
+        }
+    }
+
+    public CaptainLoggerBase(
+        ILogger<TCategory> logger,
+        ILoggerProvider loggerProvider) :
+        this((ILogger)logger, loggerProvider)
+    {
+    }
+
+    ~CaptainLoggerBase() => Dispose(false);
+
+    private void CptLoggerOnLogRequested(CaptainLoggerEvArgs<object> evArgs)
+    {
+        if (LogEntryRequested is null)
+            return;
+
+        LogEntryRequested.Invoke(evArgs);
+    }
+
+    private async Task CptLoggerOnLogRequestedAsync(CaptainLoggerEvArgs<object> evArgs)
+    {
+        if (LogEntryRequestedAsync is null)
+            return;
+
+        await LogEntryRequestedAsync.Invoke(evArgs);
     }
 
     public void TraceLog(string message) => Trace(RuntimeLogger, message, null);
@@ -50,5 +120,40 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>
 
     public void CriticalLog(string message) => Critical(RuntimeLogger, message, null);
 
-    public void CriticalLog(string message, Exception exception) => Critical(RuntimeLogger, message, exception);    
+    public void CriticalLog(string message, Exception exception) => Critical(RuntimeLogger, message, exception);
+    
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (_disposed)
+            return;
+
+        if (disposing)
+        {
+            foreach (var cat in _subscribed)
+            {
+                var cpt = _loggers.Values.Single(x => x.Category == cat);
+                cpt.OnLogRequested -= CptLoggerOnLogRequested;
+                cpt.Dispose();
+            }
+
+            _subscribed.Clear();
+
+            foreach (var cat in _subscribedAsync)
+            {
+                var cpt = _loggers.Values.Single(x => x.Category == cat);
+                cpt.OnLogRequestedAsync -= CptLoggerOnLogRequestedAsync;
+                cpt.Dispose();
+            }
+
+            _subscribed.Clear();
+        }
+
+        _disposed = true;
+    }
 }

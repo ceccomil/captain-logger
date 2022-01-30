@@ -5,7 +5,9 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.MinimalApi", "CaptainLogger.MinimalApi\CaptainLogger.MinimalApi.csproj", "{C444D8E7-363F-4D1D-8000-42BF9F8C6960}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.Templates", "CaptainLogger.Templates\CaptainLogger.Templates.csproj", "{98C0E4DE-C304-45D1-BAC4-EF507C275F84}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Templates", "CaptainLogger.Templates\CaptainLogger.Templates.csproj", "{98C0E4DE-C304-45D1-BAC4-EF507C275F84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.SaveLogs", "CaptainLogger.SaveLogs\CaptainLogger.SaveLogs.csproj", "{A00E1B7A-669F-4890-A0DE-57E9FA6AA21D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{98C0E4DE-C304-45D1-BAC4-EF507C275F84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98C0E4DE-C304-45D1-BAC4-EF507C275F84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98C0E4DE-C304-45D1-BAC4-EF507C275F84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A00E1B7A-669F-4890-A0DE-57E9FA6AA21D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A00E1B7A-669F-4890-A0DE-57E9FA6AA21D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A00E1B7A-669F-4890-A0DE-57E9FA6AA21D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A00E1B7A-669F-4890-A0DE-57E9FA6AA21D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

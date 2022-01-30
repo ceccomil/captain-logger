@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CaptainLogger" Version="0.3.3-alpha" />
-    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="0.3.3-alpha" />
+    <PackageReference Include="CaptainLogger" Version="0.3.8-alpha" />
+    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="0.3.8-alpha" />
   </ItemGroup>
 
 </Project>

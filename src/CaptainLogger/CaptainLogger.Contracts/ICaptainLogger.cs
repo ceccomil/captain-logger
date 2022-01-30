@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CaptainLogger.Contracts;
+using Microsoft.Extensions.Logging;
 
 namespace CaptainLogger;
 
@@ -83,6 +84,17 @@ public interface ICaptainLogger
     /// <para>For High-performance logging use CaptainLogger.Extensions.Generator</para>
     /// </summary>
     void CriticalLog(string message, Exception exception);
+
+    /// <summary>
+    /// Triggered when a log entry is requested.
+    /// </summary>
+    event LogEntryRequestedHandler? LogEntryRequested;
+
+    /// <summary>
+    /// Triggered when a log entry is requested.
+    /// <para>!! Not awaited for performance (Exceptions will be swallowed)</para>
+    /// </summary>
+    event LogEntryRequestedAsyncHandler? LogEntryRequestedAsync;
 }
 
 /// <summary>
