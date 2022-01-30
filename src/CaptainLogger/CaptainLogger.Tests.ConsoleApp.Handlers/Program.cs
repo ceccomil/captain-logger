@@ -30,8 +30,6 @@ public static class Program
             {
                 x.TimeIsUtc = true;
             })
-            .AddScoped<IServiceTest, ServiceTestConsoleHandlers>()
-            .AddScoped<ICaptainLoggerHandler, LogHandler1>()
-            .AddScoped<ICaptainLoggerHandler, LogHandler2>();
+            .AddScoped<IServiceTest, ServiceTestConsoleHandlers>();
     }
 }

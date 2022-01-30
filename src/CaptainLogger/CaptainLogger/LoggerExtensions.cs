@@ -35,10 +35,10 @@ public static class LoggerExtensions
         builder
             .Services
             .AddSingleton(typeof(ICaptainLogger<>), typeof(CaptainLoggerBase<>))
-            .TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, LoggerProvider>());
+            .TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, CaptainLoggerProvider>());
 
         LoggerProviderOptions
-            .RegisterProviderOptions<CaptainLoggerOptions, LoggerProvider>(builder.Services);
+            .RegisterProviderOptions<CaptainLoggerOptions, CaptainLoggerProvider>(builder.Services);
 
         return builder;
     }

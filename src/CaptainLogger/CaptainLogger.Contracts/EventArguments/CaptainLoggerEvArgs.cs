@@ -3,7 +3,7 @@
 namespace CaptainLogger.Contracts.EventArguments;
 
 /// <summary>
-/// TODO
+/// Arguments of the log entry.
 /// </summary>
 public class CaptainLoggerEvArgs<TState> : EventArgs
 {

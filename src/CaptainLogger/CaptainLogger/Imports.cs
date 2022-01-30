@@ -7,3 +7,5 @@ global using CaptainLogger.Logic;
 global using CaptainLogger.Helper;
 global using CaptainLogger.Contracts;
 global using Microsoft.Extensions.DependencyInjection;
+global using CaptainLogger.Contracts.EventArguments;
+global using System.Collections.Concurrent;

@@ -1,3 +1,5 @@
+using CaptainLogger.Contracts.EventArguments;
+using CaptainLogger.SaveLogs.Logging;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CaptainLogger.SaveLogs.Controllers
@@ -8,14 +10,19 @@ namespace CaptainLogger.SaveLogs.Controllers
     {
         private static readonly string[] Summaries = new[]
         {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
+            "Freezing", "Bracing", "Chilly",
+            "Cool", "Mild", "Warm", "Balmy",
+            "Hot", "Sweltering", "Scorching"
+        };
 
         private readonly ICaptainLogger _logger;
 
-        public WeatherForecastController(ICaptainLogger<WeatherForecastController> logger)
+        public WeatherForecastController(
+            ICaptainLogger<WeatherForecastController> logger,
+            ILogHandler logHandler)
         {
             _logger = logger;
+            logHandler.SubscribeToLoggerEvents();
         }
 
         [HttpGet(Name = "GetWeatherForecast")]

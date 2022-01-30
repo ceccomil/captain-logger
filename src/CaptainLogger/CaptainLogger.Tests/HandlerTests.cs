@@ -1,77 +1,94 @@
-﻿namespace CaptainLogger.Tests;
+﻿using Microsoft.Extensions.Options;
+
+namespace CaptainLogger.Tests;
 
 public class HandlerTests
 {
     private static readonly IFixture _fixture = new Fixture();
-    private readonly IServiceProvider _sp = Substitute.For<IServiceProvider>();
     private readonly CaptainLoggerOptions _options = _fixture
         .Build<CaptainLoggerOptions>()
         .With(x => x.LoggerBuffer, new MemoryStream())
+        .With(x => x.LogRecipients, Recipients.Console)
         .Create();
 
-    [Fact(DisplayName = "One injected handler test")]
-    public void OneHandler()
+    private readonly IOptionsMonitor<CaptainLoggerOptions> _optMon = Substitute
+        .For<IOptionsMonitor<CaptainLoggerOptions>>();
+
+    private ICaptainLogger Setup()
     {
-        //Arrange
-        var handler = Substitute.For<ICaptainLoggerHandler>();
-        _sp
-            .TryGetServices<ICaptainLoggerHandler>()
-            .Returns(new[] {handler});
+        _optMon.CurrentValue.Returns(_options);
 
-        var cptLogger = new CptLogger(
-            nameof(HandlerTests),
-            () => _options,
-            _sp);
+        var loggerProvider = new CaptainLoggerProvider(_optMon);
 
-        //Act
-        cptLogger
-            .Log(
-                LogLevel.Information,
-                0,
-                "Simple message",
-                exception: null,
-                formatter: (state, ex) => state
-            );
+        loggerProvider
+            .CreateLogger($"{typeof(HandlerTests).Namespace}.{typeof(HandlerTests).Name}");
 
-        //Assert
-        handler
-            .Received(1)
-            .LogEntryRequested(Arg.Any<CaptainLoggerEvArgs<string>>());
+        ICaptainLogger logger = new CaptainLoggerBase<HandlerTests>(
+            loggerProvider.Loggers.First().Value,
+            loggerProvider);
+
+        return logger;
     }
 
-    [Fact(DisplayName = "Two injected handlers test")]
-    public void TwoHandlers()
+    [Fact(DisplayName = "Events are triggered on log entry requests (sync)")]
+    public void EventHandlerTest()
     {
         //Arrange
-        var handler1 = Substitute.For<ICaptainLoggerHandler>();
-        var handler2 = Substitute.For<ICaptainLoggerHandler>();
+        object? handledMex = null;
+        var myMex = "Simple log message!";
 
-        _sp
-            .TryGetServices<ICaptainLoggerHandler>()
-            .Returns(new[] { handler1, handler2 });
+        var logger = Setup();
 
-        var cptLogger = new CptLogger(
-            nameof(HandlerTests),
-            () => _options,
-            _sp);
+        void LogEntryRequested(CaptainLoggerEvArgs<object> evArgs)
+        {
+            //Some long operation
+            Thread.Sleep(250);
+
+            handledMex = evArgs.State;
+        }
+
+        logger.LogEntryRequested += LogEntryRequested;
 
         //Act
-        cptLogger
-            .Log(
-                LogLevel.Information,
-                0,
-                "Message with execption",
-                exception: new NotImplementedException(),
-                formatter: (state, ex) => state
-            );
+        logger.InformationLog(myMex);
+
+        logger.LogEntryRequested -= LogEntryRequested;
 
         //Assert
-        handler1
-            .Received(1)
-            .LogEntryRequested(Arg.Any<CaptainLoggerEvArgs<string>>());
+        handledMex.Should().NotBeNull();
+        $"{handledMex}".Should().Be(myMex);
+    }
 
-        handler2
-            .Received(1)
-            .LogEntryRequested(Arg.Any<CaptainLoggerEvArgs<string>>());
+    [Fact(DisplayName = "Events are triggered on log entry requests (async)")]
+    public async Task EventHandlerTestAsync()
+    {
+        //Arrange
+        object? handledMex = null;
+        var myMex = "Simple log message!";
+
+        var logger = Setup();
+
+        async Task LogEntryRequested(CaptainLoggerEvArgs<object> evArgs)
+        {
+            //Some long operation
+            await Task.Delay(250);
+
+            handledMex = evArgs.State;
+
+            throw new ApplicationException("Test won't fail! This will be ignored!");
+        }
+
+        logger.LogEntryRequestedAsync += LogEntryRequested;
+
+        //Act
+        logger.InformationLog(myMex);
+
+        await Task.Delay(500);
+
+        logger.LogEntryRequestedAsync -= LogEntryRequested;
+
+        //Assert
+        handledMex.Should().NotBeNull();
+        $"{handledMex}".Should().Be(myMex);
     }
 }

@@ -20,15 +20,15 @@ public class Repo : IRepo
 
     private void Dispose(bool disposing)
     {
-        if (!_disposed)
-        {
-            if (disposing)
-            {
-                Database.Dispose();
-            }
+        if (_disposed)
+            return;
 
-            _disposed = true;
+        if (disposing)
+        {
+            Database.Dispose();
         }
+
+        _disposed = true;
     }
 
     public void Dispose()

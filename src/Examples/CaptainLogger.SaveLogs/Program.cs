@@ -18,11 +18,16 @@ builder.Services.AddControllers();
 
 builder
     .Services
-    .Configure<CaptainLoggerOptions>(x => x.LogRecipients = Recipients.Console)
+    .Configure<CaptainLoggerOptions>(options =>
+    {
+        options.LogRecipients = Recipients.Console;
+        options.ArgumentsCount = LogArguments.One;
+        options.Templates.Add(LogArguments.One, "Static counter has been increased! New value: {Value}");
+    })
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
-    .AddSingleton<ICaptainLoggerHandler, LogEntryHandler>()
-    .AddSingleton<IRepo, Repo>();
+    .AddScoped<IRepo, Repo>()
+    .AddScoped<ILogHandler, LogHandler>();
     
 var app = builder.Build();
 

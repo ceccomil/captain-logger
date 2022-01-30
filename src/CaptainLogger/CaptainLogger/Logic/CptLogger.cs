@@ -14,23 +14,17 @@ internal class CptLogger : ILogger, IDisposable
 
     private static readonly object _consoleLock = new();
 
-    private readonly List<ICaptainLoggerHandler> _handlers = new();
-
     public bool Disposed { get; private set; }
+
+    internal event LogEntryRequestedHandler? OnLogRequested;
+    internal event LogEntryRequestedAsyncHandler? OnLogRequestedAsync;
 
     public CptLogger(
         string name,
-        Func<CaptainLoggerOptions> getCurrentConfig,
-        IServiceProvider sp)
+        Func<CaptainLoggerOptions> getCurrentConfig)
     {
         _name = name;
         _getCurrentConfig = getCurrentConfig;
-
-        var handlers = sp
-            .TryGetServices<ICaptainLoggerHandler>();
-
-        _handlers
-            .AddRange(handlers);
     }
 
     ~CptLogger() => Dispose(false);
@@ -62,12 +56,21 @@ internal class CptLogger : ILogger, IDisposable
 
         lock (_consoleLock)
         {
-            _ = LogHasBeenRequested(
-                now,
-                logLevel,
-                state,
-                eventId,
-                exception);
+            if (OnLogRequested is not null)
+                LogHasBeenRequested(
+                    now,
+                    logLevel,
+                    state,
+                    eventId,
+                    exception);
+
+            if (OnLogRequestedAsync is not null)
+                _ = LogHasBeenRequestedAsync(
+                    now,
+                    logLevel,
+                    state,
+                    eventId,
+                    exception);
 
             _ = WriteLog(
                 now,
@@ -79,22 +82,44 @@ internal class CptLogger : ILogger, IDisposable
         }
     }
 
-    private async Task LogHasBeenRequested<TState>(
+    private void LogHasBeenRequested<TState>(
         DateTime time,
         LogLevel level,
         TState state,
         EventId eventId,
         Exception? ex)
     {
-        foreach (var handler in _handlers)
-            await handler
-                .LogEntryRequested<TState>(new(
-                    state,
-                    time,
-                    eventId,
-                    _name,
-                    level,
-                    ex));
+        if (state is null)
+            return; 
+
+        OnLogRequested
+            ?.Invoke(new(
+                state,
+                time,
+                eventId,
+                _name,
+                level,
+                ex));
+    }
+
+    private async Task LogHasBeenRequestedAsync<TState>(
+        DateTime time,
+        LogLevel level,
+        TState state,
+        EventId eventId,
+        Exception? ex)
+    {
+        if (state is null || OnLogRequestedAsync is null)
+            return;
+
+        await OnLogRequestedAsync
+            .Invoke(new(
+                state,
+                time,
+                eventId,
+                _name,
+                level,
+                ex));
     }
 
     private async Task WriteLog<TState>(
@@ -272,8 +297,8 @@ internal class CptLogger : ILogger, IDisposable
             //No private members
         }
 
-        _fs.CloseAndDispose();
         _sw.CloseAndDispose();
+        _fs.CloseAndDispose();
 
         _fs = null;
         _sw = null;
