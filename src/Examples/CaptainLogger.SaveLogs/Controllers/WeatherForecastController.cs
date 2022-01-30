@@ -19,7 +19,7 @@ namespace CaptainLogger.SaveLogs.Controllers
 
         public WeatherForecastController(
             ICaptainLogger<WeatherForecastController> logger,
-            ILogHandler logHandler)
+            ILogHandler<WeatherForecastController> logHandler)
         {
             _logger = logger;
             logHandler.SubscribeToLoggerEvents();

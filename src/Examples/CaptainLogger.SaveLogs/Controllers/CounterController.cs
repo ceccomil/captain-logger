@@ -13,7 +13,7 @@ public class CounterController : ControllerBase
 
     public CounterController(
         ICaptainLogger<CounterController> logger,
-        ILogHandler logHandler)
+        ILogHandler<CounterController> logHandler)
     {
         _logger = logger;
         logHandler.SubscribeToLoggerEvents();

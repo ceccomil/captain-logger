@@ -2,7 +2,7 @@
 
 namespace CaptainLogger.SaveLogs.Logging;
 
-public class LogHandler : ILogHandler
+public class LogHandler<TCategory> : ILogHandler<TCategory>
 {
     private readonly IRepo _loggerRepo;
     private readonly ICaptainLogger _logger;
@@ -12,7 +12,7 @@ public class LogHandler : ILogHandler
 
     public LogHandler(
         IRepo loggerRepo,
-        ICaptainLogger<LogHandler> logger)
+        ICaptainLogger<TCategory> logger)
     {
         _loggerRepo = loggerRepo;
         _logger = logger;

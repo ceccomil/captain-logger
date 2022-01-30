@@ -3,8 +3,6 @@
 internal class CptLogger : ILogger, IDisposable
 {
     private const string INDENT = "                                ";
-
-    private readonly string _name;
     private readonly Func<CaptainLoggerOptions> _getCurrentConfig;
 
     private static FileStream? _fs;
@@ -15,6 +13,7 @@ internal class CptLogger : ILogger, IDisposable
     private static readonly object _consoleLock = new();
 
     public bool Disposed { get; private set; }
+    public string Category { get; }
 
     internal event LogEntryRequestedHandler? OnLogRequested;
     internal event LogEntryRequestedAsyncHandler? OnLogRequestedAsync;
@@ -23,7 +22,7 @@ internal class CptLogger : ILogger, IDisposable
         string name,
         Func<CaptainLoggerOptions> getCurrentConfig)
     {
-        _name = name;
+        Category = name;
         _getCurrentConfig = getCurrentConfig;
     }
 
@@ -97,7 +96,7 @@ internal class CptLogger : ILogger, IDisposable
                 state,
                 time,
                 eventId,
-                _name,
+                Category,
                 level,
                 ex));
     }
@@ -117,7 +116,7 @@ internal class CptLogger : ILogger, IDisposable
                 state,
                 time,
                 eventId,
-                _name,
+                Category,
                 level,
                 ex));
     }
@@ -223,7 +222,7 @@ internal class CptLogger : ILogger, IDisposable
                     formatter),
                 defaultColor),
             Category = new(
-                $"{INDENT}[{_name}]{Environment.NewLine}",
+                $"{INDENT}[{Category}]{Environment.NewLine}",
                 ConsoleColor.Magenta),
             Spacer = new(
                 Environment.NewLine,

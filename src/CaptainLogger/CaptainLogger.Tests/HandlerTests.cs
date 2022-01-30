@@ -9,6 +9,7 @@ public class HandlerTests
         .Build<CaptainLoggerOptions>()
         .With(x => x.LoggerBuffer, new MemoryStream())
         .With(x => x.LogRecipients, Recipients.Console)
+        .With(x => x.TriggerEvents, true)
         .Create();
 
     private readonly IOptionsMonitor<CaptainLoggerOptions> _optMon = Substitute

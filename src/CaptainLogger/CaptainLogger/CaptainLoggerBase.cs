@@ -28,6 +28,9 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
     private readonly ConcurrentDictionary<string, CptLogger> _loggers;
     private readonly CaptainLoggerOptions _options;
 
+    private readonly List<string> _subscribedAsync = new();
+    private readonly List<string> _subscribed = new();
+
     public ILogger RuntimeLogger { get; }
 
     public CaptainLoggerBase(
@@ -39,20 +42,43 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
 
         _options = ((CaptainLoggerProvider)loggerProvider).CurrentConfig;
 
-        foreach (var cpt in _loggers.Values)
-        {
-            if (_options.TriggerEvents)
-                cpt.OnLogRequested += CptLoggerOnLogRequested;
+        if (_options.TriggerEvents)
+            SetupSubs(_loggers.Values);
 
-            if (_options.TriggerAsyncEvents)
-                cpt.OnLogRequestedAsync += CptLoggerOnLogRequestedAsync;
+        if (_options.TriggerAsyncEvents)
+            SetupAsyncSubs(_loggers.Values);
+    }
+
+    private void SetupSubs(ICollection<CptLogger> loggers)
+    {
+        foreach (var cpt in loggers)
+        {
+            if (_subscribed.Contains(cpt.Category))
+                continue;
+
+            _subscribed.Add(cpt.Category);
+            cpt.OnLogRequested += CptLoggerOnLogRequested;
+        }
+    }
+
+    private void SetupAsyncSubs(ICollection<CptLogger> loggers)
+    {
+        foreach (var cpt in loggers)
+        {
+            if (_subscribedAsync.Contains(cpt.Category))
+                continue;
+
+            _subscribedAsync.Add(cpt.Category);
+            cpt.OnLogRequestedAsync += CptLoggerOnLogRequestedAsync;
         }
     }
 
     public CaptainLoggerBase(
         ILogger<TCategory> logger,
-        ILoggerProvider ILoggerProvider) :
-        this((ILogger)logger, ILoggerProvider) { }
+        ILoggerProvider loggerProvider) :
+        this((ILogger)logger, loggerProvider)
+    {
+    }
 
     ~CaptainLoggerBase() => Dispose(false);
 
@@ -109,14 +135,23 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
 
         if (disposing)
         {
-            foreach (var cpt in _loggers.Values)
+            foreach (var cat in _subscribed)
             {
-                if (_options.TriggerEvents)
-                    cpt.OnLogRequested -= CptLoggerOnLogRequested;
-
-                if (_options.TriggerAsyncEvents)
-                    cpt.OnLogRequestedAsync -= CptLoggerOnLogRequestedAsync;
+                var cpt = _loggers.Values.Single(x => x.Category == cat);
+                cpt.OnLogRequested -= CptLoggerOnLogRequested;
+                cpt.Dispose();
             }
+
+            _subscribed.Clear();
+
+            foreach (var cat in _subscribedAsync)
+            {
+                var cpt = _loggers.Values.Single(x => x.Category == cat);
+                cpt.OnLogRequestedAsync -= CptLoggerOnLogRequestedAsync;
+                cpt.Dispose();
+            }
+
+            _subscribed.Clear();
         }
 
         _disposed = true;

@@ -27,7 +27,7 @@ builder
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
     .AddScoped<IRepo, Repo>()
-    .AddScoped<ILogHandler, LogHandler>();
+    .AddScoped(typeof(ILogHandler<>), typeof(LogHandler<>));
     
 var app = builder.Build();
 

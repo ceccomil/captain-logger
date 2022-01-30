@@ -1,6 +1,6 @@
 ﻿namespace CaptainLogger.SaveLogs.Logging;
 
-public interface ILogHandler : IDisposable
+public interface ILogHandler<out TCategory> : IDisposable
 {
     void SubscribeToLoggerEvents();
 }
