@@ -22,9 +22,9 @@ public static class Program
 
     private static async Task EnvInit(Func<IServiceProvider, Task> runTest)
     {
-        await TestEnvironment.Scope(runTest, AddConcurrentService);
+        await TestEnvironment.Scope(runTest, AddService);
 
-        static IServiceCollection AddConcurrentService(IServiceCollection s) => s
+        static IServiceCollection AddService(IServiceCollection s) => s
             .Configure<ServiceTestOptions>(x => x.InstanceId = _appId)
             .Configure<CaptainLoggerOptions>(x =>
             {

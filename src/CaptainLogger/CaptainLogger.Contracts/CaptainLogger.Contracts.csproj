@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>Latest</LangVersion>
 		<Description>CaptainLogger Contracts</Description>
-		<PackageVersion>0.3.8-alpha</PackageVersion>
+		<PackageVersion>0.3.9-alpha</PackageVersion>
 		<Authors>Chekko Milani</Authors>
 		<AssemblyName>CaptainLogger.Contracts</AssemblyName>
 		<PackageId>CaptainLogger.Contracts</PackageId>

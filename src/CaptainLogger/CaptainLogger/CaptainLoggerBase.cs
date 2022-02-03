@@ -27,6 +27,7 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
 
     private readonly ConcurrentDictionary<string, CptLogger> _loggers;
     private readonly CaptainLoggerOptions _options;
+    private readonly CaptainLoggerProvider _loggerProvider;
 
     private readonly List<string> _subscribedAsync = new();
     private readonly List<string> _subscribed = new();
@@ -38,39 +39,41 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
         ILoggerProvider loggerProvider)
     {
         RuntimeLogger = logger;
-        _loggers = ((CaptainLoggerProvider)loggerProvider).Loggers;
+        _loggerProvider = (CaptainLoggerProvider)loggerProvider;
+        _loggers = _loggerProvider.Loggers;
+        _options = _loggerProvider.CurrentConfig;
 
-        _options = ((CaptainLoggerProvider)loggerProvider).CurrentConfig;
+        foreach (var cpt in _loggers.Values)
+            NewLoggerAdded(this, new(cpt));
 
+        _loggerProvider.LoggerAdded += NewLoggerAdded;
+    }
+
+    private void NewLoggerAdded(object? sender, NewLoggerEvArgs e)
+    {
         if (_options.TriggerEvents)
-            SetupSubs(_loggers.Values);
+            SetupSub(e.Logger);
 
         if (_options.TriggerAsyncEvents)
-            SetupAsyncSubs(_loggers.Values);
+            SetupAsyncSub(e.Logger);
     }
 
-    private void SetupSubs(ICollection<CptLogger> loggers)
+    private void SetupSub(CptLogger cpt)
     {
-        foreach (var cpt in loggers)
-        {
-            if (_subscribed.Contains(cpt.Category))
-                continue;
+        if (_subscribed.Contains(cpt.Category))
+            return;
 
-            _subscribed.Add(cpt.Category);
-            cpt.OnLogRequested += CptLoggerOnLogRequested;
-        }
+        _subscribed.Add(cpt.Category);
+        cpt.OnLogRequested += CptLoggerOnLogRequested;
     }
 
-    private void SetupAsyncSubs(ICollection<CptLogger> loggers)
+    private void SetupAsyncSub(CptLogger cpt)
     {
-        foreach (var cpt in loggers)
-        {
-            if (_subscribedAsync.Contains(cpt.Category))
-                continue;
+        if (_subscribedAsync.Contains(cpt.Category))
+            return;
 
-            _subscribedAsync.Add(cpt.Category);
-            cpt.OnLogRequestedAsync += CptLoggerOnLogRequestedAsync;
-        }
+        _subscribedAsync.Add(cpt.Category);
+        cpt.OnLogRequestedAsync += CptLoggerOnLogRequestedAsync;
     }
 
     public CaptainLoggerBase(
@@ -152,6 +155,8 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
             }
 
             _subscribed.Clear();
+
+            _loggerProvider.LoggerAdded -= NewLoggerAdded;
         }
 
         _disposed = true;
