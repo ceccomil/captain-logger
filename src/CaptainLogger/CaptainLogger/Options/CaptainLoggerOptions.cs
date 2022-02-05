@@ -75,9 +75,9 @@ public class CaptainLoggerOptions : IDisposable
 
     /// <summary>
     /// If set to false, <see cref="ICaptainLogger.LogEntryRequestedAsync"/> won't be triggered!
-    /// <para>Default value: True</para>
+    /// <para>Default value: False</para>
     /// </summary>
-    public bool TriggerAsyncEvents { get; set; } = true;
+    public bool TriggerAsyncEvents { get; set; }
 
     /// <summary>
     /// If set to false, <see cref="ICaptainLogger.LogEntryRequested"/> won't be triggered!
