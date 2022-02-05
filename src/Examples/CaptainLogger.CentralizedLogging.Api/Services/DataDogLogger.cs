@@ -1,7 +1,6 @@
 ﻿using CaptainLogger.CentralizedLogging.Api.Contracts;
 using CaptainLogger.Contracts.EventArguments;
 using Microsoft.Net.Http.Headers;
-using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
