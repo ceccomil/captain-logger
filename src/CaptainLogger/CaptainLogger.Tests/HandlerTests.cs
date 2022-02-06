@@ -44,7 +44,7 @@ public class HandlerTests
         void LogEntryRequested(CaptainLoggerEvArgs<object> evArgs)
         {
             //Some long operation
-            Thread.Sleep(250);
+            Thread.Sleep(100);
 
             handledMex = evArgs.State;
         }
@@ -73,7 +73,7 @@ public class HandlerTests
         async Task LogEntryRequested(CaptainLoggerEvArgs<object> evArgs)
         {
             //Some long operation
-            await Task.Delay(250);
+            await Task.Delay(100);
 
             handledMex = evArgs.State;
 
@@ -85,7 +85,7 @@ public class HandlerTests
         //Act
         logger.InformationLog(myMex);
 
-        await Task.Delay(500);
+        await Task.Delay(750);
 
         logger.LogEntryRequestedAsync -= LogEntryRequested;
 
