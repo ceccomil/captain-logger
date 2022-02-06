@@ -17,8 +17,11 @@ Features
 - Colorful console logs
 - Minimal dependencies (requires [.NET6](https://github.com/dotnet/core/blob/main/release-notes/6.0/6.0.1/6.0.1.md?WT.mc_id=dotnet-35129-website))
 - Handy (generics) extensions auto-generated based on configuration
+- Sync and Async EventHandlers to easily handle log entries
 
-Minimum configuration:
+Minimum configuration
+=====================================
+-------------------------------------
 
 ```csharp
 ...
@@ -36,7 +39,9 @@ var app = builder.Build();
 ```
 See example: CaptainLogger.MinimalApi
 
-Static templates configuration:
+Static templates configuration
+=====================================
+-------------------------------------
 
 ```csharp
 ...
@@ -58,3 +63,67 @@ Static templates configuration:
 ...
 ```
 See example: CaptainLogger.Templates
+
+EventHandlers configuration
+=====================================
+-------------------------------------
+
+```csharp
+...
+.Configure<CaptainLoggerOptions>(opts =>
+{
+   // Raise async events on log entries (Default is false)
+   opts.TriggerAsyncEvents = true;
+   
+   // Raise sync events on log entries (Default is false)
+   opts.TriggerEvents = true;
+})
+...
+```
+
+Example of use:
+```csharp
+    private async Task SomeLoggingWithEventHandlers()
+    {
+        void LogEntryRequested(CaptainLoggerEvArgs<object> evArgs)
+        {
+            //Some long operations
+            Thread.Sleep(500);
+            Console.WriteLine($"SYNC HANDLER: {evArgs.LogTime:ss.fff} - {evArgs.State}");
+        }
+
+        async Task LogEntryRequestedAsync(CaptainLoggerEvArgs<object> evArgs)
+        {
+            //Some long operations
+            await Task.Delay(1000);
+            Console.WriteLine($"ASYNC HANDLER: {evArgs.LogTime:ss.fff} - {evArgs.State}");
+        }
+
+        //ASYNC HANDLERS
+        _logger.LogEntryRequestedAsync += LogEntryRequestedAsync;
+
+        await Task.Delay(100);
+        _logger.InformationLog("Simple message no arguments!");
+
+        await Task.Delay(100);
+        _logger.ErrorLog("Simple error message", new NotImplementedException("Test Exception"));
+
+        await Task.Delay(3000);
+        _logger.LogEntryRequestedAsync -= LogEntryRequestedAsync;
+
+        Console.WriteLine();
+
+        //SYNC HANDLERS
+        _logger.LogEntryRequested += LogEntryRequested;
+
+        await Task.Delay(100);
+        _logger.InformationLog("Mex for Sync Handler");
+
+        await Task.Delay(100);
+        _logger.ErrorLog("Exception for Sync Handler", new NotImplementedException("Test Exception"));
+
+        _logger.LogEntryRequested -= LogEntryRequested;
+    }
+```
+
+See example: CaptainLogger.CentralizedLogging.Api

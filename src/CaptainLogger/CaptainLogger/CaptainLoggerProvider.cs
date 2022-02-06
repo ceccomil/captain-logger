@@ -6,6 +6,8 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider
     public CaptainLoggerOptions CurrentConfig { get; private set; }
     public ConcurrentDictionary<string, CptLogger> Loggers { get; } = new();
 
+    public event EventHandler<NewLoggerEvArgs>? LoggerAdded;
+
     private bool _disposed;
 
     public CaptainLoggerProvider(
@@ -17,8 +19,14 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider
 
     ~CaptainLoggerProvider() => Dispose(false);
 
-    public ILogger CreateLogger(string categoryName) => Loggers
-        .GetOrAdd(categoryName, name => new CptLogger(name, GetCurrentConfig));
+    public ILogger CreateLogger(string categoryName)
+    {
+        var logger = Loggers.GetOrAdd(categoryName, name => new CptLogger(name, GetCurrentConfig));
+
+        LoggerAdded?.Invoke(this, new(logger));
+
+        return logger;
+    }
 
     private CaptainLoggerOptions GetCurrentConfig() => CurrentConfig;
 
