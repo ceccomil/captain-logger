@@ -23,6 +23,7 @@ builder
         options.LogRecipients = Recipients.Console;
         options.ArgumentsCount = LogArguments.One;
         options.Templates.Add(LogArguments.One, "Static counter has been increased! New value: {Value}");
+        options.TriggerAsyncEvents = true;
     })
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
