@@ -67,11 +67,11 @@ public class DataDogLogger : IDataDogLogger
         };
 
         using var resp = await _http.SendAsync(req);
-        
+
+        //Error handling on failures is out of the scope of this example!
         if (!resp.IsSuccessStatusCode)
         {
             //Do nothing!
-            //Error handling on failures is out of the scope of this example!
         }
     }
 
@@ -87,6 +87,7 @@ public class DataDogLogger : IDataDogLogger
     {
         _logger.LogEntryRequestedAsync -= LogEntryRequestedAsync;
         EventListenerIsAttached = false;
+        
         return Task.CompletedTask;
     }
 }

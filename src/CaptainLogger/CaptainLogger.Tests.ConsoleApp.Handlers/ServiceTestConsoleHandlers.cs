@@ -14,48 +14,47 @@ public class ServiceTestConsoleHandlers : IServiceTest
         InstanceId = opts.Value.InstanceId;
     }
 
-    private void LogEntryRequested(CaptainLoggerEvArgs<object> evArgs)
+    private async Task SomeLoggingWithEventHandlers()
     {
-        Thread.Sleep(500);
-        Console.WriteLine($"SYNC HANDLER: {evArgs.LogTime:ss.fff} - {evArgs.State}");
-    }
+        void LogEntryRequested(CaptainLoggerEvArgs<object> evArgs)
+        {
+            //Some long operations
+            Thread.Sleep(500);
+            Console.WriteLine($"SYNC HANDLER: {evArgs.LogTime:ss.fff} - {evArgs.State}");
+        }
 
-    private async Task LogEntryRequestedAsync(CaptainLoggerEvArgs<object> evArgs)
-    {
-        //Some long operation
-        await Task.Delay(1000);
-        Console.WriteLine($"ASYNC HANDLER: {evArgs.LogTime:ss.fff} - {evArgs.State}");
-    }
+        async Task LogEntryRequestedAsync(CaptainLoggerEvArgs<object> evArgs)
+        {
+            //Some long operations
+            await Task.Delay(1000);
+            Console.WriteLine($"ASYNC HANDLER: {evArgs.LogTime:ss.fff} - {evArgs.State}");
+        }
 
-
-    public async Task RunAsync()
-    {
+        //ASYNC HANDLERS
         _logger.LogEntryRequestedAsync += LogEntryRequestedAsync;
 
         await Task.Delay(100);
-
         _logger.InformationLog("Simple message no arguments!");
 
         await Task.Delay(100);
-
         _logger.ErrorLog("Simple error message", new NotImplementedException("Test Exception"));
 
         await Task.Delay(3000);
+        _logger.LogEntryRequestedAsync -= LogEntryRequestedAsync;
 
         Console.WriteLine();
 
-        _logger.LogEntryRequestedAsync -= LogEntryRequestedAsync;
+        //SYNC HANDLERS
         _logger.LogEntryRequested += LogEntryRequested;
 
-        Run();
+        await Task.Delay(100);
+        _logger.InformationLog("Mex for Sync Handler");
+
+        await Task.Delay(100);
+        _logger.ErrorLog("Exception for Sync Handler", new NotImplementedException("Test Exception"));
 
         _logger.LogEntryRequested -= LogEntryRequested;
     }
 
-    public void Run()
-    {
-        _logger.InformationLog("Mex for Sync Handler");
-
-        _logger.ErrorLog("Exception for Sync Handler", new NotImplementedException("Test Exception"));
-    }
+    public async Task RunAsync() => await SomeLoggingWithEventHandlers();
 }

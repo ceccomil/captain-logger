@@ -21,9 +21,7 @@ builder
     .Configure<CaptainLoggerOptions>(opts =>
     {
         opts.TimeIsUtc = true;
-        //Raise async events on log entries
         opts.TriggerAsyncEvents = true;
-
         opts.LogRecipients = Recipients.Console;
     })
     .AddEndpointsApiExplorer()
