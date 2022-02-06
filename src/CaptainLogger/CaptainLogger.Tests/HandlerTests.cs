@@ -77,6 +77,9 @@ public class HandlerTests
 
             handledMex = evArgs.State;
 
+            Console.WriteLine("State value:");
+            Console.WriteLine(evArgs.State);
+
             throw new ApplicationException("Test won't fail! This will be ignored!");
         }
 

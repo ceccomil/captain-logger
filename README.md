@@ -126,4 +126,6 @@ Example of use:
     }
 ```
 
-See example: CaptainLogger.CentralizedLogging.Api
+See examples:
+- CaptainLogger.CentralizedLogging.Api (Save logs to [DataDog](https://www.datadoghq.com))
+- CaptainLogger.SaveLogs (Save logs to [LiteDB](https://github.com/mbdavid/LiteDB))
