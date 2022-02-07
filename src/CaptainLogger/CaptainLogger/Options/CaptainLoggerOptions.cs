@@ -140,7 +140,7 @@ public class CaptainLoggerOptions : IDisposable
         if (LoggerBuffer is not null)
         {
             LoggerBuffer.Close();
-            LoggerBuffer.Close();
+            LoggerBuffer.Dispose();
             LoggerBuffer = null;
         }
 
