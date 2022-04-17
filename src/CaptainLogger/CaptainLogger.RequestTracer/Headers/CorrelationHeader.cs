@@ -10,7 +10,7 @@ internal class CorrelationHeader : ICorrelationHeader
         _contextAccessor = contextAccessor;
     }
 
-    public void AppendCorrelationHeader(HttpClient client)
+    public void Append(HttpClient client)
     {
         var traceId = _contextAccessor
             .HttpContext

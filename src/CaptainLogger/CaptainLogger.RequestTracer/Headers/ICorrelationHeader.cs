@@ -9,5 +9,5 @@ public interface ICorrelationHeader
     /// Appends the current trace identifier to the collection of request headers.
     /// </summary>
     /// <param name="client"></param>
-    void AppendCorrelationHeader(HttpClient client);
+    void Append(HttpClient client);
 }
