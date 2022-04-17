@@ -4,4 +4,7 @@ global using FluentAssertions;
 global using Microsoft.AspNetCore.Http;
 global using System.Threading.Tasks;
 global using NSubstitute;
+global using AutoFixture;
+global using Microsoft.Extensions.Primitives;
+global using System.Collections.Generic;
 global using static CaptainLogger.RequestTracer.Globals.Constants;

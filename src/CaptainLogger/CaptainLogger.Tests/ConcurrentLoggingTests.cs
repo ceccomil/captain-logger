@@ -12,7 +12,7 @@ public class ConcurrentLoggingTests
         var guids = GetGuids();
 
         //Runs 5 applications in parallel
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             tasks.Add(RunConsoleApp(guids[i], GetLogFilePath(unqName)));
 
         await Task.WhenAll(tasks);
@@ -27,7 +27,7 @@ public class ConcurrentLoggingTests
         var guids = GetGuids().Take(2).ToArray();
 
         //Runs 2 applications in parallel
-        for (int i = 0; i < 2; i++)
+        for (var i = 0; i < 2; i++)
             tasks.Add(RunConsoleApp(guids[i], GetLogFilePath(unqName)));
 
         await Task.WhenAll(tasks);

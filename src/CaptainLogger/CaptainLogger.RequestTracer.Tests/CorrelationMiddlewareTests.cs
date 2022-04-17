@@ -1,14 +1,9 @@
-using AutoFixture;
-using Microsoft.Extensions.Primitives;
-using System.Collections.Generic;
-
 namespace CaptainLogger.RequestTracer.Tests;
 
 public class CorrelationMiddlewareTests
 {
     private readonly HttpContext _httpContext = Substitute.For<HttpContext>();
     private readonly RequestDelegate _reqDelegate = Substitute.For<RequestDelegate>();
-    private readonly Fixture _fixture = new();
 
     [Fact(DisplayName = "TraceIdentifier won't be assigned if no header is present")]
     public async Task NoHeaders()
