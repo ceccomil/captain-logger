@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>Latest</LangVersion>
 		<Description>A source generator providing boiler plate code for logging methods</Description>
-		<PackageVersion>1.0.1</PackageVersion>
+		<PackageVersion>1.1.1</PackageVersion>
 		<Authors>Chekko Milani</Authors>
 		<AssemblyName>CaptainLogger.Extensions.Generator</AssemblyName>
 		<PackageId>CaptainLogger.Extensions.Generator</PackageId>

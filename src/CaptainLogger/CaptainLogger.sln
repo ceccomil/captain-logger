@@ -25,7 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Extensions.Ge
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Benchmarks", "CaptainLogger.Benchmarks\CaptainLogger.Benchmarks.csproj", "{1DD6505F-5342-4BD5-A867-FF9C1C911702}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.Tests.ConsoleApp.Handlers", "CaptainLogger.Tests.ConsoleApp.Handlers\CaptainLogger.Tests.ConsoleApp.Handlers.csproj", "{D1E0578A-9AC5-45AB-8649-A7B8714F77BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Tests.ConsoleApp.Handlers", "CaptainLogger.Tests.ConsoleApp.Handlers\CaptainLogger.Tests.ConsoleApp.Handlers.csproj", "{D1E0578A-9AC5-45AB-8649-A7B8714F77BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.RequestTracer", "CaptainLogger.RequestTracer\CaptainLogger.RequestTracer.csproj", "{BBDBE482-76F8-4E4D-9602-4A309C1B8484}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.RequestTracer.Tests", "CaptainLogger.RequestTracer.Tests\CaptainLogger.RequestTracer.Tests.csproj", "{C5FB72FC-7B7E-45D2-AB1C-046A4B9B1D0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +73,14 @@ Global
 		{D1E0578A-9AC5-45AB-8649-A7B8714F77BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1E0578A-9AC5-45AB-8649-A7B8714F77BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1E0578A-9AC5-45AB-8649-A7B8714F77BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBDBE482-76F8-4E4D-9602-4A309C1B8484}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBDBE482-76F8-4E4D-9602-4A309C1B8484}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBDBE482-76F8-4E4D-9602-4A309C1B8484}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBDBE482-76F8-4E4D-9602-4A309C1B8484}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5FB72FC-7B7E-45D2-AB1C-046A4B9B1D0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5FB72FC-7B7E-45D2-AB1C-046A4B9B1D0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5FB72FC-7B7E-45D2-AB1C-046A4B9B1D0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5FB72FC-7B7E-45D2-AB1C-046A4B9B1D0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

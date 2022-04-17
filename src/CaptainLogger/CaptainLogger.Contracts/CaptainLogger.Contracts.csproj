@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>Latest</LangVersion>
 		<Description>CaptainLogger Contracts</Description>
-		<PackageVersion>1.0.1</PackageVersion>
+		<PackageVersion>1.1.1</PackageVersion>
 		<Authors>Chekko Milani</Authors>
 		<AssemblyName>CaptainLogger.Contracts</AssemblyName>
 		<PackageId>CaptainLogger.Contracts</PackageId>
