@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-
-namespace CaptainLogger.RequestTracer;
+﻿namespace CaptainLogger.RequestTracer;
 
 /// <summary>
 /// <see cref="TracerExtensions"/>
@@ -20,6 +18,8 @@ public static class TracerExtensions
         }
 
         return services
+            .AddHttpContextAccessor()
+            .AddSingleton<ICorrelationHeader, CorrelationHeader>()
             .AddTransient<CorrelationMiddleware>();
     }
 

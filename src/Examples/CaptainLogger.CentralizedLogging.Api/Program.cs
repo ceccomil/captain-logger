@@ -1,6 +1,7 @@
 using CaptainLogger;
 using CaptainLogger.CentralizedLogging.Api.Services;
 using CaptainLogger.Options;
+using CaptainLogger.RequestTracer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder
 
 builder
     .Services
+    .AddCaptainLoggerRequestTracer()
     .AddControllers();
 
 builder
@@ -36,6 +38,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app
+        .UseCaptainLoggerRequestTracer()
         .UseSwagger()
         .UseSwaggerUI();
 }

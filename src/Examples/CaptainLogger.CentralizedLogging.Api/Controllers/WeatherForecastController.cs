@@ -1,3 +1,4 @@
+using CaptainLogger.RequestTracer.Headers;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -16,15 +17,23 @@ namespace CaptainLogger.CentralizedLogging.Api.Controllers
         };
 
         private readonly ICaptainLogger _logger;
+        private readonly ICorrelationHeader _correlationHeader;
 
-        public WeatherForecastController(ICaptainLogger<WeatherForecastController> logger)
+        public WeatherForecastController(
+            ICaptainLogger<WeatherForecastController> logger,
+            ICorrelationHeader correlationHeader)
         {
             _logger = logger;
+            _correlationHeader = correlationHeader;
         }
 
         [HttpGet("{days:int}")]
         public IEnumerable<WeatherForecast> Get([FromRoute] int days)
         {
+            _logger
+                .InformationLog(
+                $"New request received with trace identifier: {HttpContext.TraceIdentifier}");
+
             if (days <= 0)
                 throw new NotSupportedException("The minimum accepted number of days is 1!");
 
