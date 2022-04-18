@@ -163,4 +163,4 @@ To send an already existing TraceIdentifier to a different service when sending 
     _correlationHeader.Append(client);
 ```
 See examples:
-- CaptainLogger.CentralizedLogging.Api (Handles trace identifier in and when sending requests))
+- CaptainLogger.CentralizedLogging.Api (Handles incoming trace identifier, and when sending requests))
