@@ -1,4 +1,5 @@
 using CaptainLogger;
+using CaptainLogger.RequestTracer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +11,15 @@ builder
     .AddFilter("Microsoft", LogLevel.Warning)
     .AddFilter("", LogLevel.Information); //No namespace with top level statements
 
+builder
+    .Services
+    .AddCaptainLoggerRequestTracer();
+
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+app
+    .UseCaptainLoggerRequestTracer()
+    .UseHttpsRedirection();
 
 var summaries = new[]
 {
@@ -21,7 +28,7 @@ var summaries = new[]
     "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", (ILogger<WeatherForecast> logger) =>
+app.MapGet("/weatherforecast", (ILogger<WeatherForecast> logger, IHttpContextAccessor ctx) =>
 {
     var temp = Random.Shared.Next(-20, 55);
     var forecast = Enumerable.Range(1, 5).Select(index =>
@@ -33,13 +40,15 @@ app.MapGet("/weatherforecast", (ILogger<WeatherForecast> logger) =>
        ))
         .ToArray();
 
+    logger.LogInformation("Request trace identifier {}", ctx.HttpContext?.TraceIdentifier);
+
     logger.LogInformation("Captain logger injected as a `{MsILogger}`", typeof(ILogger).FullName);
     logger.LogInformation("[GET] temperature returned: {Temp}", temp);
 
     return forecast;
 });
 
-app.MapGet("/weatherforecast/temps", (ICaptainLogger<TempForecast> logger) =>
+app.MapGet("/weatherforecast/temps", (ICaptainLogger<TempForecast> logger, IHttpContextAccessor ctx) =>
 {
     var temp = Random.Shared.Next(-20, 55);
     var forecast = Enumerable.Range(1, 5).Select(index =>
@@ -49,6 +58,8 @@ app.MapGet("/weatherforecast/temps", (ICaptainLogger<TempForecast> logger) =>
            temp
        ))
         .ToArray();
+
+    logger.InformationLog($"Request trace identifier: {ctx.HttpContext?.TraceIdentifier}");
 
     logger.InformationLog($"Captain logger injected as a `{typeof(ICaptainLogger).FullName}`");
     logger.InformationLog($"[GET] temperature returned: {temp}");

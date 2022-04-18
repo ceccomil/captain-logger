@@ -10,7 +10,7 @@ public class DataDogLogger : IDataDogLogger
 {
     private readonly ICaptainLogger _logger;
     private readonly HttpClient _http;
-    private static readonly string _hostName = Environment.MachineName;
+    private readonly static string _hostName = Environment.MachineName;
 
     private const string SERVICE = "CentralizedLogging.API";
 
@@ -21,7 +21,7 @@ public class DataDogLogger : IDataDogLogger
     private const string DD_ENDPOINT = " https://http-intake.logs.datadoghq.com/api/v2/logs";
     private const string DD_API_KEY = "<my api key>";
 
-    private static readonly JsonSerializerOptions _jsonOpts = new()
+    private readonly static JsonSerializerOptions _jsonOpts = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = false,
@@ -44,7 +44,9 @@ public class DataDogLogger : IDataDogLogger
         string? stackTrace = null;
 
         if (evArgs.Exception is not null)
+        {
             stackTrace = $"{evArgs.Exception}";
+        }
 
         var ddEntry = new DataDogEntry(
             SERVICE,
