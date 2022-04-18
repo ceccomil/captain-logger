@@ -20,7 +20,7 @@ Features
 - Handy (generics) extensions auto-generated based on configuration
 - Sync and Async EventHandlers to easily handle log entries
 
-Otional Features
+Optional Features
 -------------------
 - Simple middleware to handle trace identifiers correlation between HTTP requests (see example: CaptainLogger.CentralizedLogging.Api)
 
