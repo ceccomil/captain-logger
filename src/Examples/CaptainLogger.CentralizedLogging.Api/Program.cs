@@ -38,12 +38,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app
-        .UseCaptainLoggerRequestTracer()
         .UseSwagger()
         .UseSwaggerUI();
 }
 
 app
+    .UseCaptainLoggerRequestTracer()
     .UseHttpsRedirection()
     .UseAuthorization();
 
