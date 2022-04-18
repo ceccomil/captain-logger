@@ -3,7 +3,7 @@
 /// <summary>
 /// A Service injected to help send the right trace identifier with subsequent requests.
 /// </summary>
-public interface ICorrelationHeader
+public interface ICorrelationHandler
 {
     /// <summary>
     /// Appends the current trace identifier to the collection of request headers.

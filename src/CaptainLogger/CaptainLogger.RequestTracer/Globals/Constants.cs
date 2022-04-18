@@ -2,5 +2,5 @@
 
 internal static class Constants
 {
-    public const string CORRELATION_HEADER = "CaptainLogger-TraceIdentifier";
+    internal static string CorrelationHeader { get; set; } = "CaptainLogger-TraceIdentifier";
 }

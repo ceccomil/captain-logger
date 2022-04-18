@@ -18,11 +18,13 @@ public class ServiceTest : IServiceTest
         InstanceId = opts.Value.InstanceId;
 
         foreach (var service in services)
+        {
             _logger
                 .LogDebug("Injected service type: {ServiceType}, implementation type: {ImplementationType}",
                 service.ServiceType.Name,
                 service.ImplementationType?.Name
                 ?? "implementation type is null");
+        }
     }
 
     public async Task RunAsync()
@@ -30,7 +32,9 @@ public class ServiceTest : IServiceTest
         var end = DateTime.UtcNow + TimeSpan.FromSeconds(2.0d);
 
         while (end > DateTime.UtcNow)
+        {
             await RandomLogs();
+        }
     }
 
     private async Task RandomLogs()
@@ -79,13 +83,16 @@ public class ServiceTest : IServiceTest
         _iteration++;
 
         if (ex is null)
+        {
             _logger
                 .LogInformation(
                 "[{Iteration}] Instance {InstanceId}{AdditionalMex}",
                 iteration,
                 InstanceId,
                 additionalMex);
+        }
         else
+        {
             _logger
                 .LogError(
                 ex,
@@ -93,6 +100,7 @@ public class ServiceTest : IServiceTest
                 iteration,
                 InstanceId,
                 additionalMex);
+        }
 
         await Task.Delay(_rng.Next(10, 100));
     }

@@ -39,12 +39,16 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider
     private void Dispose(bool disposing)
     {
         if (_disposed)
+        {
             return;
+        }
 
         if (disposing)
         {
             foreach (var logger in Loggers.Values)
+            {
                 logger.Dispose();
+            }
 
             Loggers.Clear();
             _onChangeToken.Dispose();

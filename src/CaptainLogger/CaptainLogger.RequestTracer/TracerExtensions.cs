@@ -9,17 +9,24 @@ public static class TracerExtensions
     /// Adds the tracer service to the specified <see cref="IServiceCollection" />.
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to add the middleware to.</param>
+    /// <param name="customCorrelationHeader"> Optional parameter to specify a custom header convention.</param>
     public static IServiceCollection AddCaptainLoggerRequestTracer(
-        this IServiceCollection services)
+        this IServiceCollection services,
+        string? customCorrelationHeader = default)
     {
         if (services is null)
         {
             throw new ArgumentNullException(nameof(services));
         }
 
+        if (!string.IsNullOrWhiteSpace(customCorrelationHeader))
+        {
+            CorrelationHeader = customCorrelationHeader;
+        }
+
         return services
             .AddHttpContextAccessor()
-            .AddSingleton<ICorrelationHeader, CorrelationHeader>()
+            .AddSingleton<ICorrelationHandler, CorrelationHandler>()
             .AddTransient<CorrelationMiddleware>();
     }
 

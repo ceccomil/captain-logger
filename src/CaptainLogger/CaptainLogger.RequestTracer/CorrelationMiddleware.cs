@@ -10,7 +10,7 @@ internal class CorrelationMiddleware : IMiddleware
     {
         var headerValues = context
             .Request
-            .Headers[CORRELATION_HEADER];
+            .Headers[CorrelationHeader];
 
         if (!StringValues.IsNullOrEmpty(headerValues))
         {

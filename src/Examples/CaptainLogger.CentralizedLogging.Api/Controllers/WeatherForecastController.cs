@@ -17,12 +17,12 @@ public class WeatherForecastController : ControllerBase
     };
 
     private readonly ICaptainLogger _logger;
-    private readonly ICorrelationHeader _correlationHeader;
+    private readonly ICorrelationHandler _correlationHeader;
     private readonly IHttpClientFactory _clientFactory;
 
     public WeatherForecastController(
         ICaptainLogger<WeatherForecastController> logger,
-        ICorrelationHeader correlationHeader,
+        ICorrelationHandler correlationHeader,
         IHttpClientFactory clientFactory)
     {
         _logger = logger;

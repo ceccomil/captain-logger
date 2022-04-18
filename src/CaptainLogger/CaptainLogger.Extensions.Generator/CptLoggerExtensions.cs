@@ -21,7 +21,9 @@ public static class CptLoggerExtensions
         if (arguments > 0)
         {
             for (var i = 1; i < 7; i++)
+            {
                 GetMethods(sb, arguments, logLevel: i);
+            }
         }
 
         sb.Append(@"}
@@ -34,7 +36,9 @@ public static class CptLoggerExtensions
     {
         var indent = "";
         for (var i = 0; i < indentation; i++)
+        {
             indent += INDENT;
+        }
 
         return indent;
     }
@@ -54,7 +58,9 @@ public static class CptLoggerExtensions
         int logLevel)
     {
         if (logLevel <= 0)
+        {
             return;
+        }
 
         var level = GetLogLevel(logLevel);
 

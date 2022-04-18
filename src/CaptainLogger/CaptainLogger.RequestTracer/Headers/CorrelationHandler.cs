@@ -1,10 +1,10 @@
 ﻿namespace CaptainLogger.RequestTracer.Headers;
 
-internal class CorrelationHeader : ICorrelationHeader
+internal class CorrelationHandler : ICorrelationHandler
 {
     private readonly IHttpContextAccessor _contextAccessor;
 
-    public CorrelationHeader(
+    public CorrelationHandler(
         IHttpContextAccessor contextAccessor)
     {
         _contextAccessor = contextAccessor;
@@ -16,13 +16,13 @@ internal class CorrelationHeader : ICorrelationHeader
             .HttpContext
             .TraceIdentifier;
 
-        if (client.DefaultRequestHeaders.Any(x => x.Key.Equals(CORRELATION_HEADER, StringComparison.OrdinalIgnoreCase)))
+        if (client.DefaultRequestHeaders.Any(x => x.Key.Equals(CorrelationHeader, StringComparison.OrdinalIgnoreCase)))
         {
             return;
         }
 
         client
             .DefaultRequestHeaders
-            .Add(CORRELATION_HEADER, traceId);
+            .Add(CorrelationHeader, traceId);
     }
 }

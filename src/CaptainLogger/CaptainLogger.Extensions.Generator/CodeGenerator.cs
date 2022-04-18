@@ -9,16 +9,20 @@ public class CodeGenerator : ISourceGenerator
     public void Execute(GeneratorExecutionContext context)
     {
         if (context.SyntaxContextReceiver is not SyntaxReceiver sr)
+        {
             return;
+        }
 
         try
         {
             var generics = GetGenericArgs(sr.ArgumentsCount);
 
             if (sr.ArgumentsCount > 0)
+            {
                 context.AddSource("CaptainLogger.CptLoggerMessagesDefinitions",
                     SourceText.From(MessagesDefinitions.Get(sr.ArgumentsCount, sr.Templates),
                     Encoding.UTF8));
+            }
 
             context.AddSource("CaptainLogger.CptLoggerExtensions",
                 SourceText.From(CptLoggerExtensions.Get(sr.ArgumentsCount),
@@ -55,11 +59,15 @@ public class CodeGenerator : ISourceGenerator
     internal static string GetGenericArgs(int arguments)
     {
         var args = "";
-        for (int i = 0; i <= arguments; i++)
+        for (var i = 0; i <= arguments; i++)
+        {
             args += $"T{i}, ";
+        }
 
         if (args.Length > 0)
+        {
             args = args.Remove(args.Length - 2, 2);
+        }
 
         return args;
     }
@@ -67,12 +75,16 @@ public class CodeGenerator : ISourceGenerator
     internal static string GetSignatureArgs(int arguments)
     {
         var args = "";
-        for (int i = 0; i <= arguments; i++)
+        for (var i = 0; i <= arguments; i++)
+        {
             args += @$"
         T{i} arg{i},";
+        }
 
         if (args.Length > 0)
+        {
             args = args.Remove(args.Length - 1, 1);
+        }
 
         return args;
     }
@@ -80,12 +92,16 @@ public class CodeGenerator : ISourceGenerator
     internal static string GetCallParamArgs(int arguments)
     {
         var args = "";
-        for (int i = 0; i <= arguments; i++)
+        for (var i = 0; i <= arguments; i++)
+        {
             args += @$"
                 arg{i},";
+        }
 
         if (args.Length > 0)
+        {
             args = args.Remove(args.Length - 1, 1);
+        }
 
         return args;
     }
@@ -98,11 +114,15 @@ public class CodeGenerator : ISourceGenerator
         var newLine = @""" + Environment.NewLine + 
             """;
 
-        for (int i = 0; i < arguments; i++)
+        for (var i = 0; i < arguments; i++)
+        {
             tpl += $"Argument {i + 1}: {{Arg{i}}}{newLine}";
+        }
 
         if (tpl.Length > 0)
+        {
             tpl = tpl.Remove(tpl.Length - newLine.Length, newLine.Length);
+        }
 
         return $"\"{tpl}\"";
     }

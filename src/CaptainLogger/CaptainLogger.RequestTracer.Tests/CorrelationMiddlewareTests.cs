@@ -42,7 +42,7 @@ public class CorrelationMiddlewareTests
         var dict = new Dictionary<string, StringValues>()
         {
             { "Content-Type", "application/json" },
-            { CORRELATION_HEADER,  GetValues(count, traceId) }
+            { CorrelationHeader,  GetValues(count, traceId) }
         };
 
         _httpContext

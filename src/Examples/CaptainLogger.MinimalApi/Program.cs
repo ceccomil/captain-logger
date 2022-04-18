@@ -13,7 +13,7 @@ builder
 
 builder
     .Services
-    .AddCaptainLoggerRequestTracer();
+    .AddCaptainLoggerRequestTracer("X-MyTraceID");
 
 var app = builder.Build();
 

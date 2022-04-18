@@ -19,7 +19,7 @@ public class CorrelationHeaderTests
     public void AddHeader()
     {
         // Arrange
-        var svc = new CorrelationHeader(_contextAccessor);
+        var svc = new CorrelationHandler(_contextAccessor);
         
         var client = _fixture.Create<HttpClient>();
 
@@ -29,13 +29,13 @@ public class CorrelationHeaderTests
         // Assert
         client
             .DefaultRequestHeaders
-            .Contains(CORRELATION_HEADER)
+            .Contains(CorrelationHeader)
             .Should()
             .BeTrue();
 
         client
             .DefaultRequestHeaders
-            .GetValues(CORRELATION_HEADER)
+            .GetValues(CorrelationHeader)
             .Single()
             .Should()
             .Be(TRACE_ID);
@@ -45,12 +45,12 @@ public class CorrelationHeaderTests
     public void AddHeaderWhenThere()
     {
         // Arrange
-        var svc = new CorrelationHeader(_contextAccessor);
+        var svc = new CorrelationHandler(_contextAccessor);
 
         var client = _fixture.Create<HttpClient>();
         client
             .DefaultRequestHeaders
-            .Add(CORRELATION_HEADER, TRACE_ID);
+            .Add(CorrelationHeader, TRACE_ID);
 
         // Act
         svc.Append(client);
@@ -64,13 +64,13 @@ public class CorrelationHeaderTests
 
         client
             .DefaultRequestHeaders
-            .Contains(CORRELATION_HEADER)
+            .Contains(CorrelationHeader)
             .Should()
             .BeTrue();
 
         client
             .DefaultRequestHeaders
-            .GetValues(CORRELATION_HEADER)
+            .GetValues(CorrelationHeader)
             .Single()
             .Should()
             .Be(TRACE_ID);
