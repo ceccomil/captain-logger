@@ -130,6 +130,9 @@ Example of use:
         _logger.LogEntryRequested -= LogEntryRequested;
     }
 ```
+See examples:
+- CaptainLogger.CentralizedLogging.Api (Save logs to [DataDog](https://www.datadoghq.com))
+- CaptainLogger.SaveLogs (Save logs to [LiteDB](https://github.com/mbdavid/LiteDB))
 
 TraceIdentifier correlation
 =====================================
@@ -159,8 +162,5 @@ To send an already existing TraceIdentifier to a different service when sending 
     var client = _clientFactory.CreateClient("WeatherClient");
     _correlationHeader.Append(client);
 ```
-
-
 See examples:
-- CaptainLogger.CentralizedLogging.Api (Save logs to [DataDog](https://www.datadoghq.com))
-- CaptainLogger.SaveLogs (Save logs to [LiteDB](https://github.com/mbdavid/LiteDB))
+- CaptainLogger.CentralizedLogging.Api (Handles trace identifier in and when sending requests))
