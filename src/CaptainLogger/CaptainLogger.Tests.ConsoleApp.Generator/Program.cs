@@ -6,11 +6,13 @@ public static class Program
 
     public static async Task Main(string[] args)
     {
-        if (!args.Any())
-            _appId = Guid.NewGuid().ToString();
-        else
-            _appId = args[0];
+        _appId = Guid.NewGuid().ToString();
 
+        if (args.Any())
+        {
+            _appId = args[0];
+        }
+        
         await EnvInit(Run);
 
         static async Task Run(IServiceProvider sp)

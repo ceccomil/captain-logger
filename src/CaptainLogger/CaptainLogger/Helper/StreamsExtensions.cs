@@ -5,7 +5,9 @@ internal static class StreamsExtensions
     internal static void CloseAndDispose(this Stream? stream)
     {
         if (stream is null)
+        {
             return;
+        }
 
         stream.Close();
         stream.Dispose();
@@ -14,7 +16,9 @@ internal static class StreamsExtensions
     internal static void CloseAndDispose(this TextWriter? stream)
     {
         if (stream is null)
+        {
             return;
+        }
 
         stream.Close();
         stream.Dispose();

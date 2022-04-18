@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CaptainLogger" Version="0.4.2-beta" />
+    <PackageReference Include="CaptainLogger" Version="1.1.5" />
+    <PackageReference Include="CaptainLogger.RequestTracer" Version="1.1.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 

@@ -8,12 +8,18 @@ public static class Program
     public static async Task Main(string[] args)
     {
         if (!args.Any())
+        {
             _appId = Guid.NewGuid().ToString();
+        }
         else
+        {
             _appId = args[0];
+        }
 
         if (args.Length > 1)
+        {
             _logPath = args[1];
+        }
 
         await EnvInit(Run);
 
@@ -34,7 +40,9 @@ public static class Program
             {
                 x.TimeIsUtc = true;
                 if (!string.IsNullOrEmpty(_logPath))
+                {
                     x.FilePath = _logPath;
+                }
 
                 x.ArgumentsCount = LogArguments.Five;
             })

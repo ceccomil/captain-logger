@@ -39,57 +39,30 @@ public class Benchy
     }
 
     [Benchmark]
-    public void DirectMessage()
-    {
-        _logger.InformationLog("This is just a message!");
-    }
+    public void DirectMessage() => _logger.InformationLog("This is just a message!");
 
     [Benchmark]
-    public void DirectMessageNotEnabled()
-    {
-        _logger.DebugLog("This is just a message!");
-    }
+    public void DirectMessageNotEnabled() => _logger.DebugLog("This is just a message!");
 
     [Benchmark]
-    public void StringInterpolation()
-    {
-        _logger.InformationLog(arg0: $"Logging a guid `{Guid.NewGuid}` using string interpolation");
-    }
+    public void StringInterpolation() => _logger.InformationLog(arg0: $"Logging a guid `{Guid.NewGuid}` using string interpolation");
 
     [Benchmark]
-    public void AValueType()
-    {
-        _logger.InformationLog(100);
-    }
+    public void AValueType() => _logger.InformationLog(100);
 
     [Benchmark]
-    public void TwoValueTypes()
-    {
-        _logger.InformationLog(100, 200);
-    }
+    public void TwoValueTypes() => _logger.InformationLog(100, 200);
 
     [Benchmark]
-    public void TwoValueTypes_NET6Gen()
-    {
-        Net6GenLogMessage.LogTwoValueTypes(_logger.RuntimeLogger, 100, 200);
-    }
+    public void TwoValueTypes_NET6Gen() => Net6GenLogMessage.LogTwoValueTypes(_logger.RuntimeLogger, 100, 200);
 
     [Benchmark]
-    public void StringInterpolationNotEnabled()
-    {
-        _logger.DebugLog(arg0: $"Logging a guid `{Guid.NewGuid}` using string interpolation");
-    }
+    public void StringInterpolationNotEnabled() => _logger.DebugLog(arg0: $"Logging a guid `{Guid.NewGuid}` using string interpolation");
 
     [Benchmark]
-    public void AValueTypeNotEnabled()
-    {
-        _logger.DebugLog(100);
-    }
+    public void AValueTypeNotEnabled() => _logger.DebugLog(100);
 
     [Benchmark]
-    public void TwoValueTypesNotEnabled()
-    {
-        _logger.DebugLog(100, 200);
-    }
+    public void TwoValueTypesNotEnabled() => _logger.DebugLog(100, 200);
 }
 

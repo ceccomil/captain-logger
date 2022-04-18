@@ -1,4 +1,4 @@
-# Rules in this file were initially inferred by Visual Studio IntelliCode from the D:\Dev\GitHub\CeccoMil\captain-logger\src\CaptainLogger codebase based on best match to current usage at 29/01/2022
+# Rules in this file were initially inferred by Visual Studio IntelliCode from the D:\Dev\GitHub\CeccoMil\captain-logger\src\Examples codebase based on best match to current usage at 18/04/2022
 # You can modify the rules from these initially generated values to suit your own policies
 # You can learn more about editorconfig here: https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference
 [*.cs]
@@ -11,19 +11,22 @@ indent_style = space
 
 #Formatting - new line options
 
-#place catch statements on a new line
-csharp_new_line_before_catch = true
-#place else statements on a new line
-csharp_new_line_before_else = true
 #require members of anonymous types to be on separate lines
 csharp_new_line_before_members_in_anonymous_types = true
 #require members of object intializers to be on separate lines
 csharp_new_line_before_members_in_object_initializers = true
-#require braces to be on a new line for lambdas, object_collection_array_initializers, methods, control_blocks, and types (also known as "Allman" style)
-csharp_new_line_before_open_brace = lambdas, object_collection_array_initializers, methods, control_blocks, types
+#require braces to be on a new line for methods, control_blocks, types, lambdas, and object_collection_array_initializers (also known as "Allman" style)
+csharp_new_line_before_open_brace = methods, control_blocks, types, lambdas, object_collection_array_initializers
+
+#Formatting - organize using options
+
+#do not place System.* using directives before other using directives
+dotnet_sort_system_directives_first = false
 
 #Formatting - spacing options
 
+#require NO space between a cast and the value
+csharp_space_after_cast = false
 #require a space before the colon for bases or interfaces in a type declaration
 csharp_space_after_colon_in_inheritance_clause = true
 #require a space after a keyword in a control flow statement such as a for loop
@@ -45,8 +48,6 @@ csharp_space_between_method_declaration_parameter_list_parentheses = false
 
 #leave code block on single line
 csharp_preserve_single_line_blocks = true
-#leave statements and member declarations on the same line
-csharp_preserve_single_line_statements = true
 
 #Style - Code block preferences
 
@@ -55,30 +56,19 @@ csharp_prefer_braces = true:warning
 
 #Style - expression bodied member options
 
-#prefer expression-bodied members for accessors
-csharp_style_expression_bodied_accessors = true:suggestion
 #prefer block bodies for constructors
 csharp_style_expression_bodied_constructors = false:suggestion
-#prefer expression-bodied members for methods
-csharp_style_expression_bodied_methods = true:suggestion
+#prefer expression-bodied members for methods when they will be a single line
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
 #prefer expression-bodied members for properties
 csharp_style_expression_bodied_properties = true:suggestion
 
-#Style - expression level options
-
-#prefer the language keyword for member access expressions, instead of the type name, for types that have a keyword to represent them
-dotnet_style_predefined_type_for_member_access = true:suggestion
-
 #Style - Expression-level  preferences
 
-#prefer default over default(T)
-csharp_prefer_simple_default_expression = true:suggestion
 #prefer objects to be initialized using object initializers when possible
 dotnet_style_object_initializer = true:suggestion
 #prefer inferred anonymous type member names
-dotnet_style_prefer_inferred_anonymous_type_member_names = false:suggestion
-#prefer inferred tuple element names
-dotnet_style_prefer_inferred_tuple_names = true:suggestion
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
 
 #Style - implicit and explicit types
 
@@ -94,11 +84,6 @@ csharp_style_var_when_type_is_apparent = true:suggestion
 #prefer the language keyword for local variables, method parameters, and class members, instead of the type name, for types that have a keyword to represent them
 dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
 
-#Style - Miscellaneous preferences
-
-#prefer local functions over anonymous functions
-csharp_style_pattern_local_over_anonymous_function = true:suggestion
-
 #Style - modifier options
 
 #prefer accessibility modifiers to be declared except for public interface members. This will currently not differ from always and will act as future proofing for if C# adds default interface methods.
@@ -107,7 +92,7 @@ dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggest
 #Style - Modifier preferences
 
 #when this rule is set to a list of modifiers, prefer the specified ordering.
-csharp_preferred_modifier_order = public,private,internal,static,async,readonly,sealed:suggestion
+csharp_preferred_modifier_order = public,private,internal,readonly,static,async:suggestion
 
 #Style - Pattern matching
 
@@ -122,40 +107,20 @@ dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_method = false:suggestion
 #prefer properties not to be prefaced with this. or Me. in Visual Basic
 dotnet_style_qualification_for_property = false:suggestion
-csharp_style_namespace_declarations= file_scoped:warning
 csharp_indent_labels = one_less_than_current
 csharp_using_directive_placement = outside_namespace:silent
 csharp_prefer_simple_using_statement = true:warning
+csharp_style_namespace_declarations = file_scoped:warning
 csharp_style_expression_bodied_operators = false:silent
 csharp_style_expression_bodied_indexers = true:silent
+csharp_style_expression_bodied_accessors = true:silent
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent
 csharp_style_throw_expression = true:suggestion
 csharp_style_prefer_null_check_over_type_check = true:suggestion
+csharp_prefer_simple_default_expression = true:suggestion
 csharp_style_prefer_local_over_anonymous_function = true:suggestion
 
-[*.{cs,vb}]
-dotnet_style_prefer_auto_properties= true:suggestion
-dotnet_style_allow_multiple_blank_lines_experimental=true:suggestion
-dotnet_style_allow_statement_immediately_after_block_experimental=true:suggestion
-dotnet_style_operator_placement_when_wrapping = beginning_of_line
-tab_width = 4
-indent_size = 4
-end_of_line = crlf
-dotnet_style_coalesce_expression = true:suggestion
-dotnet_style_null_propagation = true:suggestion
-dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
-dotnet_style_object_initializer = true:suggestion
-dotnet_style_collection_initializer = true:suggestion
-dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
-dotnet_style_prefer_conditional_expression_over_assignment = true:silent
-dotnet_style_prefer_conditional_expression_over_return = true:silent
-dotnet_style_explicit_tuple_names = true:suggestion
-dotnet_style_prefer_inferred_tuple_names = true:suggestion
-dotnet_style_prefer_inferred_anonymous_type_member_names = false:suggestion
-dotnet_style_prefer_compound_assignment = true:suggestion
-dotnet_style_prefer_simplified_interpolation = true:suggestion
-dotnet_style_namespace_match_folder = true:suggestion
 [*.{cs,vb}]
 #### Naming styles ####
 
@@ -203,3 +168,22 @@ dotnet_naming_style.pascal_case.required_prefix =
 dotnet_naming_style.pascal_case.required_suffix = 
 dotnet_naming_style.pascal_case.word_separator = 
 dotnet_naming_style.pascal_case.capitalization = pascal_case
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+tab_width = 4
+indent_size = 4
+end_of_line = crlf
+dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_null_propagation = true:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+dotnet_style_prefer_auto_properties = true:silent
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = true:silent
+dotnet_style_prefer_conditional_expression_over_return = true:silent
+dotnet_style_explicit_tuple_names = true:suggestion
+dotnet_style_prefer_inferred_tuple_names = true:suggestion
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
+dotnet_style_prefer_compound_assignment = true:suggestion
+dotnet_style_prefer_simplified_interpolation = true:suggestion
+dotnet_style_namespace_match_folder = true:suggestion

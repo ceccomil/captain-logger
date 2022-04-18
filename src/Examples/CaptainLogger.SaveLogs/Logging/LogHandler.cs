@@ -36,7 +36,9 @@ public class LogHandler<TCategory> : ILogHandler<TCategory>
     public void SubscribeToLoggerEvents()
     {
         if (_subscribed)
+        {
             return;
+        }
 
         _logger.LogEntryRequestedAsync += LogEntryRequestedAsync;
         _subscribed = true;
@@ -51,13 +53,17 @@ public class LogHandler<TCategory> : ILogHandler<TCategory>
     private void Dispose(bool disposing)
     {
         if (_disposed)
+        {
             return;
+        }
 
         if (disposing)
         {
             if (_subscribed)
+            {
                 _logger.LogEntryRequestedAsync -= LogEntryRequestedAsync;
-            
+            }
+
             _loggerRepo.Dispose();
         }
 

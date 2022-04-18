@@ -42,34 +42,44 @@ internal class CptLogger : ILogger, IDisposable
         Func<TState, Exception?, string> formatter)
     {
         if (!IsEnabled(logLevel))
+        {
             return;
+        }
 
         var config = _getCurrentConfig();
 
         if (config.EventId != eventId.Id)
+        {
             return;
+        }
 
         var now = DateTime.Now;
         if (config.TimeIsUtc)
+        {
             now = DateTime.UtcNow;
+        }
 
         lock (_consoleLock)
         {
             if (OnLogRequested is not null)
+            {
                 LogHasBeenRequested(
                     now,
                     logLevel,
                     state,
                     eventId,
                     exception);
+            }
 
             if (OnLogRequestedAsync is not null)
+            {
                 _ = LogHasBeenRequestedAsync(
                     now,
                     logLevel,
                     state,
                     eventId,
                     exception);
+            }
 
             _ = WriteLog(
                 now,
@@ -89,7 +99,9 @@ internal class CptLogger : ILogger, IDisposable
         Exception? ex)
     {
         if (state is null)
-            return; 
+        {
+            return;
+        }
 
         OnLogRequested
             ?.Invoke(new(
@@ -109,7 +121,9 @@ internal class CptLogger : ILogger, IDisposable
         Exception? ex)
     {
         if (state is null || OnLogRequestedAsync is null)
+        {
             return;
+        }
 
         await OnLogRequestedAsync
             .Invoke(new(
@@ -140,13 +154,19 @@ internal class CptLogger : ILogger, IDisposable
             formatter);
 
         if (config.LogRecipients.HasFlag(Recipients.Console))
+        {
             WriteToConsole(row);
+        }
 
         if (config.LogRecipients.HasFlag(Recipients.File))
+        {
             await WriteToLogFile(row, config);
+        }
 
         if (config.LogRecipients.HasFlag(Recipients.Stream))
+        {
             await WriteToBuffer(row, config);
+        }
     }
 
     private static void WriteToConsole(RowParts row)
@@ -174,7 +194,9 @@ internal class CptLogger : ILogger, IDisposable
         CheckLogFileName(row.Time, config);
 
         if (_sw is null || _fs is null)
+        {
             throw new NullReferenceException($"Log filestream must be valid!");
+        }
 
         await _sw.WriteAsync(row.ToString());
 
@@ -187,7 +209,9 @@ internal class CptLogger : ILogger, IDisposable
         CaptainLoggerOptions config)
     {
         if (config.LoggerBuffer is null)
+        {
             throw new NullReferenceException($"Log Buffer stream must be a valid opened `System.Stream`!");
+        }
 
         var buffer = Encoding.UTF8.GetBytes(row.ToString());
         await config.LoggerBuffer.WriteAsync(buffer);
@@ -243,10 +267,12 @@ internal class CptLogger : ILogger, IDisposable
             .Replace("\n", $"\n{INDENT}");
 
         if (ex is not null && !doNotAppendEx)
+        {
             mex += Environment.NewLine +
                 $"{INDENT}{ex}"
                 .Replace("\r", "")
                 .Replace("\n", $"\n{INDENT}");
+        }
 
         return mex + Environment.NewLine;
     }
@@ -259,7 +285,9 @@ internal class CptLogger : ILogger, IDisposable
         var tSuffix = config.GetTimeSuffix(time);
 
         if (_currentLog is not null && _timeSuffix == tSuffix)
+        {
             return;
+        }
 
         _timeSuffix = tSuffix;
         var log = config.GetLogFile(time, counter);
@@ -289,7 +317,9 @@ internal class CptLogger : ILogger, IDisposable
     private void Dispose(bool disposing)
     {
         if (Disposed)
+        {
             return;
+        }
 
         if (disposing)
         {

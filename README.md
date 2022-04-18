@@ -11,6 +11,7 @@ Packages
 | [CaptainLogger](https://www.nuget.org/packages/CaptainLogger/) | [![CaptainLogger](https://img.shields.io/nuget/v/CaptainLogger.svg)](https://www.nuget.org/packages/CaptainLogger/) | [![CaptainLogger](https://img.shields.io/nuget/vpre/CaptainLogger.svg)](https://www.nuget.org/packages/CaptainLogger/) | [![CaptainLogger](https://img.shields.io/nuget/dt/CaptainLogger.svg)](https://www.nuget.org/packages/CaptainLogger/) |
 | [CaptainLogger.Contracts](https://www.nuget.org/packages/CaptainLogger.Contracts/) | [![CaptainLogger.Contracts](https://img.shields.io/nuget/v/CaptainLogger.Contracts.svg)](https://www.nuget.org/packages/CaptainLogger.Contracts/) | [![CaptainLogger.Contracts](https://img.shields.io/nuget/vpre/CaptainLogger.Contracts.svg)](https://www.nuget.org/packages/CaptainLogger.Contracts/) | [![CaptainLogger.Contracts](https://img.shields.io/nuget/dt/CaptainLogger.Contracts.svg)](https://www.nuget.org/packages/CaptainLogger.Contracts/) |
 | [CaptainLogger.Extensions.Generator](https://www.nuget.org/packages/CaptainLogger.Extensions.Generator/) | [![CaptainLogger.Extensions.Generator](https://img.shields.io/nuget/v/CaptainLogger.Extensions.Generator.svg)](https://www.nuget.org/packages/CaptainLogger.Extensions.Generator/) | [![CaptainLogger.Extensions.Generator](https://img.shields.io/nuget/vpre/CaptainLogger.Extensions.Generator.svg)](https://www.nuget.org/packages/CaptainLogger.Extensions.Generator/) | [![CaptainLogger.Extensions.Generator](https://img.shields.io/nuget/dt/CaptainLogger.Extensions.Generator.svg)](https://www.nuget.org/packages/CaptainLogger.Extensions.Generator/) |
+| [CaptainLogger.RequestTracer](https://www.nuget.org/packages/CaptainLogger.RequestTracer/) | [![CaptainLogger.RequestTracer](https://img.shields.io/nuget/v/CaptainLogger.RequestTracer.svg)](https://www.nuget.org/packages/CaptainLogger.RequestTracer/) | [![CaptainLogger.RequestTracer](https://img.shields.io/nuget/vpre/CaptainLogger.RequestTracer.svg)](https://www.nuget.org/packages/CaptainLogger.RequestTracer/) | [![CaptainLogger.RequestTracer](https://img.shields.io/nuget/dt/CaptainLogger.RequestTracer.svg)](https://www.nuget.org/packages/CaptainLogger.RequestTracer/) |
 
 Features
 --------
@@ -18,6 +19,10 @@ Features
 - Minimal dependencies (requires [.NET6](https://github.com/dotnet/core/blob/main/release-notes/6.0/6.0.1/6.0.1.md?WT.mc_id=dotnet-35129-website))
 - Handy (generics) extensions auto-generated based on configuration
 - Sync and Async EventHandlers to easily handle log entries
+
+Optional Features
+-------------------
+- Simple middleware to handle trace identifiers correlation between HTTP requests (see example: CaptainLogger.CentralizedLogging.Api)
 
 Minimum configuration
 =====================================
@@ -125,7 +130,37 @@ Example of use:
         _logger.LogEntryRequested -= LogEntryRequested;
     }
 ```
-
 See examples:
 - CaptainLogger.CentralizedLogging.Api (Save logs to [DataDog](https://www.datadoghq.com))
 - CaptainLogger.SaveLogs (Save logs to [LiteDB](https://github.com/mbdavid/LiteDB))
+
+TraceIdentifier correlation
+=====================================
+-------------------------------------
+
+```csharp
+...
+   services.AddCaptainLoggerRequestTracer();
+...
+   app.UseCaptainLoggerRequestTracer();
+...
+```
+
+Example of use:
+```csharp
+    // TraceIdentifier will be handled by the middleware if sent with the specific header in the request.
+
+    _logger
+        .InformationLog(
+        $"New request received with trace identifier: {HttpContext.TraceIdentifier}");
+```
+
+To send an already existing TraceIdentifier to a different service when sending requests:
+```csharp
+    // _correlationHeader is an injected `ICorrelationHandler`
+    // _clientFactory is an injected `IHttpClientFactory`
+    var client = _clientFactory.CreateClient("WeatherClient");
+    _correlationHeader.Append(client);
+```
+See examples:
+- CaptainLogger.CentralizedLogging.Api (Handles incoming trace identifier, and when sending requests))

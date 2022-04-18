@@ -44,7 +44,9 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
         _options = _loggerProvider.CurrentConfig;
 
         foreach (var cpt in _loggers.Values)
+        {
             NewLoggerAdded(this, new(cpt));
+        }
 
         _loggerProvider.LoggerAdded += NewLoggerAdded;
     }
@@ -52,16 +54,22 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
     private void NewLoggerAdded(object? sender, NewLoggerEvArgs e)
     {
         if (_options.TriggerEvents)
+        {
             SetupSub(e.Logger);
+        }
 
         if (_options.TriggerAsyncEvents)
+        {
             SetupAsyncSub(e.Logger);
+        }
     }
 
     private void SetupSub(CptLogger cpt)
     {
         if (_subscribed.Contains(cpt.Category))
+        {
             return;
+        }
 
         _subscribed.Add(cpt.Category);
         cpt.OnLogRequested += CptLoggerOnLogRequested;
@@ -70,7 +78,9 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
     private void SetupAsyncSub(CptLogger cpt)
     {
         if (_subscribedAsync.Contains(cpt.Category))
+        {
             return;
+        }
 
         _subscribedAsync.Add(cpt.Category);
         cpt.OnLogRequestedAsync += CptLoggerOnLogRequestedAsync;
@@ -88,7 +98,9 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
     private void CptLoggerOnLogRequested(CaptainLoggerEvArgs<object> evArgs)
     {
         if (LogEntryRequested is null)
+        {
             return;
+        }
 
         LogEntryRequested.Invoke(evArgs);
     }
@@ -96,7 +108,9 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
     private async Task CptLoggerOnLogRequestedAsync(CaptainLoggerEvArgs<object> evArgs)
     {
         if (LogEntryRequestedAsync is null)
+        {
             return;
+        }
 
         await LogEntryRequestedAsync.Invoke(evArgs);
     }
@@ -134,7 +148,9 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
     private void Dispose(bool disposing)
     {
         if (_disposed)
+        {
             return;
+        }
 
         if (disposing)
         {

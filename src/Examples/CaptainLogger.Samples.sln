@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Templates", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.SaveLogs", "CaptainLogger.SaveLogs\CaptainLogger.SaveLogs.csproj", "{A00E1B7A-669F-4890-A0DE-57E9FA6AA21D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.CentralizedLogging.Api", "CaptainLogger.CentralizedLogging.Api\CaptainLogger.CentralizedLogging.Api.csproj", "{D0AAC7ED-2E18-4CA5-BD8F-0677AAE3A757}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.CentralizedLogging.Api", "CaptainLogger.CentralizedLogging.Api\CaptainLogger.CentralizedLogging.Api.csproj", "{D0AAC7ED-2E18-4CA5-BD8F-0677AAE3A757}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7E6D4629-B23A-4C1B-AF19-F9A01458F855}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

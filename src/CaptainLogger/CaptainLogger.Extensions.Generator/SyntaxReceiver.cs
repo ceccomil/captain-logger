@@ -24,8 +24,10 @@ public class SyntaxReceiver : ISyntaxContextReceiver
                 .FirstOrDefault(x => $"{x}".Contains(".ArgumentsCount"));
 
             if (lambda is null)
+            {
                 return;
-                
+            }
+
             GeneratorLogger
                 .Add($"Lambda: {lambda}{Environment.NewLine}");
 
@@ -35,14 +37,18 @@ public class SyntaxReceiver : ISyntaxContextReceiver
             GeneratorLogger.Add($"ArgumentsCount: {ArgumentsCount}");
 
             foreach (var t in Templates)
+            {
                 GeneratorLogger.Add($"Tpl -> {t}");
+            }
         }
     }
 
     private string[] GetTemplates(LambdaExpressionSyntax lambda)
     {
         if (ArgumentsCount <= 0)
+        {
             return Array.Empty<string>();
+        }
 
         var tpls = new string[ArgumentsCount];
 
@@ -50,8 +56,10 @@ public class SyntaxReceiver : ISyntaxContextReceiver
             .DescendantNodes()
             .OfType<ExpressionStatementSyntax>();
 
-        for (int i = 0; i < ArgumentsCount; i++)
-            tpls[i] = GetTemplate(i + 1, rows);            
+        for (var i = 0; i < ArgumentsCount; i++)
+        {
+            tpls[i] = GetTemplate(i + 1, rows);
+        }
 
         return tpls;
     }
@@ -66,7 +74,9 @@ public class SyntaxReceiver : ISyntaxContextReceiver
             var m = rgEx.Match($"{r}");
 
             if (m.Success)
+            {
                 return m.Groups[1].Value;
+            }
         }
 
         return GetTemplateString(arguments);
@@ -85,7 +95,9 @@ public class SyntaxReceiver : ISyntaxContextReceiver
         {
             var m = rgEx.Match($"{r}");
             if (m.Success)
+            {
                 return GetArgumentsCount(m.Groups[1].Value);
+            }
         }
 
         GeneratorLogger.Add("!!ArgumentsCount value not found!");

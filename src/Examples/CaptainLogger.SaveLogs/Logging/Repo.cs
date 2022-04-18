@@ -21,7 +21,9 @@ public class Repo : IRepo
     private void Dispose(bool disposing)
     {
         if (_disposed)
+        {
             return;
+        }
 
         if (disposing)
         {

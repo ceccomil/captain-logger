@@ -33,15 +33,17 @@ namespace CaptainLogger;
         int arguments,
         string[] templates)
     {
-        for (int i = 0; i < arguments; i++)
+        for (var i = 0; i < arguments; i++)
         {
             sb.Append(@$"
 internal static class CptLoggerMessagesDefinitions{i + 1}<{GetGenericArgs(i)}>
 {{
 ");
 
-            for (int g = 1; g < 7; g++)
+            for (var g = 1; g < 7; g++)
+            {
                 AddMethods(sb, i, GetLogLevel(g), templates);
+            }
 
             sb.Append(@"}
 ");

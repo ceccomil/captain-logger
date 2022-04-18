@@ -12,8 +12,10 @@ public class ConcurrentLoggingTests
         var guids = GetGuids();
 
         //Runs 5 applications in parallel
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
+        {
             tasks.Add(RunConsoleApp(guids[i], GetLogFilePath(unqName)));
+        }
 
         await Task.WhenAll(tasks);
         Assert.Equal(5, await CountAndCleanLogs(unqName));
@@ -27,8 +29,10 @@ public class ConcurrentLoggingTests
         var guids = GetGuids().Take(2).ToArray();
 
         //Runs 2 applications in parallel
-        for (int i = 0; i < 2; i++)
+        for (var i = 0; i < 2; i++)
+        {
             tasks.Add(RunConsoleApp(guids[i], GetLogFilePath(unqName)));
+        }
 
         await Task.WhenAll(tasks);
         //Check contents
@@ -41,7 +45,9 @@ public class ConcurrentLoggingTests
         var files = logDir.GetFiles($"*.log");
 
         if (guids is not null)
+        {
             await CheckContents(files, guids);
+        }
 
         logDir.Delete(recursive: true);
         return files.Length;
@@ -50,7 +56,9 @@ public class ConcurrentLoggingTests
     private static async Task CheckContents(FileInfo[] files, string[] guids)
     {
         if (files.Length != 2 || guids.Length != 2)
+        {
             throw new ApplicationException($"CheckContents can be called with 2 files only!");
+        }
 
         var content1 = await File.ReadAllTextAsync(files[0].FullName);
         var content2 = await File.ReadAllTextAsync(files[1].FullName);
@@ -66,7 +74,9 @@ public class ConcurrentLoggingTests
             Assert.Contains(guids[0], content2);
         }
         else
+        {
             throw new ApplicationException("At least one condition must be true!");
+        }
     }
 
     private static string GetLogFilePath(string uniqueId) => $"{GetLogsDir(uniqueId)}/{AppDomain.CurrentDomain.FriendlyName}.log";
@@ -101,13 +111,17 @@ public class ConcurrentLoggingTests
         void OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (e.Data is not null)
+            {
                 output.AppendLine(e.Data);
+            }
         }
 
         void ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (e.Data is not null)
+            {
                 error.AppendLine(e.Data);
+            }
         }
 
         proc.OutputDataReceived += OutputDataReceived;

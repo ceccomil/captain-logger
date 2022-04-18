@@ -100,22 +100,30 @@ public class CaptainLoggerOptions : IDisposable
         var pathDirectory = Path.GetDirectoryName(FilePath);
 
         if (string.IsNullOrEmpty(pathDirectory))
+        {
             pathDirectory = ".//Logs";
+        }
 
         var dir = Path.GetFullPath(pathDirectory);
         var file = Path.GetFileNameWithoutExtension(FilePath);
         var ext = Path.GetExtension(FilePath);
 
         if (!Directory.Exists(dir))
+        {
             Directory.CreateDirectory(dir);
+        }
 
         if (string.IsNullOrEmpty(ext) || ext == ".")
+        {
             ext = ".log";
+        }
 
         var fileNoExt = Path.Combine(dir, $"{file}{GetTimeSuffix(time)}");
 
         if (counter.GetValueOrDefault() > 0)
+        {
             fileNoExt += $"_{counter:000}";
+        }
 
         return new FileInfo($"{fileNoExt}{ext}");
     }
@@ -133,7 +141,9 @@ public class CaptainLoggerOptions : IDisposable
     private void Dispose(bool disposing)
     {
         if (_disposed)
+        {
             return;
+        }
 
         if (disposing) { }
 
