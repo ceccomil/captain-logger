@@ -11,7 +11,7 @@ builder
     .AddCaptainLogger()
     .AddFilter("System", LogLevel.Error)
     .AddFilter("Microsoft", LogLevel.Warning)
-    .AddFilter("", LogLevel.Information); //No namespace with top level statements
+    .AddFilter("", LogLevel.Debug); //No namespace with top level statements
 
 builder
     .Services
@@ -25,6 +25,9 @@ builder
         opts.TimeIsUtc = true;
         opts.TriggerAsyncEvents = true;
         opts.LogRecipients = Recipients.Console;
+        opts.ArgumentsCount = LogArguments.Two;
+        opts.Templates.Add(LogArguments.One, "{Arg0}");
+        opts.Templates.Add(LogArguments.Two, "{Arg0}" + Environment.NewLine + "{Arg1}");
     })
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()

@@ -1,3 +1,4 @@
+using CaptainLogger.CentralizedLogging.Api.Contracts;
 using CaptainLogger.RequestTracer.Headers;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -33,9 +34,17 @@ public class WeatherForecastController : ControllerBase
     [HttpGet("{days:int}")]
     public async Task<IEnumerable<WeatherForecast>> Get([FromRoute] int days)
     {
-        _logger
-            .InformationLog(
-            $"New request received with trace identifier: {HttpContext.TraceIdentifier}");
+        var logEntry = new LogEntry()
+        {
+            Message = "Request received Weateher forecast on its way",
+            TraceId = HttpContext.TraceIdentifier,
+            CorrelationId = Guid.NewGuid(),
+            SourceMethod = $"{nameof(WeatherForecastController)}.Get",
+            Env = "Development",
+            Host = Request.Host.Value
+        };
+
+        _logger.DebugLog(logEntry);
 
         if (days <= 0)
         {
@@ -61,8 +70,9 @@ public class WeatherForecastController : ControllerBase
         .ToArray();
 
         _logger
-            .InformationLog($"Forecast requested {days} day(s){Environment.NewLine}" +
-            JsonSerializer.Serialize(forecasts));
+            .InformationLog(
+                $"Forecast requested {days} day(s)",
+                JsonSerializer.Serialize(forecasts));
 
         return forecasts;
     }
