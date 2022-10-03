@@ -1,5 +1,6 @@
 using CaptainLogger.CentralizedLogging.Api.Contracts;
 using CaptainLogger.RequestTracer.Headers;
+using EazyHttp;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -19,16 +20,16 @@ public class WeatherForecastController : ControllerBase
 
     private readonly ICaptainLogger _logger;
     private readonly ICorrelationHandler _correlationHeader;
-    private readonly IHttpClientFactory _clientFactory;
+    private readonly IEazyClients _clients;
 
     public WeatherForecastController(
         ICaptainLogger<WeatherForecastController> logger,
         ICorrelationHandler correlationHeader,
-        IHttpClientFactory clientFactory)
+        IEazyClients httpClients)
     {
         _logger = logger;
         _correlationHeader = correlationHeader;
-        _clientFactory = clientFactory;
+        _clients = httpClients;
     }
 
     [HttpGet("{days:int}")]
@@ -58,6 +59,10 @@ public class WeatherForecastController : ControllerBase
 
         if (days == 5)
         {
+            _logger
+                .WarningLog(
+                    "Request is triggering another request!");
+
             return await SubsequentCall();
         }
 
@@ -81,12 +86,15 @@ public class WeatherForecastController : ControllerBase
     {
         var requestUrl = $"{Request.Scheme}://{Request.Host.Value}/WeatherForecast/6";
 
-        var client = _clientFactory.CreateClient("WeatherClient");
-        _correlationHeader.Append(client);
+        _correlationHeader
+            .Append(
+                _clients
+                .Http
+                .HttpClient);
 
-        var json = await client.GetStringAsync(requestUrl);
-
-        return JsonSerializer.Deserialize<IEnumerable<WeatherForecast>>(json)
+        return await _clients
+            .Http
+            .GetAsync<IEnumerable<WeatherForecast>>(requestUrl)
             ?? throw new NullReferenceException();
     }
 }
