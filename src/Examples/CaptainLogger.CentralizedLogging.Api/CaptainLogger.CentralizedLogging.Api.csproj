@@ -10,7 +10,7 @@
     <PackageReference Include="CaptainLogger" Version="1.1.5" />
     <PackageReference Include="CaptainLogger.Extensions.Generator" Version="1.1.5" />
     <PackageReference Include="CaptainLogger.RequestTracer" Version="1.1.5" />
-    <PackageReference Include="EazyHttp" Version="0.2.12-beta" />
+    <PackageReference Include="EazyHttp" Version="0.2.14-beta" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 

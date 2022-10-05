@@ -66,9 +66,9 @@ public class DataDogLogger : IDataDogLogger
             stackTrace
             );
 
-        _ = await _clients
+        await _clients
             .DataDogLogs
-            .PostAsync<object>(
+            .PostAsync(
                 "logs",
                 ddEntry);
 
