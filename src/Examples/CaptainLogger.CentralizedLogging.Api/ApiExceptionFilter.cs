@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CaptainLogger.CentralizedLogging.Api.Contracts;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 
@@ -15,8 +16,19 @@ public class ApiExceptionFilter : IAsyncExceptionFilter
 
     public Task OnExceptionAsync(ExceptionContext context)
     {
+        var logEntry = new LogEntry()
+        {
+            Message = $"Error executing {context.ActionDescriptor.DisplayName}",
+            Host = context.HttpContext.Request.Host.Value,
+            CorrelationId = Guid.NewGuid(),
+            Env = "Development",
+            TraceId = context.HttpContext.TraceIdentifier
+        };
+
         _logger
-            .ErrorLog($"Error executing {context.ActionDescriptor.DisplayName}", context.Exception);
+            .ErrorLog(
+                logEntry,
+                context.Exception);
 
         context
             .Result = new JsonResult(new

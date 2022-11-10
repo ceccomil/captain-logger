@@ -1,4 +1,6 @@
+using CaptainLogger.CentralizedLogging.Api.Contracts;
 using CaptainLogger.RequestTracer.Headers;
+using EazyHttp;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -18,24 +20,32 @@ public class WeatherForecastController : ControllerBase
 
     private readonly ICaptainLogger _logger;
     private readonly ICorrelationHandler _correlationHeader;
-    private readonly IHttpClientFactory _clientFactory;
+    private readonly IEazyClients _clients;
 
     public WeatherForecastController(
         ICaptainLogger<WeatherForecastController> logger,
         ICorrelationHandler correlationHeader,
-        IHttpClientFactory clientFactory)
+        IEazyClients httpClients)
     {
         _logger = logger;
         _correlationHeader = correlationHeader;
-        _clientFactory = clientFactory;
+        _clients = httpClients;
     }
 
     [HttpGet("{days:int}")]
     public async Task<IEnumerable<WeatherForecast>> Get([FromRoute] int days)
     {
-        _logger
-            .InformationLog(
-            $"New request received with trace identifier: {HttpContext.TraceIdentifier}");
+        var logEntry = new LogEntry()
+        {
+            Message = "Request received Weateher forecast on its way",
+            TraceId = HttpContext.TraceIdentifier,
+            CorrelationId = Guid.NewGuid(),
+            SourceMethod = $"{nameof(WeatherForecastController)}.Get",
+            Env = "Development",
+            Host = Request.Host.Value
+        };
+
+        _logger.DebugLog(logEntry);
 
         if (days <= 0)
         {
@@ -49,6 +59,10 @@ public class WeatherForecastController : ControllerBase
 
         if (days == 5)
         {
+            _logger
+                .WarningLog(
+                    "Request is triggering another request!");
+
             return await SubsequentCall();
         }
 
@@ -61,8 +75,9 @@ public class WeatherForecastController : ControllerBase
         .ToArray();
 
         _logger
-            .InformationLog($"Forecast requested {days} day(s){Environment.NewLine}" +
-            JsonSerializer.Serialize(forecasts));
+            .InformationLog(
+                $"Forecast requested {days} day(s)",
+                JsonSerializer.Serialize(forecasts));
 
         return forecasts;
     }
@@ -71,12 +86,15 @@ public class WeatherForecastController : ControllerBase
     {
         var requestUrl = $"{Request.Scheme}://{Request.Host.Value}/WeatherForecast/6";
 
-        var client = _clientFactory.CreateClient("WeatherClient");
-        _correlationHeader.Append(client);
+        _correlationHeader
+            .Append(
+                _clients
+                .Http
+                .HttpClient);
 
-        var json = await client.GetStringAsync(requestUrl);
-
-        return JsonSerializer.Deserialize<IEnumerable<WeatherForecast>>(json)
+        return await _clients
+            .Http
+            .GetAsync<IEnumerable<WeatherForecast>>(requestUrl)
             ?? throw new NullReferenceException();
     }
 }

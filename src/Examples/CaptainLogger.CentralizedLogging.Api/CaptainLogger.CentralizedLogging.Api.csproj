@@ -8,8 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="CaptainLogger" Version="1.1.5" />
+    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="1.1.5" />
     <PackageReference Include="CaptainLogger.RequestTracer" Version="1.1.5" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="EazyHttp" Version="0.2.14-beta" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
 </Project>
