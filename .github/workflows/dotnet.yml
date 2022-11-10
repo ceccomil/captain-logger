@@ -29,7 +29,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
 
     - name: Restore dependencies
       run: dotnet restore ./src/CaptainLogger
@@ -37,8 +37,11 @@ jobs:
     - name: Build
       run: dotnet build ./src/CaptainLogger --no-restore --configuration $env:BUILD_CONFIG
 
-    - name: Test
-      run: dotnet test ./src/CaptainLogger/CaptainLogger.Tests /p:Configuration=$env:BUILD_CONFIG --no-build --verbosity normal
+    - name: Tests
+      run: dotnet test ./src/CaptainLogger/CaptainLogger.Tests /p:Configuration=$env:BUILD_CONFIG --no-restore --verbosity normal
+
+    - name: RequestTracer Tests
+      run: dotnet test ./src/CaptainLogger/CaptainLogger.RequestTracer.Tests /p:Configuration=$env:BUILD_CONFIG --no-restore --verbosity normal
 
     - name: Publish
       if: startsWith(github.ref, 'refs/tags/v')

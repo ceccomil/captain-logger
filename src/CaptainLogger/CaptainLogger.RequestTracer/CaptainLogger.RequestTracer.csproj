@@ -5,9 +5,9 @@
     <Nullable>enable</Nullable>
     <LangVersion>Latest</LangVersion>
     <Description>Middleware to trace subsequent requests with the same identifier</Description>
-    <PackageVersion>1.1.5</PackageVersion>
+    <PackageVersion>2.0.0-beta</PackageVersion>
     <Authors>Chekko Milani</Authors>
-    <TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFrameworks>net7.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>CaptainLogger.RequestTracer</AssemblyName>
     <PackageId>CaptainLogger.RequestTracer</PackageId>
@@ -31,7 +31,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
 </Project>
