@@ -2,7 +2,8 @@
 
 internal sealed class CaptainLoggerProvider : ILoggerProvider
 {
-    private readonly IDisposable _onChangeToken;
+    private readonly IDisposable? _onChangeToken;
+    
     public CaptainLoggerOptions CurrentConfig { get; private set; }
     public ConcurrentDictionary<string, CptLogger> Loggers { get; } = new();
 
@@ -14,7 +15,10 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider
         IOptionsMonitor<CaptainLoggerOptions> config)
     {
         CurrentConfig = config.CurrentValue;
-        _onChangeToken = config.OnChange(updatedConfig => CurrentConfig = updatedConfig);
+
+        _onChangeToken = config
+            .OnChange(updatedConfig =>
+                CurrentConfig = updatedConfig);
     }
 
     ~CaptainLoggerProvider() => Dispose(false);
@@ -51,7 +55,7 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider
             }
 
             Loggers.Clear();
-            _onChangeToken.Dispose();
+            _onChangeToken?.Dispose();
         }
 
         _disposed = true;

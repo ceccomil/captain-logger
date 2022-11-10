@@ -28,7 +28,8 @@ internal class CptLogger : ILogger, IDisposable
 
     ~CptLogger() => Dispose(false);
 
-    public IDisposable BeginScope<TState>(TState state) => state as IDisposable ?? null!;
+    public IDisposable? BeginScope<TState>(TState state) 
+        where TState : notnull => state as IDisposable ?? null;
 
     //Default rule and Category Filters still apply
     //TODO consider a "bypass filters in the config options"
