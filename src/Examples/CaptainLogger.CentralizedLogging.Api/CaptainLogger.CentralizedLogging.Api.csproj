@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CaptainLogger" Version="1.1.5" />
-    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="1.1.5" />
-    <PackageReference Include="CaptainLogger.RequestTracer" Version="1.1.5" />
-    <PackageReference Include="EazyHttp" Version="0.2.14-beta" />
+    <PackageReference Include="CaptainLogger" Version="2.0.1-beta" />
+    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="2.0.1-beta" />
+    <PackageReference Include="CaptainLogger.RequestTracer" Version="2.0.1-beta" />
+    <PackageReference Include="EazyHttp" Version="2.2.20-beta" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
