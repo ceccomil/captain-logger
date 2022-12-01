@@ -16,7 +16,8 @@ Packages
 Features
 --------
 - Colorful console logs
-- Minimal dependencies (requires [.NET6](https://github.com/dotnet/core/blob/main/release-notes/6.0/6.0.1/6.0.1.md?WT.mc_id=dotnet-35129-website))
+- Minimal dependencies (requires [.NET7](https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.0/7.0.0.md))
+- Older versions < 2.0 are [.NET6](https://github.com/dotnet/core/blob/main/release-notes/6.0/6.0.1/6.0.1.md?WT.mc_id=dotnet-35129-website) dependant
 - Handy (generics) extensions auto-generated based on configuration
 - Sync and Async EventHandlers to easily handle log entries
 

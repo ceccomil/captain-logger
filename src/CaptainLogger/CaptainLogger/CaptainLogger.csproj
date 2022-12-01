@@ -5,7 +5,7 @@
 		<Nullable>enable</Nullable>
 		<LangVersion>Latest</LangVersion>
 		<Description>Simple .NET logger</Description>
-		<PackageVersion>2.0.1-beta</PackageVersion>
+		<PackageVersion>2.1.0</PackageVersion>
 		<Authors>Chekko Milani</Authors>
 		<TargetFrameworks>net7.0</TargetFrameworks>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
