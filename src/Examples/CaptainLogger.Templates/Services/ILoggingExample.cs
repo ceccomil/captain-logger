@@ -2,6 +2,8 @@
 
 public interface ILoggingExample
 {
+    ILogger BaseLogger { get; }
+
     void LogUserIds(
         int userId,
         int departmentId,
