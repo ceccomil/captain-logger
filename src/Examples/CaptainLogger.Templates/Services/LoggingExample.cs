@@ -4,9 +4,14 @@ public class LoggingExample : ILoggingExample
 {
     private readonly ICaptainLogger _logger;
 
+    public ILogger BaseLogger { get; }
+
     public LoggingExample(ICaptainLogger<LoggingExample> logger)
     {
         _logger = logger;
+
+        BaseLogger = _logger
+            .RuntimeLogger;
     }
 
     public void LogUserIds(

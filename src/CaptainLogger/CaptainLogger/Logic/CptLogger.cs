@@ -49,7 +49,9 @@ internal class CptLogger : ILogger, IDisposable
 
         var config = _getCurrentConfig();
 
-        if (config.EventId != eventId.Id)
+        if (config
+            .ExcludedEventIds
+            .Contains(eventId.Id))
         {
             return;
         }

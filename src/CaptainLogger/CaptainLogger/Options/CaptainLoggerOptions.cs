@@ -7,8 +7,6 @@ public class CaptainLoggerOptions : IDisposable
 {
     private bool _disposed;
 
-    internal int EventId { get; } = 0;
-
     internal IDictionary<LogLevel, ConsoleColor> LogLevels { get; } = new Dictionary<LogLevel, ConsoleColor>()
     {
         [LogLevel.Information] = ConsoleColor.Green,
@@ -84,6 +82,11 @@ public class CaptainLoggerOptions : IDisposable
     /// <para>Default value: False</para>
     /// </summary>
     public bool TriggerEvents { get; set; }
+
+    /// <summary>
+    /// Providing a list prevents any log raised from being written if it matches any of the specified ids
+    /// </summary>
+    public IEnumerable<int> ExcludedEventIds { get; set; } = Enumerable.Empty<int>();
 
     /// <summary>
     /// Default constructor
