@@ -56,7 +56,7 @@ public class ServiceTest : IServiceTest
                 WriteIndented = true
             });
 
-            additionalMex = $"{Environment.NewLine}Json:{Environment.NewLine}{json}";
+            additionalMex = $"\r\nJson:\r\n{json}";
         }
 
         Exception? ex = null;
