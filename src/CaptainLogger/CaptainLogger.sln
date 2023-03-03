@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{35F9EC95-1109-402E-8723-0826ABFD5898}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
 		..\..\.github\workflows\dotnet.yml = ..\..\.github\workflows\dotnet.yml
 	EndProjectSection
 EndProject
@@ -27,9 +28,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Benchmarks", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.Tests.ConsoleApp.Handlers", "CaptainLogger.Tests.ConsoleApp.Handlers\CaptainLogger.Tests.ConsoleApp.Handlers.csproj", "{D1E0578A-9AC5-45AB-8649-A7B8714F77BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.RequestTracer", "CaptainLogger.RequestTracer\CaptainLogger.RequestTracer.csproj", "{BBDBE482-76F8-4E4D-9602-4A309C1B8484}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.RequestTracer", "CaptainLogger.RequestTracer\CaptainLogger.RequestTracer.csproj", "{BBDBE482-76F8-4E4D-9602-4A309C1B8484}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainLogger.RequestTracer.Tests", "CaptainLogger.RequestTracer.Tests\CaptainLogger.RequestTracer.Tests.csproj", "{C5FB72FC-7B7E-45D2-AB1C-046A4B9B1D0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptainLogger.RequestTracer.Tests", "CaptainLogger.RequestTracer.Tests\CaptainLogger.RequestTracer.Tests.csproj", "{C5FB72FC-7B7E-45D2-AB1C-046A4B9B1D0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

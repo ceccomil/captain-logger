@@ -249,10 +249,10 @@ internal class CptLogger : ILogger, IDisposable
                     formatter),
                 defaultColor),
             Category = new(
-                $"{INDENT}[{Category}]{Environment.NewLine}",
+                $"{INDENT}[{Category}]\r\n",
                 ConsoleColor.Magenta),
             Spacer = new(
-                Environment.NewLine,
+                "\r\n",
                 defaultColor)
         };
 
@@ -271,13 +271,13 @@ internal class CptLogger : ILogger, IDisposable
 
         if (ex is not null && !doNotAppendEx)
         {
-            mex += Environment.NewLine +
+            mex += "\r\n" +
                 $"{INDENT}{ex}"
                 .Replace("\r", "")
                 .Replace("\n", $"\n{INDENT}");
         }
 
-        return mex + Environment.NewLine;
+        return mex + "\r\n";
     }
 
     private static void CheckLogFileName(

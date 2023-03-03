@@ -11,3 +11,7 @@ global using CaptainLogger.Options;
 global using CaptainLogger.Helper;
 global using CaptainLogger.Contracts.EventArguments;
 global using FluentAssertions;
+global using CaptainLogger.Extensions.Generator;
+global using Microsoft.CodeAnalysis;
+global using Microsoft.CodeAnalysis.CSharp;
+global using System.Reflection;

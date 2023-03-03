@@ -1,86 +1,74 @@
-﻿using CaptainLogger.Options;
-using Microsoft.Extensions.Options;
-
-namespace CaptainLogger.Tests;
+﻿namespace CaptainLogger.Tests;
 
 public class GeneratorTests
 {
-    [Fact(DisplayName = "Generator is providing the exention method required!")]
-    public async Task GeneratorIsWorking()
+    private static Compilation CreateCompilation(string source)
+            => CSharpCompilation.Create("compilation",
+                new[]
+                {
+                    CSharpSyntaxTree.ParseText(source)
+                },
+                new[]
+                {
+                    MetadataReference
+                    .CreateFromFile(
+                        typeof(Binder)
+                        .GetTypeInfo()
+                        .Assembly
+                        .Location)
+                },
+                new CSharpCompilationOptions(
+                    OutputKind
+                    .ConsoleApplication));
+
+    [Fact]
+    public void Generator_when_working()
     {
-        using var reader = new MemoryStream();
-        var writer = GetWriter(reader);
-        await Task.Delay(100);
+        // Arrange
+        var inputClass = CreateCompilation(
+            """
+            static IServiceCollection AddService(IServiceCollection s) => s
+            .Configure<ServiceTestOptions>(x => x.InstanceId = _appId)
+            .Configure<CaptainLoggerOptions>(x =>
+            {
+                x.TimeIsUtc = true;
+                x.ArgumentsCount = LogArguments.Three;
+                x.Templates.Add(LogArguments.One, "The value: {Arg0}" + "\r\n" + "Example log template");
+                x.Templates.Add(LogArguments.Two, "Simple mex for two values ({Val1}, {Val2})");
+            })
+            .AddScoped<IServiceTest, ServiceTestConsoleGenerator>();
+            """);
 
-        var guid = Guid.NewGuid();
+        var codeGen = new CodeGenerator();
+        var driver = CSharpGeneratorDriver
+            .Create(codeGen);
 
-        writer
-            .WarningLog("I am logging a new guid", arg1: guid);
+        // Act
+        driver = (CSharpGeneratorDriver)driver
+            .RunGeneratorsAndUpdateCompilation(
+            inputClass,
+            out var outputCompilation,
+            out var diagnostics);
 
-        var log = Encoding.UTF8.GetString(reader.ToArray());
-        Assert.Contains($"I am logging a new guid", log);
-        Assert.Contains($"{guid}", log);
+        var results = driver
+            .GetRunResult()
+            .GeneratedTrees;
 
-        reader.SetLength(0);
+        var codes = new List<string>();
 
-        await Task.Delay(100);
-
-        var n = new Random().Next(0, 1000);
-
-        writer
-            .InformationLog(typeof(Random).Name, "Next(0, 1000)", n);
-
-        writer
-            .ErrorLog("Test exception", new Exception("Exception"));
-
-        log = Encoding.UTF8.GetString(reader.ToArray());
-        Assert.DoesNotContain($"This is a log for", log);
-
-        writer
-            .WarningLog(typeof(Random).Name, "Next(0, 1000)", n);
-
-        log = Encoding.UTF8.GetString(reader.ToArray());
-        Assert.Contains($"This is a log for", log);
-    }
-
-    private class TestService
-    {
-        public ICaptainLogger Writer { get; set; }
-        public TestService(
-            ICaptainLogger<TestService> logger)
+        foreach (var r in results)
         {
-            Writer = logger;
+            codes.Add($"{r}");
         }
-    }
 
-    private static IServiceCollection GetServices(Stream reader)
-    {
-        var services = new ServiceCollection()
-            .AddLogging(builder =>
-            {
-                builder
-                    .ClearProviders()
-                    .AddCaptainLogger()
-                    .AddFilter(typeof(GeneratorTests).Assembly.GetName().Name, LogLevel.Warning);
-            })
-            .Configure<CaptainLoggerOptions>(opts =>
-            {
-                opts.ArgumentsCount = LogArguments.Three;
-                opts.Templates.Add(LogArguments.Three, "This is a log for `{Class}`, `{Method}` which resulted in {Result}");
-                opts.LogRecipients = Recipients.Stream;
-                opts.LoggerBuffer = reader;
-            })
-            .AddSingleton<TestService>();
+        // Assert
+        diagnostics
+            .Should()
+            .BeEmpty();
 
-        return services;
-    }
-
-    private static ICaptainLogger GetWriter(Stream reader)
-    {
-        using var sp = GetServices(reader).BuildServiceProvider();
-
-        var service = sp.GetRequiredService<TestService>();
-
-        return service.Writer;
+        outputCompilation
+            .SyntaxTrees
+            .Should()
+            .NotBeEmpty();
     }
 }

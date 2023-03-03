@@ -16,7 +16,7 @@ public class SyntaxReceiver : ISyntaxContextReceiver
             (code.Contains("Configure<CaptainLoggerOptions>") ||
             code.Contains("Configure<CaptainLogger.Options.CaptainLoggerOptions>")))
         {
-            GeneratorLogger.Add($"Found: {code}{Environment.NewLine}");
+            GeneratorLogger.Add($"Found: {code}\r\n");
 
             var lambda = ies
                 .DescendantNodes()
@@ -29,7 +29,7 @@ public class SyntaxReceiver : ISyntaxContextReceiver
             }
 
             GeneratorLogger
-                .Add($"Lambda: {lambda}{Environment.NewLine}");
+                .Add($"Lambda: {lambda}\r\n");
 
             ArgumentsCount = GetArgumentsCount(lambda);
             _configFound = ArgumentsCount > 0;
