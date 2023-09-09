@@ -10,13 +10,26 @@ internal class CorrelationHandler : ICorrelationHandler
         _contextAccessor = contextAccessor;
     }
 
-    public void Append(HttpClient client)
+    public void Append(
+        HttpClient client)
     {
+        if (_contextAccessor.HttpContext is null)
+        {
+            throw new NotSupportedException(
+                $"A valid {nameof(HttpContext)} is required");
+        }
+
         var traceId = _contextAccessor
             .HttpContext
             .TraceIdentifier;
 
-        if (client.DefaultRequestHeaders.Any(x => x.Key.Equals(CorrelationHeader, StringComparison.OrdinalIgnoreCase)))
+        if (client
+            .DefaultRequestHeaders
+            .Any(x => x
+                .Key
+                .Equals(
+                    CorrelationHeader,
+                    StringComparison.OrdinalIgnoreCase)))
         {
             return;
         }

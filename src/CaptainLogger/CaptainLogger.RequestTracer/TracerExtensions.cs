@@ -46,15 +46,12 @@ public static class TracerExtensions
             .ApplicationServices
             .GetService<CorrelationMiddleware>();
 
-        if (middleware is null)
-        {
-            throw new NullReferenceException(
+        return middleware is null
+            ? throw new NullReferenceException(
                 $"No service {nameof(CorrelationMiddleware)} has been registered to the DI container" +
                 $"{nameof(UseCaptainLoggerRequestTracer)} requires {nameof(AddCaptainLoggerRequestTracer)} " +
-                "to be invoked so to register required services.");
-        }
-
-        return builder
+                "to be invoked so to register required services.")
+            : builder
             .UseMiddleware<CorrelationMiddleware>();
     }
 }
