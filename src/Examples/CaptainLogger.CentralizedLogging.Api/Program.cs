@@ -5,9 +5,9 @@ using CaptainLogger.RequestTracer;
 using EazyHttp;
 using EazyHttp.Contracts;
 using Microsoft.Net.Http.Headers;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,10 +29,10 @@ builder
     .ConfigureEazyHttpClients(opts =>
     {
         opts
-            .EazyHttpClients
-            .Add(new(
-                "DataDogLogs",
-                "https://http-intake.logs.datadoghq.eu/api/v2"));
+            .EazyHttpClients.Add(
+                new(
+                    "DataDogLogs",
+                    "https://http-intake.logs.datadoghq.eu/api/v2"));
 
         opts
             .PersistentHeaders
@@ -54,11 +54,11 @@ builder
                 "DataDogLogs",
                 new(
                     JsonSerializerDefaults.Web)
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        WriteIndented = false,
-                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-                    });
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    WriteIndented = false,
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                });
 
         opts
             .Retries
@@ -109,7 +109,7 @@ builder
     .AddSingleton<IDataDogLogger, DataDogLogger>()
     .AddHostedService(sp => sp.GetRequiredService<IDataDogLogger>())
     .AddHttpClient();
-    
+
 
 var app = builder.Build();
 

@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CaptainLogger" Version="2.2.0" />
-    <PackageReference Include="CaptainLogger.RequestTracer" Version="2.2.0" />
+    <PackageReference Include="CaptainLogger" Version="2.5.2" />
+    <PackageReference Include="CaptainLogger.RequestTracer" Version="2.5.2" />
   </ItemGroup>
 
 </Project>

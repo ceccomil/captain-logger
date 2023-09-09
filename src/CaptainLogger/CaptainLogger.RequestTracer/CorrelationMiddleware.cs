@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace CaptainLogger.RequestTracer;
+﻿namespace CaptainLogger.RequestTracer;
 
 internal class CorrelationMiddleware : IMiddleware
 {
@@ -14,7 +12,7 @@ internal class CorrelationMiddleware : IMiddleware
 
         if (!StringValues.IsNullOrEmpty(headerValues))
         {
-            var headerValue = string.Join('-', headerValues);
+            var headerValue = string.Join('-', headerValues!);
             context.TraceIdentifier = headerValue;
         }
 
