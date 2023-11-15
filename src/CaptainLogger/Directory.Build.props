@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
 
-		<PackageVersion>2.5.2</PackageVersion>
+		<PackageVersion>3.0.1</PackageVersion>
 
 	</PropertyGroup>
 </Project>

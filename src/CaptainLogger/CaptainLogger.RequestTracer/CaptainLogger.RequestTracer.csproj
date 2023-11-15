@@ -6,7 +6,7 @@
     <LangVersion>Latest</LangVersion>
     <Description>Middleware to trace subsequent requests with the same identifier</Description>
     <Authors>Chekko Milani</Authors>
-    <TargetFrameworks>net7.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>CaptainLogger.RequestTracer</AssemblyName>
     <PackageId>CaptainLogger.RequestTracer</PackageId>
@@ -28,7 +28,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
