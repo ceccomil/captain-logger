@@ -9,6 +9,11 @@ namespace CaptainLogger;
 public interface ICaptainLogger
 {
     /// <summary>
+    /// The current log file (<see cref="FileInfo"/>)
+    /// </summary>
+    FileInfo CurrentLogFile { get; }
+
+    /// <summary>
     /// The underline <see cref="ILogger"/> used to perform logging
     /// </summary>
     ILogger RuntimeLogger { get; }

@@ -2,6 +2,7 @@
 
 public class ServiceTest : IServiceTest
 {
+    private readonly ICaptainLogger _cptLogger;
     private readonly ILogger _logger;
     private readonly Random _rng;
     private int _iteration = 1;
@@ -9,10 +10,12 @@ public class ServiceTest : IServiceTest
     public string InstanceId { get; }
 
     public ServiceTest(
+        ICaptainLogger<ServiceTest> cptlogger,
         ILogger<ServiceTest> logger,
         IOptions<ServiceTestOptions> opts,
         IServiceCollection services)
     {
+        _cptLogger = cptlogger;
         _logger = logger;
         _rng = new Random();
         InstanceId = opts.Value.InstanceId;
@@ -35,6 +38,9 @@ public class ServiceTest : IServiceTest
         {
             await RandomLogs();
         }
+
+        _cptLogger.InformationLog(
+            $"Completed! LogFile {_cptLogger.CurrentLogFile}");
     }
 
     private async Task RandomLogs()
@@ -45,8 +51,7 @@ public class ServiceTest : IServiceTest
         if (rng == 1)
         {
             var json = JsonSerializer.Serialize(
-            new
-            {
+            new {
                 TestValue1 = rng,
                 TestValue2 = "TestValue2",
                 TestValue3 = DateTime.Now
