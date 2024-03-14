@@ -18,6 +18,18 @@ internal class CptLogger : ILogger, IDisposable
     internal event LogEntryRequestedHandler? OnLogRequested;
     internal event LogEntryRequestedAsyncHandler? OnLogRequestedAsync;
 
+    internal static FileInfo CurrentLog {
+        get {
+            if (_currentLog is null)
+            {
+                throw new NullReferenceException(
+                    "Current log file must be valid!");
+            }
+
+            return _currentLog;
+        }
+    }
+
     public CptLogger(
         string name,
         Func<CaptainLoggerOptions> getCurrentConfig)
@@ -28,7 +40,7 @@ internal class CptLogger : ILogger, IDisposable
 
     ~CptLogger() => Dispose(false);
 
-    public IDisposable? BeginScope<TState>(TState state) 
+    public IDisposable? BeginScope<TState>(TState state)
         where TState : notnull => state as IDisposable ?? null;
 
     //Default rule and Category Filters still apply

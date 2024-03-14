@@ -32,6 +32,8 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
     private readonly List<string> _subscribedAsync = new();
     private readonly List<string> _subscribed = new();
 
+    public FileInfo CurrentLogFile => CptLogger.CurrentLog;
+
     public ILogger RuntimeLogger { get; }
 
     public CaptainLoggerBase(
@@ -138,7 +140,7 @@ internal class CaptainLoggerBase<TCategory> : ICaptainLogger<TCategory>, IDispos
     public void CriticalLog(string message) => Critical(RuntimeLogger, message, null);
 
     public void CriticalLog(string message, Exception exception) => Critical(RuntimeLogger, message, exception);
-    
+
     public void Dispose()
     {
         Dispose(true);
