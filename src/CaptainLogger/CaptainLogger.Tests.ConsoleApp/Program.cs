@@ -38,6 +38,7 @@ public static class Program
             .Configure<ServiceTestOptions>(x => x.InstanceId = _appId)
             .Configure<CaptainLoggerOptions>(x =>
             {
+                x.DefaultColor = ConsoleColor.Yellow;
                 x.TimeIsUtc = true;
                 if (!string.IsNullOrEmpty(_logPath))
                 {
