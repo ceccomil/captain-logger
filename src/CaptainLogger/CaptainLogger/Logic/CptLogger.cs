@@ -200,6 +200,8 @@ internal class CptLogger : ILogger, IDisposable
 
         Console.ForegroundColor = row.Spacer.Color;
         Console.Write(row.Spacer);
+
+        Console.ResetColor();
     }
 
     private static async Task WriteToLogFile(
