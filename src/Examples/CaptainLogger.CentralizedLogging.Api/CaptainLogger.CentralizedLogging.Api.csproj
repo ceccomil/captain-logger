@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CaptainLogger" Version="3.0.1" />
-    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="3.0.1" />
-    <PackageReference Include="CaptainLogger.RequestTracer" Version="3.0.1" />
-    <PackageReference Include="EazyHttp" Version="2.7.6" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="CaptainLogger" Version="3.10.1-alpha.0.1" />
+    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="3.10.1-alpha.0.1" />
+    <PackageReference Include="CaptainLogger.RequestTracer" Version="3.10.1-alpha.0.1" />
+    <PackageReference Include="EazyHttp" Version="3.10.1-alpha-0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
 </Project>
