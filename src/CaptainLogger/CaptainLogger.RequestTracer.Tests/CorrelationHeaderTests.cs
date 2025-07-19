@@ -20,25 +20,24 @@ public class CorrelationHeaderTests
     {
         // Arrange
         var svc = new CorrelationHandler(_contextAccessor);
-        
+
         var client = _fixture.Create<HttpClient>();
 
         // Act
         svc.Append(client);
 
         // Assert
-        client
+        Assert.True(
+            client
             .DefaultRequestHeaders
-            .Contains(CorrelationHeader)
-            .Should()
-            .BeTrue();
+            .Contains(CorrelationHeader));
 
-        client
+        Assert.Equal(
+            TRACE_ID,
+            client
             .DefaultRequestHeaders
             .GetValues(CorrelationHeader)
-            .Single()
-            .Should()
-            .Be(TRACE_ID);
+            .Single());
     }
 
     [Fact(DisplayName = "Trace identifier is not added if already there")]
@@ -56,23 +55,20 @@ public class CorrelationHeaderTests
         svc.Append(client);
 
         // Assert
-        client
-            .DefaultRequestHeaders
-            .Count()
-            .Should()
-            .Be(1);
+        Assert.Single(
+            client
+            .DefaultRequestHeaders);
 
-        client
+        Assert.True(
+            client
             .DefaultRequestHeaders
-            .Contains(CorrelationHeader)
-            .Should()
-            .BeTrue();
+            .Contains(CorrelationHeader));
 
-        client
+        Assert.Equal(
+            TRACE_ID,
+            client
             .DefaultRequestHeaders
             .GetValues(CorrelationHeader)
-            .Single()
-            .Should()
-            .Be(TRACE_ID);
+            .Single());
     }
 }

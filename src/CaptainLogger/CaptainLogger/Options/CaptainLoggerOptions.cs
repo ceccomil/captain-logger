@@ -44,7 +44,7 @@ public class CaptainLoggerOptions : IDisposable
     /// Log file path
     /// <para>The default is <c>./Logs/AssmeblyName.log</c> </para>
     /// </summary>
-    public string FilePath { get; set; } = $".//Logs/{AppDomain.CurrentDomain.FriendlyName.Replace(".", "-")}.log";
+    public string FilePath { get; set; } = $"./Logs/{AppDomain.CurrentDomain.FriendlyName.Replace(".", "-")}.log";
 
     /// <summary>
     /// Appends the specified interval onto the log file name before the <c>extension</c>
