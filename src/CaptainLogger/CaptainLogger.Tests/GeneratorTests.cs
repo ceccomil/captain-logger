@@ -62,13 +62,8 @@ public class GeneratorTests
         }
 
         // Assert
-        diagnostics
-            .Should()
-            .BeEmpty();
+        Assert.Empty(diagnostics);
 
-        outputCompilation
-            .SyntaxTrees
-            .Should()
-            .NotBeEmpty();
+        Assert.NotEmpty(outputCompilation.SyntaxTrees);
     }
 }

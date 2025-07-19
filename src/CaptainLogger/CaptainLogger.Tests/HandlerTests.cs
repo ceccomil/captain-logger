@@ -57,8 +57,8 @@ public class HandlerTests
         logger.LogEntryRequested -= LogEntryRequested;
 
         //Assert
-        handledMex.Should().NotBeNull();
-        $"{handledMex}".Should().Be(myMex);
+        Assert.NotNull(handledMex);
+        Assert.Equal(myMex, $"{handledMex}");
     }
 
     [Fact(DisplayName = "Events are triggered on log entry requests (async)")]
@@ -93,7 +93,7 @@ public class HandlerTests
         logger.LogEntryRequestedAsync -= LogEntryRequested;
 
         //Assert
-        handledMex.Should().NotBeNull();
-        $"{handledMex}".Should().Be(myMex);
+        Assert.NotNull(handledMex);
+        Assert.Equal(myMex, $"{handledMex}");
     }
 }

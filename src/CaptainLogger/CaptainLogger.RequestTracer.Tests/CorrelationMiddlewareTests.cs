@@ -15,16 +15,9 @@ public class CorrelationMiddlewareTests
         await middleware.InvokeAsync(_httpContext, _reqDelegate);
 
         // Assert
-        _httpContext
-            .Request
-            .Headers
-            .Should()
-            .BeEmpty();
+        Assert.Empty(_httpContext.Request.Headers);
 
-        string
-            .IsNullOrEmpty(_httpContext.TraceIdentifier)
-            .Should()
-            .BeTrue();
+        Assert.True(string.IsNullOrEmpty(_httpContext.TraceIdentifier));
     }
 
     [Theory(DisplayName = "TraceIdentifier will be assigned if header is passed")]
@@ -55,12 +48,12 @@ public class CorrelationMiddlewareTests
             .InvokeAsync(_httpContext, _reqDelegate);
 
         // Assert
-        _httpContext
+        Assert.Equal(
+            2,
+            _httpContext
             .Request
             .Headers
-            .Count
-            .Should()
-            .Be(2);
+            .Count);
 
         var check = "";
         for (var i = 0; i < count; i++)
@@ -73,10 +66,9 @@ public class CorrelationMiddlewareTests
             check = check.Remove(check.Length - 1);
         }
 
-        _httpContext
-            .TraceIdentifier
-            .Should()
-            .Be(check);
+        Assert.Equal(
+            check,
+            _httpContext.TraceIdentifier);
     }
 
     private static StringValues GetValues(int count, string value)
