@@ -15,7 +15,7 @@ internal sealed class CptLogger(
   public IDisposable? BeginScope<TState>(TState state)
     where TState : notnull => state as IDisposable ?? null;
 
-  // Default filters rules still apply!
+  // Category filters still apply.
   public bool IsEnabled(LogLevel logLevel) => true;
 
   public void Log<TState>(
@@ -36,18 +36,18 @@ internal sealed class CptLogger(
 
     var now = GetCurrentTime(config);
 
+    if (OnLogRequestedAsync is not null)
+    {
+      _ = LogHasBeenRequestedAsync(
+        now,
+        logLevel,
+        state,
+        eventId,
+        exception);
+    }
+
     lock (_consoleLock)
     {
-      if (OnLogRequestedAsync is not null)
-      {
-        _ = LogHasBeenRequestedAsync(
-          now,
-          logLevel,
-          state,
-          eventId,
-          exception);
-      }
-
       _ = WriteLog(
         now,
         config,
