@@ -36,11 +36,6 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider
       return;
     }
 
-    foreach (var logger in Loggers.Values)
-    {
-      logger.Dispose();
-    }
-
     Loggers.Clear();
     _onChangeToken?.Dispose();
 

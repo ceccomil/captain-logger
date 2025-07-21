@@ -29,7 +29,7 @@ internal sealed class CaptainLogger<TCategory>
 
   public ILogger RuntimeLogger { get; }
 
-  public FileInfo CurrentLogFile => CptLogger.CurrentLog;
+  public FileInfo CurrentLogFile => LogFileSystem.CurrentLog;
 
   public CaptainLogger(
     ILogger<TCategory> logger,
@@ -96,7 +96,6 @@ internal sealed class CaptainLogger<TCategory>
     }
 
     _cptLogger.OnLogRequestedAsync -= CptLoggerOnLogRequestedAsync;
-    _cptLogger.Dispose();
 
     _disposed = true;
   }

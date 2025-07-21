@@ -13,7 +13,10 @@ internal sealed class LoggerTest(
     {
       _cptLogger.InformationLog("This is a CaptainLogger log message.");
       _iLogger.LogInformation("This is an ILogger log message.");
-      await Task.Delay(3000, stoppingToken);
+
+      await Task
+        .Delay(3000, stoppingToken)
+        .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
     }
   }
 }

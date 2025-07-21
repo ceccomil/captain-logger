@@ -1,21 +1,21 @@
 ﻿namespace CaptainLogger.LoggingLogic;
 
-internal readonly struct RowParts(
+internal readonly struct LogLine(
   DateTime time,
-  RowPart timeStamp,
-  RowPart level,
-  RowPart message,
-  RowPart category,
-  RowPart spacer)
+  LogSegment timeStamp,
+  LogSegment level,
+  LogSegment message,
+  LogSegment category,
+  LogSegment spacer)
 {
   private readonly StringBuilder _content = new();
 
   public DateTime Time { get; } = time;
-  public RowPart TimeStamp { get; } = timeStamp;
-  public RowPart Level { get; } = level;
-  public RowPart Message { get; } = message;
-  public RowPart Category { get; } = category;
-  public RowPart Spacer { get; } = spacer;
+  public LogSegment TimeStamp { get; } = timeStamp;
+  public LogSegment Level { get; } = level;
+  public LogSegment Message { get; } = message;
+  public LogSegment Category { get; } = category;
+  public LogSegment Spacer { get; } = spacer;
 
   public StringBuilder Content
   {
