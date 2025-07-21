@@ -1,7 +1,25 @@
 <Project>
 	<PropertyGroup>
-
 		<PackageVersion>3.10.1-beta-1</PackageVersion>
-
 	</PropertyGroup>
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>Latest</LangVersion>
+    <Authors>Chekko Milani</Authors>
+    <PackageTags>captainlogger;logger;logging;console;logfile;log</PackageTags>
+    <PackageProjectUrl>https://github.com/ceccomil/captain-logger</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!--<EmbedUntrackedSources>true</EmbedUntrackedSources>-->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+  
 </Project>
