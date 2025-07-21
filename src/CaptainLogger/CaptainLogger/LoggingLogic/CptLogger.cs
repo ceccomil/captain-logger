@@ -8,9 +8,6 @@ internal sealed class CptLogger(
 
   private static readonly object _consoleLock = new();
 
-  // TODO: Use a more robust cancellation token source management
-  private readonly CancellationTokenSource _cts = new();
-
   public string Category { get; } = name;
 
   public event LogEntryRequestedAsyncHandler? OnLogRequestedAsync;
@@ -48,8 +45,7 @@ internal sealed class CptLogger(
           logLevel,
           state,
           eventId,
-          exception,
-          _cts.Token);
+          exception);
       }
 
       _ = WriteLog(
@@ -58,8 +54,7 @@ internal sealed class CptLogger(
         logLevel,
         state,
         exception,
-        formatter,
-        _cts.Token);
+        formatter);
     }
   }
 
@@ -75,8 +70,7 @@ internal sealed class CptLogger(
     LogLevel level,
     TState state,
     EventId eventId,
-    Exception? ex,
-    CancellationToken cancellationToken)
+    Exception? ex)
   {
     if (state is null || OnLogRequestedAsync is null)
     {
@@ -91,7 +85,7 @@ internal sealed class CptLogger(
       level,
       ex);
 
-    await OnLogRequestedAsync.Invoke(evArgs, cancellationToken);
+    await OnLogRequestedAsync.Invoke(evArgs);
   }
 
   private async Task WriteLog<TState>(
@@ -100,8 +94,7 @@ internal sealed class CptLogger(
     LogLevel level,
     TState state,
     Exception? ex,
-    Func<TState, Exception?, string> formatter,
-    CancellationToken cancellationToken)
+    Func<TState, Exception?, string> formatter)
   {
     var line = GetLogLine(
       time,
@@ -120,12 +113,12 @@ internal sealed class CptLogger(
 
     if (config.LogRecipients.HasFlag(Recipients.File))
     {
-      await line.WriteToLogFile(config, cancellationToken);
+      await line.WriteToLogFile(config);
     }
 
     if (config.LogRecipients.HasFlag(Recipients.Stream))
     {
-      await WriteToBuffer(line, config, cancellationToken);
+      await WriteToBuffer(line, config);
     }
   }
 
@@ -151,8 +144,7 @@ internal sealed class CptLogger(
 
   private static async Task WriteToBuffer(
     LogLine line,
-    CaptainLoggerOptions config,
-    CancellationToken cancellationToken)
+    CaptainLoggerOptions config)
   {
     if (config.LoggerBuffer is null)
     {
@@ -161,7 +153,7 @@ internal sealed class CptLogger(
     }
 
     var buffer = Encoding.UTF8.GetBytes(line.ToString());
-    await config.LoggerBuffer.WriteAsync(buffer, cancellationToken);
+    await config.LoggerBuffer.WriteAsync(buffer);
 
     config.LoggerBuffer.Flush();
   }

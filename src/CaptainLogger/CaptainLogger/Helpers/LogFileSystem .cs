@@ -86,8 +86,7 @@ internal static class LogFileSystem
 
   public static async Task WriteToLogFile(
     this LogLine row,
-    CaptainLoggerOptions config,
-    CancellationToken cancellationToken)
+    CaptainLoggerOptions config)
   {
     config.CheckLogFileName(row.Time);
 
@@ -96,7 +95,7 @@ internal static class LogFileSystem
       throw new InvalidOperationException("Log filestream must be valid!");
     }
 
-    await _inProcessLogWriter.WriteAsync(row.Content, cancellationToken);
+    await _inProcessLogWriter.WriteAsync(row.Content);
 
     _inProcessLogWriter.Flush();
     _inProcessLogFile.Flush();

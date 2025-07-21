@@ -101,14 +101,13 @@ internal sealed class CaptainLogger<TCategory>
   }
 
   private Task CptLoggerOnLogRequestedAsync(
-    CaptainLoggerEventArgs<object> evArgs,
-    CancellationToken cancellationToken)
+    CaptainLoggerEventArgs<object> evArgs)
   {
     if (LogEntryRequestedAsync is null)
     {
       return Task.CompletedTask;
     }
 
-    return LogEntryRequestedAsync.Invoke(evArgs, cancellationToken);
+    return LogEntryRequestedAsync.Invoke(evArgs);
   }
 }
