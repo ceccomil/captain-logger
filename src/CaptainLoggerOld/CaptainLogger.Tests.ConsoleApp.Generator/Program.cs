@@ -12,7 +12,7 @@ public static class Program
         {
             _appId = args[0];
         }
-        
+
         await EnvInit(Run);
 
         static async Task Run(IServiceProvider sp)

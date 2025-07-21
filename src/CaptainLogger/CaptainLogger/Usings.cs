@@ -1,0 +1,14 @@
+﻿global using CaptainLogger.Contracts;
+global using CaptainLogger.Contracts.EventsArgs;
+global using CaptainLogger.Contracts.Helpers;
+global using CaptainLogger.Contracts.Options;
+global using CaptainLogger.Helpers;
+global using CaptainLogger.LoggingLogic;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.DependencyInjection.Extensions;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Logging.Configuration;
+global using Microsoft.Extensions.Options;
+global using System.Collections.Concurrent;
+global using System.Text;
+global using static CaptainLogger.Contracts.Helpers.InternalGlobals;
