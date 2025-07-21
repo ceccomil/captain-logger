@@ -25,31 +25,37 @@ internal sealed class CaptainLogger<TCategory>
 
   public event LogEntryRequestedAsyncHandler? LogEntryRequestedAsync;
 
-  private readonly ConcurrentDictionary<string, CptLogger> _loggers;
-  private readonly CaptainLoggerOptions _options;
-  private readonly CaptainLoggerProvider _loggerProvider;
-
-  private readonly List<string> _subscribedAsync = [];
+  private readonly CptLogger _cptLogger;
 
   public ILogger RuntimeLogger { get; }
 
   public FileInfo CurrentLogFile => CptLogger.CurrentLog;
 
   public CaptainLogger(
-    ILogger logger,
+    ILogger<TCategory> logger,
     ILoggerProvider loggerProvider)
   {
     RuntimeLogger = logger;
-    _loggerProvider = (CaptainLoggerProvider)loggerProvider;
-    _loggers = _loggerProvider.Loggers;
-    _options = _loggerProvider.CurrentConfig;
 
-    foreach (var cpt in _loggers.Values)
+    if (loggerProvider is not CaptainLoggerProvider lp)
     {
-      NewLoggerAdded(cpt);
+      throw new ArgumentException(
+        $"The provided logger provider must be of type {nameof(CaptainLoggerProvider)}.",
+        nameof(loggerProvider));
     }
 
-    _loggerProvider.LoggerAdded += NewLoggerAdded;
+    var category = typeof(TCategory).FullName
+      ?? throw new InvalidOperationException(
+        "Unable to determine the logger category name from" +
+        " the generic type parameter. Ensure TCategory is" +
+        " a valid type with a non-null FullName.");
+
+    _cptLogger = lp.Loggers[category];
+
+    if (lp.CurrentConfig.TriggerAsyncEvents)
+    {
+      _cptLogger.OnLogRequestedAsync += CptLoggerOnLogRequestedAsync;
+    }
   }
 
   public void TraceLog(string message) => Trace(RuntimeLogger, message, null);
@@ -89,48 +95,21 @@ internal sealed class CaptainLogger<TCategory>
       return;
     }
 
-    foreach (var cat in _subscribedAsync)
-    {
-      var cpt = _loggers.Values.Single(x => x.Category == cat);
-      cpt.OnLogRequestedAsync -= CptLoggerOnLogRequestedAsync;
-      cpt.Dispose();
-    }
-
-    _subscribedAsync.Clear();
-
-    _loggerProvider.LoggerAdded -= NewLoggerAdded;
+    _cptLogger.OnLogRequestedAsync -= CptLoggerOnLogRequestedAsync;
+    _cptLogger.Dispose();
 
     _disposed = true;
   }
 
-  private void NewLoggerAdded(CptLogger logger)
-  {
-    if (_options.TriggerAsyncEvents)
-    {
-      SetupAsyncSub(logger);
-    }
-  }
-
-  private void SetupAsyncSub(CptLogger cpt)
-  {
-    if (_subscribedAsync.Contains(cpt.Category))
-    {
-      return;
-    }
-
-    _subscribedAsync.Add(cpt.Category);
-    cpt.OnLogRequestedAsync += CptLoggerOnLogRequestedAsync;
-  }
-
-  private async Task CptLoggerOnLogRequestedAsync(
+  private Task CptLoggerOnLogRequestedAsync(
     CaptainLoggerEventArgs<object> evArgs,
     CancellationToken cancellationToken)
   {
     if (LogEntryRequestedAsync is null)
     {
-      return;
+      return Task.CompletedTask;
     }
 
-    await LogEntryRequestedAsync.Invoke(evArgs, cancellationToken);
+    return LogEntryRequestedAsync.Invoke(evArgs, cancellationToken);
   }
 }

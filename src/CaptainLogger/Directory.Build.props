@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-		<PackageVersion>4.9.1-alpha.1</PackageVersion>
+		<PackageVersion>4.9.1-alpha.3</PackageVersion>
 	</PropertyGroup>
 
   <PropertyGroup>
@@ -21,6 +21,10 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <PackageOutputPath>D:\NugetLocal</PackageOutputPath>
   </PropertyGroup>
   
 </Project>
