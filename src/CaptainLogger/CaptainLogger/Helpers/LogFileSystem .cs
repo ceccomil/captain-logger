@@ -85,17 +85,17 @@ internal static class LogFileSystem
   }
 
   public static async Task WriteToLogFile(
-    this LogLine row,
+    this LogLine line,
     CaptainLoggerOptions config)
   {
-    config.CheckLogFileName(row.Time);
+    config.CheckLogFileName(line.Time);
 
     if (_inProcessLogWriter is null || _inProcessLogFile is null)
     {
       throw new InvalidOperationException("Log filestream must be valid!");
     }
 
-    await _inProcessLogWriter.WriteAsync(row.Content);
+    await _inProcessLogWriter.WriteAsync(line.Content);
 
     _inProcessLogWriter.Flush();
     _inProcessLogFile.Flush();
