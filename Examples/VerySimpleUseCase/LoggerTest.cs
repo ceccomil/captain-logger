@@ -46,6 +46,27 @@ internal sealed class LoggerTest(
       _cptLogger.TempInfo(
         DateTimeOffset.Now,
         test);
+
+      List<byte> testBytes1 =
+      [
+        10, 20, 30, 40, 50, 60, 70, 80, 90, 100
+      ];
+
+      byte[] testBytes2 =
+      [
+        10, 20, 30, 40, 50, 60, 70, 80, 90, 100
+      ];
+
+      List<TestEnum> testList =
+      [
+        TestEnum.Zero,
+        TestEnum.One,
+        TestEnum.Two
+      ];
+
+      _cptLogger.TempInfo(
+        80,
+        testBytes2);
     }
   }
 }
@@ -59,4 +80,12 @@ internal class Test
   {
     return $"{Name} - {Version}";
   }
+}
+
+internal enum TestEnum
+{
+  Zero,
+  One,
+  Two,
+  Three
 }

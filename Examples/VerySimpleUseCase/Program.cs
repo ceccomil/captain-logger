@@ -17,7 +17,7 @@ builder
   .Configure<CaptainLoggerOptions>(x =>
   {
     x.HighPerfStructuredLogging = true;
-    //x.IncludeFormattedMessageInHighPerfLogging = true;
+    x.IncludeFormattedMessageInHighPerfLogging = true;
     x.TimeIsUtc = true;
   })
   .AddHostedService<LoggerTest>();

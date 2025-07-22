@@ -110,18 +110,4 @@ internal sealed class CaptainLogger<TCategory>
 
     return LogEntryRequestedAsync.Invoke(evArgs);
   }
-
-  public void TempInfo<T1, T2>(T1 arg1, T2 arg2) =>
-    TempDefs<T1, T2>.TempInfo(RuntimeLogger, arg1, arg2);
-}
-
-internal static class TempDefs<T1, T2>
-{
-  private static readonly Action<ILogger, T1, T2, Exception?> TempInfoDefine = LoggerMessage
-    .Define<T1, T2>(LogLevel.Information, 0, "Simple mex for two values ({firstValue}, {secondValue})");
-
-  internal static void TempInfo(
-    ILogger logger,
-    T1 arg1,
-    T2 arg2) => TempInfoDefine(logger, arg1, arg2, null);
 }

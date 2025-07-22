@@ -142,72 +142,109 @@ internal class JsonCptLogger(
         continue; // Skip null values and the OriginalFormat key
       }
 
-      switch (kvp.Value)
+      writer.WritePropertyName(kvp.Key);
+
+      WritePrimitive(writer, kvp.Value, messageContent);
+    }
+  }
+
+  private static void WritePrimitive(
+    Utf8JsonWriter writer,
+    object value,
+    string messageContent)
+  {
+    if (value is byte[] byteArray)
+    {
+      writer.WriteStringValue(Convert.ToBase64String(byteArray));
+      return;
+    }
+
+    if (value is not string &&
+      value is IEnumerable enumerable)
+    {
+      writer.WriteStartArray();
+
+      foreach (var item in enumerable)
       {
-        case string strValue:
-          if (strValue != messageContent)
-          {
-            writer.WriteString(kvp.Key, strValue);
-          }
-          break;
-        case DateTime dateTimeValue:
-          writer.WriteString(kvp.Key, dateTimeValue);
-          break;
-        case DateTimeOffset dateTimeOffsetValue:
-          writer.WriteString(kvp.Key, dateTimeOffsetValue);
-          break;
-        case Guid guidValue:
-          writer.WriteString(kvp.Key, guidValue);
-          break;
-        case TimeSpan timeSpanValue:
-          writer.WriteString(kvp.Key, timeSpanValue.ToString());
-          break;
-        case Enum enumValue:
-          writer.WriteStartObject(kvp.Key);
-          writer.WriteNumber("value", Convert.ToInt32(enumValue));
-          writer.WriteString("name", enumValue.ToString());
-          writer.WriteEndObject();
-          break;
-        case bool boolValue:
-          writer.WriteBoolean(kvp.Key, boolValue);
-          break;
-        case ushort uShortValue:
-          writer.WriteNumber(kvp.Key, uShortValue);
-          break;
-        case short shortValue:
-          writer.WriteNumber(kvp.Key, shortValue);
-          break;
-        case uint uIntValue:
-          writer.WriteNumber(kvp.Key, uIntValue);
-          break;
-        case int intValue:
-          writer.WriteNumber(kvp.Key, intValue);
-          break;
-        case ulong uLongValue:
-          writer.WriteNumber(kvp.Key, uLongValue);
-          break;
-        case long longValue:
-          writer.WriteNumber(kvp.Key, longValue);
-          break;
-        case float floatValue:
-          writer.WriteNumber(kvp.Key, floatValue);
-          break;
-        case double doubleValue:
-          writer.WriteNumber(kvp.Key, doubleValue);
-          break;
-        case decimal decimalValue:
-          writer.WriteNumber(kvp.Key, decimalValue);
-          break;
-        case sbyte sByteValue:
-          writer.WriteNumber(kvp.Key, sByteValue);
-          break;
-        case byte byteValue:
-          writer.WriteNumber(kvp.Key, byteValue);
-          break;
-        default:
-          writer.WriteString(kvp.Key, kvp.Value.ToString());
-          break;
+        if (item is null)
+        {
+          writer.WriteNullValue();
+          continue;
+        }
+
+        WritePrimitive(writer, item, messageContent);
       }
+
+      writer.WriteEndArray();
+
+      return;
+    }
+
+    switch (value)
+    {
+      case string strValue:
+        if (strValue != messageContent)
+        {
+          writer.WriteStringValue(strValue);
+        }
+        break;
+      case DateTime dateTimeValue:
+        writer.WriteStringValue(dateTimeValue);
+        break;
+      case DateTimeOffset dateTimeOffsetValue:
+        writer.WriteStringValue(dateTimeOffsetValue);
+        break;
+      case Guid guidValue:
+        writer.WriteStringValue(guidValue);
+        break;
+      case TimeSpan timeSpanValue:
+        writer.WriteStringValue(timeSpanValue.ToString());
+        break;
+      case Enum enumValue:
+        writer.WriteStartObject();
+        writer.WriteNumber("value", Convert.ToInt32(enumValue));
+        writer.WriteString("name", enumValue.ToString());
+        writer.WriteEndObject();
+        break;
+      case bool boolValue:
+        writer.WriteBooleanValue(boolValue);
+        break;
+      case ushort uShortValue:
+        writer.WriteNumberValue(uShortValue);
+        break;
+      case short shortValue:
+        writer.WriteNumberValue(shortValue);
+        break;
+      case uint uIntValue:
+        writer.WriteNumberValue(uIntValue);
+        break;
+      case int intValue:
+        writer.WriteNumberValue(intValue);
+        break;
+      case ulong uLongValue:
+        writer.WriteNumberValue(uLongValue);
+        break;
+      case long longValue:
+        writer.WriteNumberValue(longValue);
+        break;
+      case float floatValue:
+        writer.WriteNumberValue(floatValue);
+        break;
+      case double doubleValue:
+        writer.WriteNumberValue(doubleValue);
+        break;
+      case decimal decimalValue:
+        writer.WriteNumberValue(decimalValue);
+        break;
+      case sbyte sByteValue:
+        writer.WriteNumberValue(sByteValue);
+        break;
+      case byte byteValue:
+        writer.WriteNumberValue(byteValue);
+        break;
+      default:
+        writer.WriteStringValue(value.ToString());
+        break;
     }
   }
 }

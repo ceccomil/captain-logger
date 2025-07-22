@@ -100,11 +100,6 @@ public interface ICaptainLogger
   /// This mechanism can be used for log propagation (e.g., centralized processing), but should be designed defensively.
   /// </remarks>
   event LogEntryRequestedAsyncHandler? LogEntryRequestedAsync;
-
-  /// <summary>
-  /// 
-  /// </summary>
-  void TempInfo<T1, T2>(T1 arg1, T2 arg2);
 }
 
 /// <summary>
