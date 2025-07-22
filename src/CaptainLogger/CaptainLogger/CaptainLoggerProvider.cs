@@ -5,7 +5,7 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider
   private readonly IDisposable? _onChangeToken;
 
   public CaptainLoggerOptions CurrentConfig { get; private set; }
-  public ConcurrentDictionary<string, CptLogger> Loggers { get; } = [];
+  public ConcurrentDictionary<string, CptLoggerBase> Loggers { get; } = [];
 
   private bool _disposed;
 
@@ -16,12 +16,8 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider
     _onChangeToken = config.OnChange(x => CurrentConfig = x);
   }
 
-  public ILogger CreateLogger(string categoryName)
-  {
-    var logger = Loggers.GetOrAdd(categoryName, name => new CptLogger(name, GetCurrentConfig));
-
-    return logger;
-  }
+  public ILogger CreateLogger(string categoryName) =>
+    GetOrAddLogger(categoryName);
 
   public void Dispose()
   {
@@ -43,4 +39,14 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider
   }
 
   private CaptainLoggerOptions GetCurrentConfig() => CurrentConfig;
+
+  private CptLoggerBase GetOrAddLogger(string categoryName)
+  {
+    if (CurrentConfig.HighPerfStructuredLogging)
+    {
+      return Loggers.GetOrAdd(categoryName, name => new JsonCptLogger(name, GetCurrentConfig));
+    }
+
+    return Loggers.GetOrAdd(categoryName, name => new CptLogger(name, GetCurrentConfig));
+  }
 }

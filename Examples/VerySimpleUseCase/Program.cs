@@ -1,4 +1,5 @@
 ﻿using CaptainLogger;
+using CaptainLogger.Contracts.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,11 @@ builder
 
 builder
   .Services
+  .Configure<CaptainLoggerOptions>(x =>
+  {
+    x.HighPerfStructuredLogging = true;
+    x.TimeIsUtc = true;
+  })
   .AddHostedService<LoggerTest>();
 
 var app = builder.Build();

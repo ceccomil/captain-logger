@@ -2,6 +2,8 @@
 
 internal static class LogFileSystem
 {
+  private static byte[] _newLine = Encoding.UTF8.GetBytes(Environment.NewLine);
+
   private static FileInfo? _currentLog;
   private static string _timeSuffix = "";
 
@@ -98,6 +100,24 @@ internal static class LogFileSystem
     await _inProcessLogWriter.WriteAsync(line.Content);
 
     _inProcessLogWriter.Flush();
+    _inProcessLogFile.Flush();
+  }
+
+  public static async Task WriteToLogFile(
+    this ArrayBufferWriter<byte> line,
+    DateTime logTime,
+    CaptainLoggerOptions config)
+  {
+    config.CheckLogFileName(logTime);
+
+    if (_inProcessLogFile is null)
+    {
+      throw new InvalidOperationException("Log filestream must be valid!");
+    }
+
+    await _inProcessLogFile.WriteAsync(line.WrittenMemory);
+    await _inProcessLogFile.WriteAsync(_newLine);
+
     _inProcessLogFile.Flush();
   }
 }

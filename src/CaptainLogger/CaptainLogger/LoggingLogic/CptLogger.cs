@@ -2,97 +2,15 @@
 
 internal sealed class CptLogger(
   string name,
-  Func<CaptainLoggerOptions> getCurrentConfig) : ILogger
+  Func<CaptainLoggerOptions> getCurrentConfig)
+  : CptLoggerBase(name, getCurrentConfig)
 {
-  private readonly Func<CaptainLoggerOptions> _getCurrentConfig = getCurrentConfig;
-
-  private static readonly object _consoleLock = new();
-
-  public string Category { get; } = name;
-
-  public event LogEntryRequestedAsyncHandler? OnLogRequestedAsync;
-
-  public IDisposable? BeginScope<TState>(TState state)
-    where TState : notnull => state as IDisposable ?? null;
-
-  // Category filters still apply.
-  public bool IsEnabled(LogLevel logLevel) => true;
-
-  public void Log<TState>(
-    LogLevel logLevel,
-    EventId eventId,
-    TState state,
-    Exception? exception,
-    Func<TState, Exception?, string> formatter)
-  {
-    var config = _getCurrentConfig();
-
-    if (config
-      .ExcludedEventIds
-      .Contains(eventId.Id))
-    {
-      return;
-    }
-
-    var now = GetCurrentTime(config);
-
-    if (OnLogRequestedAsync is not null)
-    {
-      _ = LogHasBeenRequestedAsync(
-        now,
-        logLevel,
-        state,
-        eventId,
-        exception);
-    }
-
-    lock (_consoleLock)
-    {
-      _ = WriteLog(
-        now,
-        config,
-        logLevel,
-        state,
-        exception,
-        formatter);
-    }
-  }
-
-  private static DateTime GetCurrentTime(CaptainLoggerOptions config)
-  {
-    return config.TimeIsUtc
-      ? DateTime.UtcNow
-      : DateTime.Now;
-  }
-
-  private async Task LogHasBeenRequestedAsync<TState>(
-    DateTime time,
-    LogLevel level,
-    TState state,
-    EventId eventId,
-    Exception? ex)
-  {
-    if (state is null || OnLogRequestedAsync is null)
-    {
-      return;
-    }
-
-    var evArgs = new CaptainLoggerEventArgs<object>(
-      state,
-      time,
-      eventId,
-      Category,
-      level,
-      ex);
-
-    await OnLogRequestedAsync.Invoke(evArgs);
-  }
-
-  private async Task WriteLog<TState>(
+  protected override async Task WriteLog<TState>(
     DateTime time,
     CaptainLoggerOptions config,
     LogLevel level,
     TState state,
+    EventId eventId,
     Exception? ex,
     Func<TState, Exception?, string> formatter)
   {

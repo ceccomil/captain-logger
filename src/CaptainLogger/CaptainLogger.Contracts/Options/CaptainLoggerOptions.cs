@@ -78,6 +78,21 @@ public class CaptainLoggerOptions : IDisposable
   public IEnumerable<int> ExcludedEventIds { get; set; } = [];
 
   /// <summary>
+  /// Gets or sets a value indicating whether high-performance structured logging is enabled.
+  /// </summary>
+  /// <remarks>
+  /// When enabled, this mode is optimized for high-volume logging scenarios.
+  /// It alters how <c>CaptainLogger.Extensions.Generator</c> interprets the <see cref="CaptainLoggerOptions.Templates"/> dictionary.
+  /// For example, if the two-argument template is defined as:
+  /// <c>This is my {baseUrl} and this is my route {route}</c>,
+  /// the generator will emit a structured template like:
+  /// <c>"baseUrl":"{BaseUrl}","route":"{Route}"</c>
+  /// and the final log output will be a well-formed JSON object.
+  /// </remarks>
+  public bool HighPerfStructuredLogging { get; set; } = false;
+
+
+  /// <summary>
   /// Disposes the logger options and any associated resources, such as the <see cref="LoggerBuffer"/>.
   /// </summary>
   public void Dispose()
