@@ -16,20 +16,47 @@ internal sealed class LoggerTest(
         .Delay(3000, stoppingToken)
         .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
 
-      _cptLogger.InformationLog(
-        """
-        This is a CaptainLogger log message.
-        With a json:
-        {
-          "Name": "CaptainLogger",
-          "Version": "1.0.0"
-        }
-        """);
+      //_cptLogger.InformationLog(
+      //  """
+      //  This is a CaptainLogger log message.
+      //  With a json:
+      //  {
+      //    "Name": "CaptainLogger",
+      //    "Version": "1.0.0"
+      //  }
+      //  """);
+
+      _cptLogger.InformationLog("This is a CaptainLogger log message.");
       _iLogger.LogInformation("This is an ILogger log message.");
 
       _cptLogger.TempInfo(10, 20);
 
       _cptLogger.TempInfo(DateTime.Now, Guid.NewGuid());
+
+      _cptLogger.TempInfo(
+        "This is a temporary info log message.",
+        new { Name = "CaptainLogger", Version = "1.0.0" });
+
+      var test = new Test
+      {
+        Name = "CaptainLogger",
+        Version = "1.0.0"
+      };
+
+      _cptLogger.TempInfo(
+        DateTimeOffset.Now,
+        test);
     }
+  }
+}
+
+internal class Test
+{
+  public required string Name { get; init; }
+  public required string Version { get; init; }
+
+  public override string ToString()
+  {
+    return $"{Name} - {Version}";
   }
 }

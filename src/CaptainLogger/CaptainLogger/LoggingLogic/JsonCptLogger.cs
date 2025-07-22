@@ -22,7 +22,7 @@ internal class JsonCptLogger(
       eventId,
       level,
       ex,
-      config.DoNotAppendException,
+      config,
       formatter);
 
     if (config.LogRecipients.HasFlag(Recipients.Console))
@@ -61,7 +61,7 @@ internal class JsonCptLogger(
     EventId eventId,
     LogLevel level,
     Exception? ex,
-    bool doNotAppendEx,
+    CaptainLoggerOptions config,
     Func<TState, Exception?, string> formatter)
   {
     var buffer = new ArrayBufferWriter<byte>();
@@ -85,11 +85,11 @@ internal class JsonCptLogger(
 
     writer.WriteStartObject("content");
 
-    WriteContent(writer, state, formatter);
+    WriteContent(config, writer, state, formatter);
 
     writer.WriteEndObject();
 
-    if (!doNotAppendEx && ex is not null)
+    if (!config.DoNotAppendException && ex is not null)
     {
       writer.WriteStartObject("exception");
       writer.WriteString("message", ex.Message);
@@ -105,6 +105,7 @@ internal class JsonCptLogger(
   }
 
   private static void WriteContent<TState>(
+    CaptainLoggerOptions config,
     Utf8JsonWriter writer,
     TState state,
     Func<TState, Exception?, string> formatter)
@@ -118,14 +119,20 @@ internal class JsonCptLogger(
     {
       writer.WriteBoolean("useDefaultFormatter", true);
       writer.WriteString("message", formatter(state, null));
+
       return;
     }
 
-    if (formattedValues.Count == 1 &&
-      formattedValues[0].Key == ORIGINAL_FORMAT)
+    var writeMessage = formattedValues.Count == 1 &&
+      formattedValues[0].Key == ORIGINAL_FORMAT;
+
+    var messageContent = "";
+
+    if (config.IncludeFormattedMessageInHighPerfLogging ||
+      writeMessage)
     {
-      writer.WriteString("message", formatter(state, null));
-      return;
+      messageContent = formatter(state, null);
+      writer.WriteString("message", messageContent);
     }
 
     foreach (var kvp in formattedValues)
@@ -138,7 +145,10 @@ internal class JsonCptLogger(
       switch (kvp.Value)
       {
         case string strValue:
-          writer.WriteString(kvp.Key, strValue);
+          if (strValue != messageContent)
+          {
+            writer.WriteString(kvp.Key, strValue);
+          }
           break;
         case DateTime dateTimeValue:
           writer.WriteString(kvp.Key, dateTimeValue);

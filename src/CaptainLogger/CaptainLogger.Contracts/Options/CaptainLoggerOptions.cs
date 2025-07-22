@@ -91,6 +91,12 @@ public class CaptainLoggerOptions : IDisposable
   /// </remarks>
   public bool HighPerfStructuredLogging { get; set; } = false;
 
+  /// <summary>
+  /// Gets or sets a value indicating whether formatted messages should be included in high-performance logging.
+  /// </summary>
+  /// <remarks>Enabling this option may increase redability of logs but also may impact performance due to the additional overhead of formatting messages.
+  /// </remarks>
+  public bool IncludeFormattedMessageInHighPerfLogging { get; set; } = false;
 
   /// <summary>
   /// Disposes the logger options and any associated resources, such as the <see cref="LoggerBuffer"/>.
