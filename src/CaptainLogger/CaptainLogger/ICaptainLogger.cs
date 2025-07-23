@@ -1,4 +1,4 @@
-﻿namespace CaptainLogger.Contracts;
+﻿namespace CaptainLogger;
 
 /// <summary>
 /// Provides simplified logging methods and event interception capabilities.

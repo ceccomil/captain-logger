@@ -1,4 +1,4 @@
-﻿namespace CaptainLogger.Contracts;
+﻿namespace CaptainLogger.Helpers;
 
 /// <summary>
 /// Asynchronous event handler for intercepting log entries with boxed state.

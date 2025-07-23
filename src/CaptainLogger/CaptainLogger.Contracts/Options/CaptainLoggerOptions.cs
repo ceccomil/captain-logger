@@ -5,6 +5,9 @@
 /// </summary>
 public class CaptainLoggerOptions : IDisposable
 {
+  internal static string DefaultLogName { get; } =
+    $"./Logs/{AppDomain.CurrentDomain.FriendlyName.Replace(".", "-")}.log";
+
   private bool _disposed;
 
   /// <summary>
@@ -33,7 +36,7 @@ public class CaptainLoggerOptions : IDisposable
   /// Path of the log file to write to.
   /// <para>Defaults to <c>./Logs/AssemblyName.log</c>.</para>
   /// </summary>
-  public string FilePath { get; set; } = InternalGlobals.DefaultLogName;
+  public string FilePath { get; set; } = DefaultLogName;
 
   /// <summary>
   /// Determines how frequently a new log file is created by appending a timestamp to the filename.
@@ -66,8 +69,8 @@ public class CaptainLoggerOptions : IDisposable
   public Stream? LoggerBuffer { get; set; }
 
   /// <summary>
-  /// If <c>false</c>, the <see cref="ICaptainLogger.LogEntryRequestedAsync"/> event will not be triggered.
-  /// <para>Defaults to <c>false</c>.</para>
+  /// Indicates whether asynchronous log-related events should be triggered.
+  /// <para>When set to <c>false</c>, those events are disabled entirely. Defaults to <c>false</c>.</para>
   /// </summary>
   public bool TriggerAsyncEvents { get; set; }
 

@@ -1,9 +1,11 @@
 ﻿using CaptainLogger;
 using CaptainLogger.Contracts;
 using Microsoft.Extensions.Hosting;
+using System.ComponentModel;
 
 namespace VerySimpleUseCase;
 
+[EditorBrowsable(EditorBrowsableState.Always)]
 internal sealed class LoggerTest(
   ICaptainLogger<LoggerTest> _cptLogger,
   IHttpClientFactory _httpFactory)

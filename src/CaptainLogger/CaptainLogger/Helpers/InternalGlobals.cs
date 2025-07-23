@@ -1,4 +1,4 @@
-﻿namespace CaptainLogger.Contracts.Helpers;
+﻿namespace CaptainLogger.Helpers;
 
 internal static class InternalGlobals
 {
@@ -13,9 +13,6 @@ internal static class InternalGlobals
     [LogLevel.Debug] = ConsoleColor.Cyan,
     [LogLevel.Trace] = ConsoleColor.DarkCyan
   };
-
-  public static string DefaultLogName { get; } =
-    $"./Logs/{AppDomain.CurrentDomain.FriendlyName.Replace(".", "-")}.log";
 
   public static FileInfo GetLogFile(
     this CaptainLoggerOptions options,

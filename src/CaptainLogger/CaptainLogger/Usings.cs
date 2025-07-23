@@ -1,6 +1,5 @@
 ﻿global using CaptainLogger.Contracts;
 global using CaptainLogger.Contracts.EventsArgs;
-global using CaptainLogger.Contracts.Helpers;
 global using CaptainLogger.Contracts.Options;
 global using CaptainLogger.Helpers;
 global using CaptainLogger.LoggingLogic;
@@ -14,4 +13,4 @@ global using System.Collections;
 global using System.Collections.Concurrent;
 global using System.Text;
 global using System.Text.Json;
-global using static CaptainLogger.Contracts.Helpers.InternalGlobals;
+global using static CaptainLogger.Helpers.InternalGlobals;

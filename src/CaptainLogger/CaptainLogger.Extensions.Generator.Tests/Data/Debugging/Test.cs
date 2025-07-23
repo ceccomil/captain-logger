@@ -24,6 +24,7 @@ builder
     x.StructuredLogMetadata.Add("deployment", new { subscription = "0038B8FE-BCBB-444D-B0B8-31E6B6122039", tenant = "DA0D2D7C-6457-4EF8-93EE-22CD108308C0", env = "dev" });
 
     x.ArgumentsCount = LogArguments.Three;
+    x.Templates.Add(LogArguments.Three, "This is a test log with 3 arguments: {arg1}, {arg2}, {arg3}");
     x.Templates.Add(LogArguments.One, "This is a test log with one argument: {arg1}");
   })
   .AddHostedService<LoggerTest>();

@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-		<PackageVersion>4.9.1-alpha.40</PackageVersion>
+		<PackageVersion>4.9.1-alpha.41</PackageVersion>
 	</PropertyGroup>
 
   <PropertyGroup>
@@ -11,7 +11,7 @@
     <PackageTags>captainlogger;logger;logging;console;logfile;log</PackageTags>
     <PackageProjectUrl>https://github.com/ceccomil/captain-logger</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
