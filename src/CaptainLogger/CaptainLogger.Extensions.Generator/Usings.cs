@@ -4,7 +4,9 @@ global using CaptainLogger.Extensions.Generator.Helpers;
 global using Microsoft.CodeAnalysis;
 global using Microsoft.CodeAnalysis.CSharp;
 global using Microsoft.CodeAnalysis.CSharp.Syntax;
+global using Microsoft.Extensions.Logging;
 global using System.Collections.Immutable;
+global using System.Text;
 global using static CaptainLogger.Extensions.Generator.Helpers.Constants;
 global using BaseProvider =
 (

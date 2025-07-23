@@ -99,5 +99,3 @@ internal static class Receiver
     };
   }
 }
-//x.ArgumentsCount = LogArguments.Three;
-//    x.Templates.Add(LogArguments.Two, "This is a test log with one argument: {arg1}");

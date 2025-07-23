@@ -1,14 +1,14 @@
 ﻿namespace CaptainLogger.Extensions.Generator.Tests.Generators;
 
-[Collection("CaptainLoggerMessagesGenerator Tests")]
-public class CaptainLoggerMessagesGeneratorTests
+[Collection("CaptainLoggerExtensionsGenerator Tests")]
+public class CaptainLoggerExtensionsGeneratorTests
 {
   [Fact]
   public void TestClassGeneration()
   {
     // Arrange
     var compilation = TestsHelpers.CreateCompilation("./Data/Debugging");
-    var generator = new CaptainLoggerMessagesGenerator();
+    var generator = new CaptainLoggerExtensionsGenerator();
     var driver = CSharpGeneratorDriver.Create(generator);
 
     // Act

@@ -1,13 +1,14 @@
 ﻿using CaptainLogger;
-using CaptainLogger.Contracts;
+using CaptainLogger.Generated;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.ComponentModel;
 
 namespace VerySimpleUseCase;
 
 [EditorBrowsable(EditorBrowsableState.Always)]
 internal sealed class LoggerTest(
-  ICaptainLogger<LoggerTest> _cptLogger,
+  ILogger<LoggerTest> _cptLogger,
   IHttpClientFactory _httpFactory)
   : BackgroundService
 {
@@ -70,8 +71,11 @@ internal sealed class LoggerTest(
     var client = _httpFactory.CreateClient("Test");
 
     var response = await client.GetAsync("https://www.google.com", cancellationToken);
+
     _cptLogger.InformationLog(
       $"Got response from Google: {response.StatusCode}");
+
+    _cptLogger.WarningLog(10, 20, 30);
   }
 }
 
