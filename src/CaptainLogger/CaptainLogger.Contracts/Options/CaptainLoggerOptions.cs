@@ -92,11 +92,11 @@ public class CaptainLoggerOptions : IDisposable
   public bool HighPerfStructuredLogging { get; set; } = false;
 
   /// <summary>
-  /// Gets or sets a value indicating whether formatted messages should be included in high-performance logging.
+  /// A dictionary of additional static properties to include with every structured log entry,
+  /// such as <c>service-name</c>, <c>deployment-env</c>, or other metadata useful for log aggregation and filtering.
+  /// These key-value pairs will be added to the root of each structured JSON log object.
   /// </summary>
-  /// <remarks>Enabling this option may increase redability of logs but also may impact performance due to the additional overhead of formatting messages.
-  /// </remarks>
-  public bool IncludeFormattedMessageInHighPerfLogging { get; set; } = false;
+  public Dictionary<string, object> StructuredLogMetadata { get; } = [];
 
   /// <summary>
   /// Disposes the logger options and any associated resources, such as the <see cref="LoggerBuffer"/>.

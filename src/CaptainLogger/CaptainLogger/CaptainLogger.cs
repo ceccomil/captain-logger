@@ -6,22 +6,22 @@ internal sealed class CaptainLogger<TCategory>
   private bool _disposed;
 
   private static readonly Action<ILogger, string, Exception?> Trace = LoggerMessage
-    .Define<string>(LogLevel.Trace, 0, "{value}");
+    .Define<string>(LogLevel.Trace, 0, "{message}");
 
   private static readonly Action<ILogger, string, Exception?> Debug = LoggerMessage
-    .Define<string>(LogLevel.Debug, 0, "{value}");
+    .Define<string>(LogLevel.Debug, 0, "{message}");
 
   private static readonly Action<ILogger, string, Exception?> Information = LoggerMessage
-    .Define<string>(LogLevel.Information, 0, "{value}");
+    .Define<string>(LogLevel.Information, 0, "{message}");
 
   private static readonly Action<ILogger, string, Exception?> Warning = LoggerMessage
-    .Define<string>(LogLevel.Warning, 0, "{value}");
+    .Define<string>(LogLevel.Warning, 0, "{message}");
 
   private static readonly Action<ILogger, string, Exception?> Error = LoggerMessage
-    .Define<string>(LogLevel.Error, 0, "{value}");
+    .Define<string>(LogLevel.Error, 0, "{message}");
 
   private static readonly Action<ILogger, string, Exception?> Critical = LoggerMessage
-    .Define<string>(LogLevel.Critical, 0, "{value}");
+    .Define<string>(LogLevel.Critical, 0, "{message}");
 
   public event LogEntryRequestedAsyncHandler? LogEntryRequestedAsync;
 

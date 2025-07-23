@@ -6,6 +6,7 @@ internal class JsonCptLogger(
   : CptLoggerBase(name, getCurrentConfig)
 {
   private const string ORIGINAL_FORMAT = "{OriginalFormat}";
+  private const string MESSAGE = "message";
 
   protected override async Task WriteLog<TState>(
     DateTime time,
@@ -69,7 +70,7 @@ internal class JsonCptLogger(
 
     writer.WriteStartObject();
     writer.WriteString("timestamp", time);
-    writer.WriteString("level", level.ToCaptainLoggerString());
+    writer.WriteString("severity", level.ToCaptainLoggerString());
 
     writer.WriteStartObject("event");
     writer.WriteNumber("id", eventId.Id);
@@ -87,21 +88,19 @@ internal class JsonCptLogger(
       writer.WriteString("correlationId", correlationIdValue);
     }
 
-    writer.WriteString("category", Category);
-
-    writer.WriteStartObject("content");
+    writer.WriteString("source", Category);
 
     WriteContent(config, writer, state, formatter);
-
-    writer.WriteEndObject();
 
     if (!config.DoNotAppendException && ex is not null)
     {
       writer.WriteStartObject("exception");
-      writer.WriteString("message", ex.Message);
+      writer.WriteString(MESSAGE, ex.Message);
       writer.WriteString("stackTrace", ex.StackTrace);
       writer.WriteEndObject();
     }
+
+    WriteAdditionalProperties(config, writer);
 
     writer.WriteEndObject();
 
@@ -124,22 +123,12 @@ internal class JsonCptLogger(
     if (state is not IReadOnlyList<KeyValuePair<string, object?>> formattedValues)
     {
       writer.WriteBoolean("useDefaultFormatter", true);
-      writer.WriteString("message", formatter(state, null));
+      writer.WriteString(MESSAGE, formatter(state, null));
 
       return;
     }
 
-    var writeMessage = formattedValues.Count == 1 &&
-      formattedValues[0].Key == ORIGINAL_FORMAT;
-
-    var messageContent = "";
-
-    if (config.IncludeFormattedMessageInHighPerfLogging ||
-      writeMessage)
-    {
-      messageContent = formatter(state, null);
-      writer.WriteString("message", messageContent);
-    }
+    var atleastOneMessage = false;
 
     foreach (var kvp in formattedValues)
     {
@@ -150,14 +139,39 @@ internal class JsonCptLogger(
 
       writer.WritePropertyName(kvp.Key);
 
-      WritePrimitive(writer, kvp.Value, messageContent);
+      if (kvp.Key == MESSAGE)
+      {
+        atleastOneMessage = true;
+      }
+
+      WritePrimitive(writer, kvp.Value);
+    }
+
+    if (!atleastOneMessage)
+    {
+      writer.WriteString(MESSAGE, formatter(state, null));
+    }
+  }
+
+  private static void WriteAdditionalProperties(
+    CaptainLoggerOptions config,
+    Utf8JsonWriter writer)
+  {
+    foreach (var kvp in config.StructuredLogMetadata)
+    {
+      if (kvp.Value is null)
+      {
+        continue; // Skip null values
+      }
+
+      writer.WritePropertyName(kvp.Key);
+      WritePrimitive(writer, kvp.Value);
     }
   }
 
   private static void WritePrimitive(
     Utf8JsonWriter writer,
-    object value,
-    string messageContent)
+    object value)
   {
     if (value is byte[] byteArray)
     {
@@ -178,7 +192,7 @@ internal class JsonCptLogger(
           continue;
         }
 
-        WritePrimitive(writer, item, messageContent);
+        WritePrimitive(writer, item);
       }
 
       writer.WriteEndArray();
@@ -189,10 +203,7 @@ internal class JsonCptLogger(
     switch (value)
     {
       case string strValue:
-        if (strValue != messageContent)
-        {
-          writer.WriteStringValue(strValue);
-        }
+        writer.WriteStringValue(strValue);
         break;
       case DateTime dateTimeValue:
         writer.WriteStringValue(dateTimeValue);

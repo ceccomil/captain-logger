@@ -10,15 +10,18 @@ var builder = new HostApplicationBuilder();
 builder
   .Logging
   .ClearProviders()
-  .AddCaptainLogger();
+  .AddCaptainLogger()
+  .AddFilter("", LogLevel.Trace);
 
 builder
   .Services
+  .AddHttpClient()
   .Configure<CaptainLoggerOptions>(x =>
   {
     x.HighPerfStructuredLogging = true;
-    //x.IncludeFormattedMessageInHighPerfLogging = true;
     x.TimeIsUtc = true;
+    x.StructuredLogMetadata.Add("service-name", "sample-logging-case");
+    x.StructuredLogMetadata.Add("deployment", new { subscription = "0038B8FE-BCBB-444D-B0B8-31E6B6122039", tenant = "DA0D2D7C-6457-4EF8-93EE-22CD108308C0", env = "dev" });
   })
   .AddHostedService<LoggerTest>();
 

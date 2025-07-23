@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-		<PackageVersion>4.9.1-alpha.36</PackageVersion>
+		<PackageVersion>4.9.1-alpha.40</PackageVersion>
 	</PropertyGroup>
 
   <PropertyGroup>

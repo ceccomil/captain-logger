@@ -5,7 +5,8 @@ using Microsoft.Extensions.Hosting;
 namespace VerySimpleUseCase;
 
 internal sealed class LoggerTest(
-  ICaptainLogger<LoggerTest> _cptLogger)
+  ICaptainLogger<LoggerTest> _cptLogger,
+  IHttpClientFactory _httpFactory)
   : BackgroundService
 {
   private static long _counter = 1;
@@ -13,7 +14,7 @@ internal sealed class LoggerTest(
 
   protected override async Task ExecuteAsync(CancellationToken stoppingToken)
   {
-    await Task.Delay(1000, stoppingToken)
+    await Task.Delay(5000, stoppingToken)
       .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
 
     _cptLogger.InformationLog("Starting LoggerTest...");
@@ -21,11 +22,25 @@ internal sealed class LoggerTest(
     while (!stoppingToken.IsCancellationRequested)
     {
       // Don't wait to simulate some parrallel execution.
-      _ = ScopedExecution(stoppingToken);
+      await ScopedExecution(stoppingToken);
 
       await Task
         .Delay(1000)
         .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+
+      try
+      {
+        throw new InvalidOperationException(
+          "This is a test exception to demonstrate error logging.");
+      }
+      catch (Exception ex)
+      {
+        _cptLogger.ErrorLog(
+          "An error occurred while executing the LoggerTest.",
+          ex);
+
+        throw;
+      }
 
       _counter++;
     }
@@ -50,9 +65,11 @@ internal sealed class LoggerTest(
     _cptLogger.WarningLog(
       "Logging something else from another method!");
 
-    await Task
-      .Delay(250, cancellationToken)
-      .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+    var client = _httpFactory.CreateClient("Test");
+
+    var response = await client.GetAsync("https://www.google.com", cancellationToken);
+    _cptLogger.InformationLog(
+      $"Got response from Google: {response.StatusCode}");
   }
 }
 
