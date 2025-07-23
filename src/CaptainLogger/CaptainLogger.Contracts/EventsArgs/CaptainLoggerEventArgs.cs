@@ -36,12 +36,19 @@ public sealed class CaptainLoggerEventArgs<TState> : EventArgs
   /// </summary>
   public Exception? Exception { get; }
 
+  /// <summary>
+  /// An optional correlation ID that associates this log entry with a broader execution context (e.g., a request or operation).
+  /// <para>Useful for tracing logs across async flows or distributed systems.</para>
+  /// </summary>
+  public string? CorrelationId { get; }
+
   internal CaptainLoggerEventArgs(
     TState state,
     DateTime logTime,
     EventId eventId,
     string category,
     LogLevel level,
+    string? correlationId,
     Exception? exception = default)
     : base()
   {
@@ -51,5 +58,6 @@ public sealed class CaptainLoggerEventArgs<TState> : EventArgs
     LogCategory = category;
     LogLevel = level;
     Exception = exception;
+    CorrelationId = correlationId;
   }
 }

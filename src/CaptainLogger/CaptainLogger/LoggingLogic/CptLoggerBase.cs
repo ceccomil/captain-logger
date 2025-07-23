@@ -84,12 +84,16 @@ internal abstract class CptLoggerBase(
       return;
     }
 
+    CaptainLoggerCorrelationScope
+      .TryGetCorrelationId(out var correlationId);
+
     var evArgs = new CaptainLoggerEventArgs<object>(
       state,
       time,
       eventId,
       Category,
       level,
+      correlationId,
       ex);
 
     await OnLogRequestedAsync.Invoke(evArgs);

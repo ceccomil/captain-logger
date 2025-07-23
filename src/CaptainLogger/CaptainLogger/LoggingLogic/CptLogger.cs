@@ -51,6 +51,9 @@ internal sealed class CptLogger(
     Console.ForegroundColor = line.Message.Color;
     Console.Write(line.Message);
 
+    Console.ForegroundColor = line.CorrelationId.Color;
+    Console.Write(line.CorrelationId);
+
     Console.ForegroundColor = line.Category.Color;
     Console.Write(line.Category);
 
@@ -91,12 +94,21 @@ internal sealed class CptLogger(
       doNotAppendEx,
       formatter);
 
+    var correlationId = "";
+
+    if (CaptainLoggerCorrelationScope.TryGetCorrelationId(
+      out var correlationIdValue))
+    {
+      correlationId = $"{INDENT}[{correlationIdValue}]\r\n";
+    }
+
     var line = new LogLine(
       time,
       new($"[{time:yyyy-MM-dd HH:mm:ss.fff}] ", ConsoleColor.DarkCyan),
       new($"[{level.ToCaptainLoggerString()}] ", levelColor),
       new(message, defaultColor),
       new($"{INDENT}[{Category}]\r\n", ConsoleColor.Magenta),
+      new(correlationId, ConsoleColor.DarkMagenta),
       new("\r\n", defaultColor));
 
     return line;

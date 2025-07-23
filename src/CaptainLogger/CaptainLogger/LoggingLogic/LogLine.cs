@@ -6,6 +6,7 @@ internal readonly struct LogLine(
   LogSegment level,
   LogSegment message,
   LogSegment category,
+  LogSegment correlationId,
   LogSegment spacer)
 {
   private readonly StringBuilder _content = new();
@@ -15,6 +16,7 @@ internal readonly struct LogLine(
   public LogSegment Level { get; } = level;
   public LogSegment Message { get; } = message;
   public LogSegment Category { get; } = category;
+  public LogSegment CorrelationId { get; } = correlationId;
   public LogSegment Spacer { get; } = spacer;
 
   public StringBuilder Content
@@ -26,6 +28,7 @@ internal readonly struct LogLine(
         _content.Append(TimeStamp.Value);
         _content.Append(Level.Value);
         _content.Append(Message.Value);
+        _content.Append(CorrelationId.Value);
         _content.Append(Category.Value);
         _content.Append(Spacer.Value);
       }

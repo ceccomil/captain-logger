@@ -81,6 +81,12 @@ internal class JsonCptLogger(
 
     writer.WriteEndObject();
 
+    if (CaptainLoggerCorrelationScope.TryGetCorrelationId(
+      out var correlationIdValue))
+    {
+      writer.WriteString("correlationId", correlationIdValue);
+    }
+
     writer.WriteString("category", Category);
 
     writer.WriteStartObject("content");
