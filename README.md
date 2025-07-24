@@ -1,4 +1,4 @@
-CaptainLogger - a simple but effective logger for .Net
+CaptainLogger - .Net logging library
 ======================================================
 
 ------------------------------------------------------------------

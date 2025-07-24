@@ -31,8 +31,15 @@ internal static class LogFileSystem
       return;
     }
 
-    stream.Close();
-    stream.Dispose();
+    try
+    {
+      stream.Close();
+      stream.Dispose();
+    }
+    catch (ObjectDisposedException)
+    {
+      // Ignore if already disposed
+    }
   }
 
   private static void CloseAndDispose(this TextWriter? stream)
@@ -42,8 +49,15 @@ internal static class LogFileSystem
       return;
     }
 
-    stream.Close();
-    stream.Dispose();
+    try
+    {
+      stream.Close();
+      stream.Dispose();
+    }
+    catch (ObjectDisposedException)
+    {
+      // Ignore if already disposed
+    }
   }
 
   private static FileInfo InitAndLock(this FileInfo file)
@@ -119,5 +133,13 @@ internal static class LogFileSystem
     await _inProcessLogFile.WriteAsync(_newLine);
 
     _inProcessLogFile.Flush();
+  }
+
+  public static void AllowTestsToCloseLogFile()
+  {
+    _inProcessLogFile?.CloseAndDispose();
+    _inProcessLogWriter?.CloseAndDispose();
+    _currentLog = null;
+    _timeSuffix = "";
   }
 }

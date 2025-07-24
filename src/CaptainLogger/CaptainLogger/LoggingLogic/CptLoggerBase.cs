@@ -13,7 +13,6 @@ internal abstract class CptLoggerBase(
   private Func<CaptainLoggerEventArgs<object>, Task> OnLogEntry { get; } = onLogEntry;
   protected Func<CaptainLoggerOptions> GetCurrentConfig { get; } = getCurrentConfig;
 
-
   public string Category { get; } = category;
   public string ProviderName { get; } = provider;
 

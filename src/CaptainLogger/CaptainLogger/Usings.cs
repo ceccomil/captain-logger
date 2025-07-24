@@ -1,5 +1,4 @@
-﻿global using CaptainLogger.Contracts;
-global using CaptainLogger.Contracts.EventsArgs;
+﻿global using CaptainLogger.Contracts.EventsArgs;
 global using CaptainLogger.Contracts.Options;
 global using CaptainLogger.Helpers;
 global using CaptainLogger.LoggingLogic;
@@ -14,3 +13,6 @@ global using System.Collections.Concurrent;
 global using System.Text;
 global using System.Text.Json;
 global using static CaptainLogger.Helpers.InternalGlobals;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("CaptainLogger.Tests")]
