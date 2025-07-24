@@ -1,9 +1,15 @@
 ﻿namespace CaptainLogger.LoggingLogic;
 
 internal sealed class CptLogger(
-  string name,
-  Func<CaptainLoggerOptions> getCurrentConfig)
-  : CptLoggerBase(name, getCurrentConfig)
+  string category,
+  string provider,
+  Func<CaptainLoggerOptions> getCurrentConfig,
+  Func<LoggerFilterOptions> getCurrentFilters)
+  : CptLoggerBase(
+    category,
+    provider,
+    getCurrentConfig,
+    getCurrentFilters)
 {
   protected override async Task WriteLog<TState>(
     DateTime time,

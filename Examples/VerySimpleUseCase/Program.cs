@@ -11,8 +11,8 @@ builder
   .Logging
   .ClearProviders()
   .AddCaptainLogger()
-  .AddFilter("Microsoft", LogLevel.Warning)
-  .AddFilter("", LogLevel.Information);
+  .AddFilter("", LogLevel.Information)
+  .AddFilter("Microsoft", LogLevel.Warning);
 
 builder
   .Services
@@ -27,6 +27,8 @@ builder
     x.ArgumentsCount = LogArguments.Three;
     x.Templates.Add(LogArguments.Three, "This is a test log with 3 arguments: {arg1}, {arg2}, {arg3}");
     x.Templates.Add(LogArguments.One, "This is a test log with one argument: {arg1}");
+
+    //x.ProviderName = "Test";
   })
   .AddHostedService<LoggerTest>();
 

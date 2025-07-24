@@ -1,22 +1,55 @@
 ﻿namespace CaptainLogger.LoggingLogic;
 
 internal abstract class CptLoggerBase(
-  string name,
-  Func<CaptainLoggerOptions> getCurrentConfig) : ILogger
+  string category,
+  string provider,
+  Func<CaptainLoggerOptions> getCurrentConfig,
+  Func<LoggerFilterOptions> getCurrentFilters) : ILogger
 {
   private static readonly object _consoleLock = new();
 
+  private Func<LoggerFilterOptions> GetCurrentFilters { get; } = getCurrentFilters;
   protected Func<CaptainLoggerOptions> GetCurrentConfig { get; } = getCurrentConfig;
 
-  public string Category { get; } = name;
+  public string Category { get; } = category;
+  public string ProviderName { get; } = provider;
 
   public event LogEntryRequestedAsyncHandler? OnLogRequestedAsync;
 
   public IDisposable? BeginScope<TState>(TState state)
     where TState : notnull => state as IDisposable ?? null;
 
-  // Category filters still apply.
-  public bool IsEnabled(LogLevel logLevel) => true;
+  public bool IsEnabled(LogLevel logLevel)
+  {
+    var filters = GetCurrentFilters();
+
+    foreach (var rule in filters.Rules)
+    {
+      if (!IsProviderMatch(rule.ProviderName))
+      {
+        continue;
+      }
+
+      if (!IsCategoryMatch(rule.CategoryName))
+      {
+        continue;
+      }
+
+      if (rule.LogLevel.HasValue && logLevel < rule.LogLevel.Value)
+      {
+        return false;
+      }
+
+      if (rule.Filter is not null && !rule.Filter(ProviderName, Category, logLevel))
+      {
+        return false;
+      }
+
+      return true;
+    }
+
+    return logLevel >= filters.MinLevel;
+  }
 
   protected abstract Task WriteLog<TState>(
     DateTime time,
@@ -97,5 +130,19 @@ internal abstract class CptLoggerBase(
       ex);
 
     await OnLogRequestedAsync.Invoke(evArgs);
+  }
+
+  private bool IsProviderMatch(string? ruleProvider)
+  {
+    return string.IsNullOrEmpty(ruleProvider) || ProviderName.Equals(
+      ruleProvider,
+      StringComparison.OrdinalIgnoreCase);
+  }
+
+  private bool IsCategoryMatch(string? ruleCategory)
+  {
+    return string.IsNullOrEmpty(ruleCategory) || Category.StartsWith(
+      ruleCategory,
+      StringComparison.OrdinalIgnoreCase);
   }
 }

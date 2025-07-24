@@ -17,7 +17,7 @@ internal sealed class LoggerTest(
 
   protected override async Task ExecuteAsync(CancellationToken stoppingToken)
   {
-    await Task.Delay(5000, stoppingToken)
+    await Task.Delay(1000, stoppingToken)
       .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
 
     _cptLogger.InformationLog("Starting LoggerTest...");

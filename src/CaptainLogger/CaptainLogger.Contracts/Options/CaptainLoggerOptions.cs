@@ -102,6 +102,12 @@ public class CaptainLoggerOptions : IDisposable
   public Dictionary<string, object> StructuredLogMetadata { get; } = [];
 
   /// <summary>
+  /// Gets or sets the name of the logging provider.
+  /// Used to match against filter rules, including those from <c>appsettings.json</c>.
+  /// </summary>
+  public string ProviderName { get; set; } = "CaptainLoggerProvider";
+
+  /// <summary>
   /// Disposes the logger options and any associated resources, such as the <see cref="LoggerBuffer"/>.
   /// </summary>
   public void Dispose()

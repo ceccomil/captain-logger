@@ -1,9 +1,15 @@
 ﻿namespace CaptainLogger.LoggingLogic;
 
 internal class JsonCptLogger(
-  string name,
-  Func<CaptainLoggerOptions> getCurrentConfig)
-  : CptLoggerBase(name, getCurrentConfig)
+  string category,
+  string provider,
+  Func<CaptainLoggerOptions> getCurrentConfig,
+  Func<LoggerFilterOptions> getCurrentFilters)
+  : CptLoggerBase(
+    category,
+    provider,
+    getCurrentConfig,
+    getCurrentFilters)
 {
   private const string ORIGINAL_FORMAT = "{OriginalFormat}";
   private const string MESSAGE = "message";

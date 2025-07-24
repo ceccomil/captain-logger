@@ -17,76 +17,40 @@ public interface ICaptainLogger
   ILogger RuntimeLogger { get; }
 
   /// <summary>
-  /// Writes a <see cref="LogLevel.Trace"/> log entry, if enabled.
-  /// <para>Use source generator extensions for structured or high-performance logging.</para>
-  /// </summary>
-  void TraceLog(string message);
-
-  /// <summary>
   /// Writes a <see cref="LogLevel.Trace"/> log entry with an associated exception, if enabled.
   /// <para>Use source generator extensions for structured or high-performance logging.</para>
   /// </summary>
-  void TraceLog(string message, Exception exception);
-
-  /// <summary>
-  /// Writes a <see cref="LogLevel.Debug"/> log entry, if enabled.
-  /// <para>Use source generator extensions for structured or high-performance logging.</para>
-  /// </summary>
-  void DebugLog(string message);
+  void TraceLog(string message, Exception? exception = null);
 
   /// <summary>
   /// Writes a <see cref="LogLevel.Debug"/> log entry with an associated exception, if enabled.
   /// <para>Use source generator extensions for structured or high-performance logging.</para>
   /// </summary>
-  void DebugLog(string message, Exception exception);
-
-  /// <summary>
-  /// Writes a <see cref="LogLevel.Information"/> log entry, if enabled.
-  /// <para>Use source generator extensions for structured or high-performance logging.</para>
-  /// </summary>
-  void InformationLog(string message);
+  void DebugLog(string message, Exception? exception = null);
 
   /// <summary>
   /// Writes a <see cref="LogLevel.Information"/> log entry with an associated exception, if enabled.
   /// <para>Use source generator extensions for structured or high-performance logging.</para>
   /// </summary>
-  void InformationLog(string message, Exception exception);
-
-  /// <summary>
-  /// Writes a <see cref="LogLevel.Warning"/> log entry, if enabled.
-  /// <para>Use source generator extensions for structured or high-performance logging.</para>
-  /// </summary>
-  void WarningLog(string message);
+  void InformationLog(string message, Exception? exception = null);
 
   /// <summary>
   /// Writes a <see cref="LogLevel.Warning"/> log entry with an associated exception, if enabled.
   /// <para>Use source generator extensions for structured or high-performance logging.</para>
   /// </summary>
-  void WarningLog(string message, Exception exception);
-
-  /// <summary>
-  /// Writes a <see cref="LogLevel.Error"/> log entry, if enabled.
-  /// <para>Use source generator extensions for structured or high-performance logging.</para>
-  /// </summary>
-  void ErrorLog(string message);
+  void WarningLog(string message, Exception? exception = null);
 
   /// <summary>
   /// Writes a <see cref="LogLevel.Error"/> log entry with an associated exception, if enabled.
   /// <para>Use source generator extensions for structured or high-performance logging.</para>
   /// </summary>
-  void ErrorLog(string message, Exception exception);
-
-  /// <summary>
-  /// Writes a <see cref="LogLevel.Critical"/> log entry, if enabled.
-  /// <para>Use source generator extensions for structured or high-performance logging.</para>
-  /// </summary>
-  void CriticalLog(string message);
+  void ErrorLog(string message, Exception? exception = null);
 
   /// <summary>
   /// Writes a <see cref="LogLevel.Critical"/> log entry with an associated exception, if enabled.
   /// <para>Use source generator extensions for structured or high-performance logging.</para>
   /// </summary>
-  void CriticalLog(string message, Exception exception);
+  void CriticalLog(string message, Exception? exception = null);
 
   /// <summary>
   /// Raised when a log entry is requested.

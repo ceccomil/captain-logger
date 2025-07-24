@@ -52,35 +52,71 @@ internal sealed class CaptainLogger<TCategory>
 
     _cptLogger = lp.Loggers[category];
 
-    if (lp.CurrentConfig.TriggerAsyncEvents)
+    if (lp.GetCurrentConfig().TriggerAsyncEvents)
     {
       _cptLogger.OnLogRequestedAsync += CptLoggerOnLogRequestedAsync;
     }
   }
 
-  public void TraceLog(string message) => Trace(RuntimeLogger, message, null);
+  public void TraceLog(string message, Exception? exception = null)
+  {
+    if (!RuntimeLogger.IsEnabled(LogLevel.Trace))
+    {
+      return;
+    }
 
-  public void TraceLog(string message, Exception exception) => Trace(RuntimeLogger, message, exception);
+    Trace(RuntimeLogger, message, exception);
+  }
 
-  public void DebugLog(string message) => Debug(RuntimeLogger, message, null);
+  public void DebugLog(string message, Exception? exception = null)
+  {
+    if (!RuntimeLogger.IsEnabled(LogLevel.Debug))
+    {
+      return;
+    }
 
-  public void DebugLog(string message, Exception exception) => Debug(RuntimeLogger, message, exception);
+    Debug(RuntimeLogger, message, exception);
+  }
 
-  public void InformationLog(string message) => Information(RuntimeLogger, message, null);
+  public void InformationLog(string message, Exception? exception = null)
+  {
+    if (!RuntimeLogger.IsEnabled(LogLevel.Information))
+    {
+      return;
+    }
 
-  public void InformationLog(string message, Exception exception) => Information(RuntimeLogger, message, exception);
+    Information(RuntimeLogger, message, exception);
+  }
 
-  public void WarningLog(string message) => Warning(RuntimeLogger, message, null);
+  public void WarningLog(string message, Exception? exception = null)
+  {
+    if (!RuntimeLogger.IsEnabled(LogLevel.Warning))
+    {
+      return;
+    }
 
-  public void WarningLog(string message, Exception exception) => Warning(RuntimeLogger, message, exception);
+    Warning(RuntimeLogger, message, exception);
+  }
 
-  public void ErrorLog(string message) => Error(RuntimeLogger, message, null);
+  public void ErrorLog(string message, Exception? exception = null)
+  {
+    if (!RuntimeLogger.IsEnabled(LogLevel.Error))
+    {
+      return;
+    }
 
-  public void ErrorLog(string message, Exception exception) => Error(RuntimeLogger, message, exception);
+    Error(RuntimeLogger, message, exception);
+  }
 
-  public void CriticalLog(string message) => Critical(RuntimeLogger, message, null);
+  public void CriticalLog(string message, Exception? exception = null)
+  {
+    if (!RuntimeLogger.IsEnabled(LogLevel.Critical))
+    {
+      return;
+    }
 
-  public void CriticalLog(string message, Exception exception) => Critical(RuntimeLogger, message, exception);
+    Critical(RuntimeLogger, message, exception);
+  }
 
   public void Dispose()
   {

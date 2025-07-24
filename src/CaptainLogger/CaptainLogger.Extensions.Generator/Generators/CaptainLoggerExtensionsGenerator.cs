@@ -112,8 +112,15 @@ internal sealed class CaptainLoggerExtensionsGenerator : IIncrementalGenerator
 
     var code =
       $$"""
-      public static void {{logLevel}}Log<{{generics}}>(this ILogger logger, {{parameters}}, Exception? ex = null) => CaptainLoggerMessages<{{generics}}>
-        .{{logLevel}}Log(logger, {{args}}, ex);
+      public static void {{logLevel}}Log<{{generics}}>(this ILogger logger, {{parameters}}, Exception? ex = null)
+      {
+        if (!logger.IsEnabled(LogLevel.{{logLevel}}))
+        {
+          return;
+        }
+
+        CaptainLoggerMessages<{{generics}}>.{{logLevel}}Log(logger, {{args}}, ex);
+      }
       """;
 
     methods.AppendLine(code);
