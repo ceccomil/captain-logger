@@ -1,47 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
-		<Nullable>enable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<LangVersion>Latest</LangVersion>
-		<Description>A source generator providing boiler plate code for logging methods</Description>
-		<Authors>Chekko Milani</Authors>
-		<AssemblyName>CaptainLogger.Extensions.Generator</AssemblyName>
-		<PackageId>CaptainLogger.Extensions.Generator</PackageId>
-		<PackageTags>captainlogger;logger;logging;console;logfile;log</PackageTags>
-		<IsPackable>True</IsPackable>
-		<PackageProjectUrl>https://github.com/ceccomil/captain-logger</PackageProjectUrl>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+  <PropertyGroup>
+    <IsPackable>True</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
 
-	</PropertyGroup>
+  <ItemGroup>
+    <None Remove="bin\Debug\netstandard2.0\\CaptainLogger.Extensions.Generator.dll" />
+    <None Remove="bin\Debug\netstandard2.0\\CaptainLogger.Contracts.dll" />
+  </ItemGroup>
 
-	<PropertyGroup>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	</PropertyGroup>
+  <ItemGroup>
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(OutputPath)\CaptainLogger.Contracts.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.10.0">
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup> 
+  
+  <ItemGroup>
+    <ProjectReference Include="..\CaptainLogger.Contracts\CaptainLogger.Contracts.csproj" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\CaptainLogger.Contracts\CaptainLogger.Contracts.csproj" />
-	</ItemGroup>
+  <!-- 
+  https://github.com/dotnet/roslyn/issues/52017#issuecomment-1046216200
+  This automatically adds explicit and transient dependencies so that they are available at the time the generator is executed. 
+-->
+  <Target Name="AddGenerationTimeReferences" AfterTargets="ResolvePackageDependenciesForBuild">
+    <ItemGroup>
+      <None Include="@(ResolvedCompileFileDefinitions)" Pack="true" PackagePath="analyzers/dotnet/cs" />
+    </ItemGroup>
+  </Target>
 
 </Project>

@@ -15,7 +15,7 @@ jobs:
     env:
       BUILD_CONFIG: 'Release'
 
-    runs-on: windows-2022
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -29,7 +29,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
 
     - name: Restore dependencies
       run: dotnet restore ./src/CaptainLogger
@@ -40,8 +40,8 @@ jobs:
     - name: Tests
       run: dotnet test ./src/CaptainLogger/CaptainLogger.Tests /p:Configuration=$env:BUILD_CONFIG --no-restore --verbosity normal
 
-    - name: RequestTracer Tests
-      run: dotnet test ./src/CaptainLogger/CaptainLogger.RequestTracer.Tests /p:Configuration=$env:BUILD_CONFIG --no-restore --verbosity normal
+    - name: Generator Tests
+      run: dotnet test ./src/CaptainLogger/CaptainLogger.Extensions.Generator.Tests /p:Configuration=$env:BUILD_CONFIG --no-restore --verbosity normal
 
     - name: Publish
       if: startsWith(github.ref, 'refs/tags/v')
