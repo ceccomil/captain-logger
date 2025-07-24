@@ -11,9 +11,9 @@ public interface ILoggerReceiver
 internal sealed class LoggerReceiver : ILoggerReceiver
 {
   public LoggerReceiver(
-    ICaptainLogger logger)
+    ILogDispatcher dispatcher)
   {
-    logger.LogEntryRequestedAsync += OnLogEntry;
+    dispatcher.OnLogEntry += OnLogEntry;
   }
 
   private Task OnLogEntry(CaptainLoggerEventArgs<object> evArgs)

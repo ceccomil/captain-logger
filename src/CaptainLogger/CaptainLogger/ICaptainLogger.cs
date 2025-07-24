@@ -51,19 +51,6 @@ public interface ICaptainLogger
   /// <para>Use source generator extensions for structured or high-performance logging.</para>
   /// </summary>
   void CriticalLog(string message, Exception? exception = null);
-
-  /// <summary>
-  /// Raised when a log entry is requested.
-  /// <para>Exceptions thrown in handlers are not propagated to avoid recursive logging failures.</para>
-  /// </summary>
-  /// <remarks>
-  /// Logging must be fail-safe. If a handler throws, the logger will swallow the exception to prevent a recursive
-  /// failure loop (e.g., attempting to log an error that occurred during logging).
-  /// 
-  /// Handlers should log responsibly and avoid introducing instability or blocking operations.
-  /// This mechanism can be used for log propagation (e.g., centralized processing), but should be designed defensively.
-  /// </remarks>
-  event LogEntryRequestedAsyncHandler? LogEntryRequestedAsync;
 }
 
 /// <summary>

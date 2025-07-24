@@ -4,12 +4,14 @@ internal class JsonCptLogger(
   string category,
   string provider,
   Func<CaptainLoggerOptions> getCurrentConfig,
-  Func<LoggerFilterOptions> getCurrentFilters)
+  Func<LoggerFilterOptions> getCurrentFilters,
+  Func<CaptainLoggerEventArgs<object>, Task> onLogEntry)
   : CptLoggerBase(
     category,
     provider,
     getCurrentConfig,
-    getCurrentFilters)
+    getCurrentFilters,
+    onLogEntry)
 {
   private const string ORIGINAL_FORMAT = "{OriginalFormat}";
   private const string MESSAGE = "message";
@@ -96,7 +98,7 @@ internal class JsonCptLogger(
 
     writer.WriteString("source", Category);
 
-    WriteContent(config, writer, state, formatter);
+    WriteContent(writer, state, formatter);
 
     if (!config.DoNotAppendException && ex is not null)
     {
@@ -116,7 +118,6 @@ internal class JsonCptLogger(
   }
 
   private static void WriteContent<TState>(
-    CaptainLoggerOptions config,
     Utf8JsonWriter writer,
     TState state,
     Func<TState, Exception?, string> formatter)

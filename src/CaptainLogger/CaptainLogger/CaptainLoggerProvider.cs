@@ -1,6 +1,6 @@
 ﻿namespace CaptainLogger;
 
-internal sealed class CaptainLoggerProvider : ILoggerProvider
+internal sealed class CaptainLoggerProvider : ILoggerProvider, ILogDispatcher
 {
   private readonly IDisposable? _onOptionsChangeToken;
   private readonly IDisposable? _onFiltersChangeToken;
@@ -8,6 +8,8 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider
   private volatile CaptainLoggerOptions _currentConfig;
   private volatile LoggerFilterOptions _currentFilters;
   private bool _disposed;
+
+  public event LogEntryRequestedAsyncHandler? OnLogEntry;
 
   public ConcurrentDictionary<string, CptLoggerBase> Loggers { get; } = [];
 
@@ -50,13 +52,33 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider
     _disposed = true;
   }
 
+  private Task LogEntryCreated(CaptainLoggerEventArgs<object> args)
+  {
+    if (OnLogEntry is null)
+    {
+      return Task.CompletedTask;
+    }
+
+    return OnLogEntry.Invoke(args);
+  }
+
   private CptLoggerBase GetOrAddLogger(string categoryName)
   {
     if (_currentConfig.HighPerfStructuredLogging)
     {
-      return Loggers.GetOrAdd(categoryName, category => new JsonCptLogger(category, _currentConfig.ProviderName, GetCurrentConfig, GetCurrentFilters));
+      return Loggers.GetOrAdd(categoryName, category => new JsonCptLogger(
+        category,
+        _currentConfig.ProviderName,
+        GetCurrentConfig,
+        GetCurrentFilters,
+        LogEntryCreated));
     }
 
-    return Loggers.GetOrAdd(categoryName, category => new CptLogger(category, _currentConfig.ProviderName, GetCurrentConfig, GetCurrentFilters));
+    return Loggers.GetOrAdd(categoryName, category => new CptLogger(
+      category,
+      _currentConfig.ProviderName,
+      GetCurrentConfig,
+      GetCurrentFilters,
+      LogEntryCreated));
   }
 }

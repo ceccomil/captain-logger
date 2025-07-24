@@ -4,12 +4,14 @@ internal sealed class CptLogger(
   string category,
   string provider,
   Func<CaptainLoggerOptions> getCurrentConfig,
-  Func<LoggerFilterOptions> getCurrentFilters)
+  Func<LoggerFilterOptions> getCurrentFilters,
+  Func<CaptainLoggerEventArgs<object>, Task> onLogEntry)
   : CptLoggerBase(
     category,
     provider,
     getCurrentConfig,
-    getCurrentFilters)
+    getCurrentFilters,
+    onLogEntry)
 {
   protected override async Task WriteLog<TState>(
     DateTime time,

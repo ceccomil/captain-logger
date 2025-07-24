@@ -30,6 +30,8 @@ builder
     x.Templates.Add(LogArguments.Three, "This is a test log with 3 arguments: {arg1}, {arg2}, {arg3}");
     x.Templates.Add(LogArguments.One, "This is a test log with one argument: {arg1}");
 
+    x.TriggerAsyncEvents = true;
+
     //x.ProviderName = "Test";
   })
   .AddHostedService<LoggerTest>();

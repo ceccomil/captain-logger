@@ -1,10 +1,8 @@
 ﻿namespace CaptainLogger;
 
 internal sealed class CaptainLogger<TCategory>
-  : ICaptainLogger<TCategory>, IDisposable
+  : ICaptainLogger<TCategory>
 {
-  private bool _disposed;
-
   private static readonly Action<ILogger, string, Exception?> Trace = LoggerMessage
     .Define<string>(LogLevel.Trace, 0, "{message}");
 
@@ -23,10 +21,6 @@ internal sealed class CaptainLogger<TCategory>
   private static readonly Action<ILogger, string, Exception?> Critical = LoggerMessage
     .Define<string>(LogLevel.Critical, 0, "{message}");
 
-  public event LogEntryRequestedAsyncHandler? LogEntryRequestedAsync;
-
-  private readonly CptLoggerBase _cptLogger;
-
   public ILogger RuntimeLogger { get; }
 
   public FileInfo CurrentLogFile => LogFileSystem.CurrentLog;
@@ -42,19 +36,6 @@ internal sealed class CaptainLogger<TCategory>
       throw new ArgumentException(
         $"The provided logger provider must be of type {nameof(CaptainLoggerProvider)}.",
         nameof(loggerProvider));
-    }
-
-    var category = typeof(TCategory).FullName
-      ?? throw new InvalidOperationException(
-        "Unable to determine the logger category name from" +
-        " the generic type parameter. Ensure TCategory is" +
-        " a valid type with a non-null FullName.");
-
-    _cptLogger = lp.Loggers[category];
-
-    if (lp.GetCurrentConfig().TriggerAsyncEvents)
-    {
-      _cptLogger.OnLogRequestedAsync += CptLoggerOnLogRequestedAsync;
     }
   }
 
@@ -116,34 +97,5 @@ internal sealed class CaptainLogger<TCategory>
     }
 
     Critical(RuntimeLogger, message, exception);
-  }
-
-  public void Dispose()
-  {
-    Dispose(true);
-    GC.SuppressFinalize(this);
-  }
-
-  private void Dispose(bool disposing)
-  {
-    if (_disposed || !disposing)
-    {
-      return;
-    }
-
-    _cptLogger.OnLogRequestedAsync -= CptLoggerOnLogRequestedAsync;
-
-    _disposed = true;
-  }
-
-  private Task CptLoggerOnLogRequestedAsync(
-    CaptainLoggerEventArgs<object> evArgs)
-  {
-    if (LogEntryRequestedAsync is null)
-    {
-      return Task.CompletedTask;
-    }
-
-    return LogEntryRequestedAsync.Invoke(evArgs);
   }
 }

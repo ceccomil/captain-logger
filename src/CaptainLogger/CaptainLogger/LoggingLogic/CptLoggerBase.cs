@@ -4,17 +4,18 @@ internal abstract class CptLoggerBase(
   string category,
   string provider,
   Func<CaptainLoggerOptions> getCurrentConfig,
-  Func<LoggerFilterOptions> getCurrentFilters) : ILogger
+  Func<LoggerFilterOptions> getCurrentFilters,
+  Func<CaptainLoggerEventArgs<object>, Task> onLogEntry) : ILogger
 {
-  private static readonly object _consoleLock = new();
+  private static readonly Lock _compositionLock = new();
 
   private Func<LoggerFilterOptions> GetCurrentFilters { get; } = getCurrentFilters;
+  private Func<CaptainLoggerEventArgs<object>, Task> OnLogEntry { get; } = onLogEntry;
   protected Func<CaptainLoggerOptions> GetCurrentConfig { get; } = getCurrentConfig;
+
 
   public string Category { get; } = category;
   public string ProviderName { get; } = provider;
-
-  public event LogEntryRequestedAsyncHandler? OnLogRequestedAsync;
 
   public IDisposable? BeginScope<TState>(TState state)
     where TState : notnull => state as IDisposable ?? null;
@@ -79,13 +80,14 @@ internal abstract class CptLoggerBase(
     var now = GetCurrentTime(config);
 
     _ = LogHasBeenRequestedAsync(
+      config,
       now,
       logLevel,
       state,
       eventId,
       exception);
 
-    lock (_consoleLock)
+    lock (_compositionLock)
     {
       _ = WriteLog(
         now,
@@ -106,13 +108,15 @@ internal abstract class CptLoggerBase(
   }
 
   private async Task LogHasBeenRequestedAsync<TState>(
+    CaptainLoggerOptions config,
     DateTime time,
     LogLevel level,
     TState state,
     EventId eventId,
     Exception? ex)
   {
-    if (OnLogRequestedAsync is null || state is null)
+    if (!config.TriggerAsyncEvents ||
+      state is null)
     {
       return;
     }
@@ -129,7 +133,7 @@ internal abstract class CptLoggerBase(
       correlationId,
       ex);
 
-    await OnLogRequestedAsync.Invoke(evArgs);
+    await OnLogEntry(evArgs);
   }
 
   private bool IsProviderMatch(string? ruleProvider)
