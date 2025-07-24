@@ -22,14 +22,6 @@ internal sealed class CaptainLoggerMessagesGenerator : IIncrementalGenerator
 
     var lod = lods[0];
 
-    for (var i = 1; i < lods.Length; i++)
-    {
-      context.ReportWarning(
-        "CLG001",
-        $"Only the first {nameof(CaptainLoggerOptions)} configuration found is used.",
-        "CaptainLogger.Extensions.Generator");
-    }
-
     GenerateMessages(
       context,
       lod,

@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CaptainLogger" Version="4.9.1-alpha.54" />
-    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="4.9.1-alpha.54" />
+    <PackageReference Include="CaptainLogger" Version="4.9.1-alpha.57" />
+    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="4.9.1-alpha.57" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.7" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.7" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.7" />

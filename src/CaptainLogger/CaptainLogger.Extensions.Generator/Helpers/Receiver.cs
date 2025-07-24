@@ -47,11 +47,11 @@ internal static class Receiver
       .OfType<MemberAccessExpressionSyntax>()
       .FirstOrDefault(x =>
         x.IsKind(SyntaxKind.SimpleMemberAccessExpression) &&
-        x.Name.Identifier.Text == nameof(CaptainLoggerOptions.ArgumentsCount))
+        x.Name.Identifier.Text == nameof(CaptainLoggerOptions.ArgumentsCount))?
       .Parent?
       .DescendantNodes()
       .OfType<MemberAccessExpressionSyntax>()
-      .FirstOrDefault(x => x.Expression.ToString() == nameof(LogArguments))
+      .FirstOrDefault(x => x.Expression.ToString() == nameof(LogArguments))?
       .Name
       .ToString()
       .ToArgumentsCount()
@@ -71,7 +71,7 @@ internal static class Receiver
         x => x!.ArgumentList.Arguments[1].Expression)
       ?? [];
 
-    return new(argumentsCount, templates);
+    return new(argumentsCount, templates, lambda.GetLocation());
   }
 
   private static int ToArgumentsCount(this ArgumentSyntax? argument)

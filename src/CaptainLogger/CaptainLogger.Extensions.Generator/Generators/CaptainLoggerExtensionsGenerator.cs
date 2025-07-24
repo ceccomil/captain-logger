@@ -27,7 +27,8 @@ internal sealed class CaptainLoggerExtensionsGenerator : IIncrementalGenerator
       context.ReportWarning(
         "CLG001",
         $"Only the first {nameof(CaptainLoggerOptions)} configuration found is used.",
-        "CaptainLogger.Extensions.Generator");
+        "CaptainLogger.Extensions.Generator",
+        lods[i].ConfigureLocation);
     }
 
     GenerateExtensions(
