@@ -2,13 +2,11 @@
 using CaptainLogger.Generated;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel;
 
 namespace VerySimpleUseCase;
 
-[EditorBrowsable(EditorBrowsableState.Always)]
 internal sealed class LoggerTest(
-  ILogger<LoggerTest> _cptLogger,
+  ILogger<LoggerTest> _logger,
   IHttpClientFactory _httpFactory)
   : BackgroundService
 {
@@ -20,7 +18,7 @@ internal sealed class LoggerTest(
     await Task.Delay(1000, stoppingToken)
       .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
 
-    _cptLogger.InformationLog("Starting LoggerTest...");
+    _logger.InformationLog("Starting LoggerTest...");
 
     while (!stoppingToken.IsCancellationRequested)
     {
@@ -38,7 +36,7 @@ internal sealed class LoggerTest(
       }
       catch (Exception ex)
       {
-        _cptLogger.ErrorLog(
+        _logger.ErrorLog(
           "An error occurred while executing the LoggerTest.",
           ex);
 
@@ -53,7 +51,7 @@ internal sealed class LoggerTest(
   {
     CaptainLoggerCorrelationScope.BeginScope(Guid.NewGuid());
 
-    _cptLogger.InformationLog(
+    _logger.InformationLog(
       "Logging some info on the scope start...");
 
     await Task
@@ -65,17 +63,17 @@ internal sealed class LoggerTest(
 
   private async Task AnotherMethod(CancellationToken cancellationToken)
   {
-    _cptLogger.WarningLog(
+    _logger.WarningLog(
       "Logging something else from another method!");
 
     var client = _httpFactory.CreateClient("Test");
 
     var response = await client.GetAsync("https://www.google.com", cancellationToken);
 
-    _cptLogger.InformationLog(
+    _logger.InformationLog(
       $"Got response from Google: {response.StatusCode}");
 
-    _cptLogger.WarningLog(10, 20, 30);
+    _logger.WarningLog(10, 20, 30);
   }
 }
 

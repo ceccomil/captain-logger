@@ -61,6 +61,7 @@ internal sealed class CaptainLoggerExtensionsGenerator : IIncrementalGenerator
 
       namespace CaptainLogger.Generated;
 
+      {{CodeExtensions.BrowsableAttribute}}
       {{CodeExtensions.GeneratedCodeAttribute("CaptainLogger.Extensions.Generator")}}
       public static class CaptainLoggerExtensions
       {

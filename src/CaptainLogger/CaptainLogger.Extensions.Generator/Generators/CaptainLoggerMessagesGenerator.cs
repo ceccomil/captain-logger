@@ -129,7 +129,7 @@ internal sealed class CaptainLoggerMessagesGenerator : IIncrementalGenerator
       $$"""
 
       {{CodeExtensions.GeneratedCodeAttribute("CaptainLogger.Extensions.Generator")}}
-
+      {{CodeExtensions.BrowsableAttribute}}
       internal static class CaptainLoggerMessages<{{generics}}>
       {
         {{methods}}

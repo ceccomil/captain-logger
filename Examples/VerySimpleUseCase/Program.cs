@@ -11,15 +11,17 @@ builder
   .Logging
   .ClearProviders()
   .AddCaptainLogger()
-  .AddFilter("", LogLevel.Information)
-  .AddFilter("Microsoft", LogLevel.Warning);
+  .AddFilter("Microsoft", LogLevel.Warning)
+  .AddFilter("System", LogLevel.Warning)
+  .AddFilter("", LogLevel.Information);
 
 builder
   .Services
   .AddHttpClient()
+  .AddSingleton<ILoggerReceiver, LoggerReceiver>()
   .Configure<CaptainLoggerOptions>(x =>
   {
-    // x.HighPerfStructuredLogging = true;
+    //x.HighPerfStructuredLogging = true;
     x.TimeIsUtc = true;
     x.StructuredLogMetadata.Add("service-name", "sample-logging-case");
     x.StructuredLogMetadata.Add("deployment", new { subscription = "0038B8FE-BCBB-444D-B0B8-31E6B6122039", tenant = "DA0D2D7C-6457-4EF8-93EE-22CD108308C0", env = "dev" });
@@ -33,5 +35,7 @@ builder
   .AddHostedService<LoggerTest>();
 
 var app = builder.Build();
+
+var instance = app.Services.GetRequiredService<ILoggerReceiver>();
 
 await app.RunAsync();

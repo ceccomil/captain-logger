@@ -3,5 +3,4 @@
 internal static class Constants
 {
   public const string SERVICES_CONFIGURE = "Configure";
-
 }
