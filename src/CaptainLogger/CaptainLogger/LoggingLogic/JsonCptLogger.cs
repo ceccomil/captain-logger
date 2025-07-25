@@ -148,6 +148,7 @@ internal class JsonCptLogger(
       if (kvp.Key == ORIGINAL_FORMAT)
       {
         template = kvp.Value.ToString();
+        continue; // Skip template will be written if no message is available
       }
 
       writer.WritePropertyName(kvp.Key);
