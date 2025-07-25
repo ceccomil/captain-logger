@@ -147,4 +147,62 @@ public class JsonCptLoggerTests
     var stackTrace = exObj.GetProperty("stackTrace").GetString();
     Assert.Contains("CptLoggerTests.cs:line 125", stackTrace); // part of the stack trace
   }
+
+  [Fact]
+  public async Task ParallelLog_WritesValidJsonLines()
+  {
+    // Arrange
+    LogFileSystem.AllowTestsToCloseLogFile();
+    await Task.Delay(100); // let prior test flush
+
+    var logPath = new FileInfo("./TestingLogs/Xunit-ParallelJson.log");
+
+    if (logPath.Directory!.Exists)
+    {
+      logPath.Directory.Delete(recursive: true);
+    }
+
+    var logger = new JsonCptLogger(
+      category: "TestCategory",
+      provider: "TestProvider",
+      getCurrentConfig: () => new CaptainLoggerOptions
+      {
+        LogRecipients = Recipients.File,
+        FilePath = logPath.FullName,
+        FileRotation = LogRotation.None
+      },
+      getCurrentFilters: () => new LoggerFilterOptions(),
+      onLogEntry: args => Task.CompletedTask
+    );
+
+    const int logCount = 1_000;
+    var tasks = Enumerable.Range(0, logCount)
+      .Select(x => Task.Run(() =>
+      {
+        logger.Log(
+            logLevel: LogLevel.Information,
+            eventId: new EventId(x, $"E{x}"),
+            state: $"Log entry {x}",
+            exception: null,
+            formatter: (s, e) => s.ToString());
+      }))
+      .ToArray();
+
+    // Act
+    await Task.WhenAll(tasks);
+
+    // Flush file writer
+    LogFileSystem.AllowTestsToCloseLogFile();
+
+    // Assert
+    Assert.True(File.Exists(logPath.FullName));
+    var lines = await File.ReadAllLinesAsync(logPath.FullName);
+    Assert.Equal(logCount, lines.Length); // Expect one log entry per line
+
+    foreach (var line in lines)
+    {
+      using var doc = JsonDocument.Parse(line); // Throws if corrupted
+      Assert.True(doc.RootElement.TryGetProperty("message", out _));
+    }
+  }
 }
