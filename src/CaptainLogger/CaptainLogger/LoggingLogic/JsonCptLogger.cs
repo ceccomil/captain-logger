@@ -136,12 +136,18 @@ internal class JsonCptLogger(
     }
 
     var atleastOneMessage = false;
+    var template = "";
 
     foreach (var kvp in formattedValues)
     {
-      if (kvp.Value is null || kvp.Key == ORIGINAL_FORMAT)
+      if (kvp.Value is null)
       {
-        continue; // Skip null values and the OriginalFormat key
+        continue; // Skip null values
+      }
+
+      if (kvp.Key == ORIGINAL_FORMAT)
+      {
+        template = kvp.Value.ToString();
       }
 
       writer.WritePropertyName(kvp.Key);
@@ -156,7 +162,7 @@ internal class JsonCptLogger(
 
     if (!atleastOneMessage)
     {
-      writer.WriteString(MESSAGE, formatter(state, null));
+      writer.WriteString(MESSAGE, template);
     }
   }
 
