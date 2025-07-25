@@ -353,3 +353,5 @@ CodeGenDebug/
 
 #LiteDb
 *.db
+
+[Dd]irectory.[Bb]uild.[Ll]ocal.[Pp]rops

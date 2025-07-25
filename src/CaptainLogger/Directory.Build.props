@@ -1,5 +1,7 @@
 <Project>
-	<PropertyGroup>
+  <Import Project="Directory.Build.Local.props" Condition="Exists('Directory.Build.Local.props')" />
+
+  <PropertyGroup>
 		<PackageVersion>4.9.2-beta.1</PackageVersion>
 	</PropertyGroup>
 
