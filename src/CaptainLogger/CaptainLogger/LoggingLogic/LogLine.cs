@@ -9,14 +9,6 @@ internal sealed class LogLine(
   LogSegment correlationId,
   LogSegment spacer) : IDisposable
 {
-  private readonly int _lineLength =
-    timeStamp.Value.Length +
-    level.Value.Length +
-    message.Value.Length +
-    category.Value.Length +
-    correlationId.Value.Length +
-    spacer.Value.Length;
-
   private StringBuilder? _builder;
   private string? _cachedLine;
   private bool _disposed;
@@ -28,6 +20,13 @@ internal sealed class LogLine(
   public LogSegment Category { get; } = category;
   public LogSegment CorrelationId { get; } = correlationId;
   public LogSegment Spacer { get; } = spacer;
+  public int LineLength { get; } =
+    timeStamp.Value.Length +
+    level.Value.Length +
+    message.Value.Length +
+    category.Value.Length +
+    correlationId.Value.Length +
+    spacer.Value.Length;
 
   public override string ToString()
   {
@@ -75,7 +74,7 @@ internal sealed class LogLine(
 
   private void Build()
   {
-    _builder = StringBuilderCache.GetNewOrCached(_lineLength);
+    _builder = StringBuilderCache.GetNewOrCached(LineLength);
 
     _builder.Append(TimeStamp.Value)
       .Append(Level.Value)

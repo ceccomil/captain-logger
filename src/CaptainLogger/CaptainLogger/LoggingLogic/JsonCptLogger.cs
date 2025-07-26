@@ -13,9 +13,6 @@ internal class JsonCptLogger(
     getCurrentFilters,
     onLogEntry)
 {
-  private const string ORIGINAL_FORMAT = "{OriginalFormat}";
-  private const string MESSAGE = "message";
-
   protected override async Task WriteLog<TState>(
     DateTime time,
     CaptainLoggerOptions config,

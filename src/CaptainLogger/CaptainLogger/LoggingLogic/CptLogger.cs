@@ -58,20 +58,30 @@ internal sealed class CptLogger(
 
   private static void WriteToConsole(LogLine line)
   {
-    static void Write(LogSegment seg)
+    static void AppendAnsi(StringBuilder sb, LogSegment seg)
     {
-      Console.ForegroundColor = seg.Color;
-      Console.Write(seg.Value);
+      sb
+        .Append(AnsiPrefix[(int)seg.Color])
+        .Append(seg.Value)
+        .Append(RESET);
     }
 
-    Write(line.TimeStamp);
-    Write(line.Level);
-    Write(line.Message);
-    Write(line.CorrelationId);
-    Write(line.Category);
-    Write(line.Spacer);
+    if (!ConsoleColourPolicy.UseAnsi)
+    {
+      Console.Write(line.ToString());
+      return;
+    }
 
-    Console.ResetColor();
+    var sb = StringBuilderCache.GetNewOrCached(line.LineLength + 32);
+
+    AppendAnsi(sb, line.TimeStamp);
+    AppendAnsi(sb, line.Level);
+    AppendAnsi(sb, line.Message);
+    AppendAnsi(sb, line.CorrelationId);
+    AppendAnsi(sb, line.Category);
+    AppendAnsi(sb, line.Spacer);
+
+    Console.Write(StringBuilderCache.GetStringAndCacheIt(sb));
   }
 
   private static async Task WriteToBuffer(

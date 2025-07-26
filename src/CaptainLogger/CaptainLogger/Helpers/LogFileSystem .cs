@@ -2,6 +2,7 @@
 
 internal static class LogFileSystem
 {
+  private static long _lastFlushTicks = Stopwatch.GetTimestamp();
   private static byte[] _newLine = Encoding.UTF8.GetBytes(Environment.NewLine);
 
   private static FileInfo? _currentLog;
@@ -24,24 +25,6 @@ internal static class LogFileSystem
   }
 
   private static void CloseAndDispose(this Stream? stream)
-  {
-    if (stream is null)
-    {
-      return;
-    }
-
-    try
-    {
-      stream.Close();
-      stream.Dispose();
-    }
-    catch (ObjectDisposedException)
-    {
-      // Ignore if already disposed
-    }
-  }
-
-  private static void CloseAndDispose(this TextWriter? stream)
   {
     if (stream is null)
     {
@@ -89,7 +72,7 @@ internal static class LogFileSystem
     await _inProcessLogFile.WriteAsync(line.WrittenMemory);
     await _inProcessLogFile.WriteAsync(_newLine);
 
-    _inProcessLogFile.Flush();
+    MaybeFlushFile();
   }
 
   public static async Task WriteToLogFile(
@@ -110,7 +93,7 @@ internal static class LogFileSystem
     await _inProcessLogFile.WriteAsync(rented.AsMemory(0, written));
     ArrayPool<byte>.Shared.Return(rented);
 
-    _inProcessLogFile.Flush();
+    MaybeFlushFile();
   }
 
   private static void CheckLogFileName(
@@ -198,4 +181,17 @@ internal static class LogFileSystem
       LogRotation.Minute => $"-{time:yyyyMMddHHmm}",
       _ => ""
     };
+
+  private static void MaybeFlushFile()
+  {
+    var now = Stopwatch.GetTimestamp();
+    var prev = _lastFlushTicks;
+
+    if (now - prev < FlushIntervalTicks)
+    {
+      return;
+    }
+
+    _inProcessLogFile!.Flush();
+  }
 }
