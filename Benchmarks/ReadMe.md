@@ -12,9 +12,9 @@ QEMU Virtual CPU version 2.5+ 3.40GHz, 2 CPU, 24 logical and 24 physical cores
 
 | Method             | Mean                 | Error              | StdDev              | Gen0      | Allocated  |
 |------------------- |---------------------:|-------------------:|--------------------:|----------:|-----------:|
-| LogsInParallel     | 1,648,010,434.000 ns | 44,974,211.9105 ns | 132,607,488.1670 ns | 2000.0000 | 18549984 B |
-| OneLogLine         |       230,109.797 ns |      8,724.7247 ns |      25,725.0494 ns |         - |     2058 B |
-| OneLogLineDisabled |             7.432 ns |          0.0508 ns |           0.0476 ns |    0.0038 |       32 B |
+| LogsInParallel     | 1,570,939,789.000 ns | 49,909,144.1685 ns | 147,158,248.3295 ns | 1000.0000 | 15480112 B |
+| OneLogLine         |       227,733.380 ns |      7,723.0069 ns |      22,771.4617 ns |         - |     1481 B |
+| OneLogLineDisabled |             7.570 ns |          0.0285 ns |           0.0238 ns |    0.0038 |       32 B |
 
 
 # Benchmark for High Perf Captain Logger (CaptainLogger.Json.Benchmarks)

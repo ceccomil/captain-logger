@@ -10,8 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.15.2" />
-    <PackageReference Include="CaptainLogger" Version="4.9.2-beta.3" />
-    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="4.9.2-beta.3" />
+    <PackageReference Include="CaptainLogger" Version="4.9.2-beta.4" />
+    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="4.9.2-beta.4" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.7" />
   </ItemGroup>
 

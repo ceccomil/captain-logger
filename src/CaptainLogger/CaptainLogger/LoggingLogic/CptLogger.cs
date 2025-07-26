@@ -13,6 +13,14 @@ internal sealed class CptLogger(
     getCurrentFilters,
     onLogEntry)
 {
+  private readonly LogSegment _categorySegement = new(
+    $"{INDENT}[{category}]" + CRLF,
+    ConsoleColor.Magenta);
+
+  private readonly LogSegment _spacer = new(
+    CRLF,
+    getCurrentConfig().DefaultColor);
+
   protected override async Task WriteLog<TState>(
     DateTime time,
     CaptainLoggerOptions config,
@@ -50,23 +58,18 @@ internal sealed class CptLogger(
 
   private static void WriteToConsole(LogLine line)
   {
-    Console.ForegroundColor = line.TimeStamp.Color;
-    Console.Write(line.TimeStamp);
+    static void Write(LogSegment seg)
+    {
+      Console.ForegroundColor = seg.Color;
+      Console.Write(seg.Value);
+    }
 
-    Console.ForegroundColor = line.Level.Color;
-    Console.Write(line.Level);
-
-    Console.ForegroundColor = line.Message.Color;
-    Console.Write(line.Message);
-
-    Console.ForegroundColor = line.CorrelationId.Color;
-    Console.Write(line.CorrelationId);
-
-    Console.ForegroundColor = line.Category.Color;
-    Console.Write(line.Category);
-
-    Console.ForegroundColor = line.Spacer.Color;
-    Console.Write(line.Spacer);
+    Write(line.TimeStamp);
+    Write(line.Level);
+    Write(line.Message);
+    Write(line.CorrelationId);
+    Write(line.Category);
+    Write(line.Spacer);
 
     Console.ResetColor();
   }
@@ -81,9 +84,12 @@ internal sealed class CptLogger(
         "Log Buffer stream must be a valid opened `System.Stream`!");
     }
 
-    var buffer = Encoding.UTF8.GetBytes(line.ToString());
-    await config.LoggerBuffer.WriteAsync(buffer);
-
+    var data = line.AsSpan();
+    var byteCount = Encoding.UTF8.GetByteCount(data);
+    var rented = ArrayPool<byte>.Shared.Rent(byteCount);
+    var written = Encoding.UTF8.GetBytes(data, rented);
+    await config.LoggerBuffer.WriteAsync(rented.AsMemory(0, written));
+    ArrayPool<byte>.Shared.Return(rented);
     config.LoggerBuffer.Flush();
   }
 
@@ -107,7 +113,7 @@ internal sealed class CptLogger(
     if (CaptainLoggerCorrelationScope.TryGetCorrelationId(
       out var correlationIdValue))
     {
-      correlationId = $"{INDENT}[{correlationIdValue}]\r\n";
+      correlationId = $"{INDENT}[{correlationIdValue}]" + CRLF;
     }
 
     var line = new LogLine(
@@ -115,9 +121,9 @@ internal sealed class CptLogger(
       new($"[{time:yyyy-MM-dd HH:mm:ss.fff}] ", ConsoleColor.DarkCyan),
       new($"[{level.ToCaptainLoggerString()}] ", levelColor),
       new(message, defaultColor),
-      new($"{INDENT}[{Category}]\r\n", ConsoleColor.Magenta),
+      _categorySegement,
       new(correlationId, ConsoleColor.DarkMagenta),
-      new("\r\n", defaultColor));
+      _spacer);
 
     return line;
   }

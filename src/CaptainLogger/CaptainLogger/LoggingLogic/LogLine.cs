@@ -1,15 +1,25 @@
 ﻿namespace CaptainLogger.LoggingLogic;
 
-internal readonly struct LogLine(
+internal sealed class LogLine(
   DateTime time,
   LogSegment timeStamp,
   LogSegment level,
   LogSegment message,
   LogSegment category,
   LogSegment correlationId,
-  LogSegment spacer)
+  LogSegment spacer) : IDisposable
 {
-  private readonly StringBuilder _content = new();
+  private readonly int _lineLength =
+    timeStamp.Value.Length +
+    level.Value.Length +
+    message.Value.Length +
+    category.Value.Length +
+    correlationId.Value.Length +
+    spacer.Value.Length;
+
+  private StringBuilder? _builder;
+  private string? _cachedLine;
+  private bool _disposed;
 
   public DateTime Time { get; } = time;
   public LogSegment TimeStamp { get; } = timeStamp;
@@ -19,23 +29,59 @@ internal readonly struct LogLine(
   public LogSegment CorrelationId { get; } = correlationId;
   public LogSegment Spacer { get; } = spacer;
 
-  public StringBuilder Content
+  public override string ToString()
   {
-    get
-    {
-      if (_content.Length == 0)
-      {
-        _content.Append(TimeStamp.Value);
-        _content.Append(Level.Value);
-        _content.Append(Message.Value);
-        _content.Append(CorrelationId.Value);
-        _content.Append(Category.Value);
-        _content.Append(Spacer.Value);
-      }
+    ObjectDisposedException.ThrowIf(_disposed, typeof(LogLine));
 
-      return _content;
+    if (_cachedLine is not null)
+    {
+      return _cachedLine;
     }
+
+    if (_builder is null)
+    {
+      Build();
+    }
+
+    _cachedLine = StringBuilderCache.GetStringAndCacheIt(_builder!);
+    _builder = null;
+    return _cachedLine;
   }
 
-  public override string ToString() => Content.ToString();
+  public ReadOnlySpan<char> AsSpan() => ToString().AsSpan();
+
+  public void Dispose()
+  {
+    Dispose(true);
+    GC.SuppressFinalize(this);
+  }
+
+  private void Dispose(bool disposing)
+  {
+    if (_disposed || !disposing)
+    {
+      return;
+    }
+
+    if (_builder is not null)
+    {
+      StringBuilderCache.StoreForReuse(_builder);
+      _builder = null;
+    }
+
+    _cachedLine = null;
+    _disposed = true;
+  }
+
+  private void Build()
+  {
+    _builder = StringBuilderCache.GetNewOrCached(_lineLength);
+
+    _builder.Append(TimeStamp.Value)
+      .Append(Level.Value)
+      .Append(Message.Value)
+      .Append(CorrelationId.Value)
+      .Append(Category.Value)
+      .Append(Spacer.Value);
+  }
 }
