@@ -142,4 +142,67 @@ public class CptLoggerTests
     Assert.Contains("Something went wrong", output);
     Assert.Contains("CptLoggerTests.cs:line 123", output); // part of the stack trace
   }
+
+  [Fact]
+  public async Task Log_WithFileRecipient_WritesToFileWithExceptions()
+  {
+    // Arrange
+    await Task.Delay(100); // Ensure any previous logs are flushed
+    var logPath = new FileInfo("./TestingLogs/Xunit-CptLogger.log");
+
+    if (logPath.Directory!.Exists)
+    {
+      logPath.Directory.Delete(recursive: true);
+    }
+
+    var logger = new CptLogger(
+      category: "TestCategory",
+      provider: "TestProvider",
+      getCurrentConfig: () => new CaptainLoggerOptions
+      {
+        LogRecipients = Recipients.File,
+        FilePath = logPath.FullName,
+        FileRotation = LogRotation.None
+      },
+      getCurrentFilters: () => new LoggerFilterOptions(),
+      onLogEntry: args => Task.CompletedTask
+    );
+
+    Exception? ex = null;
+
+    try
+    {
+      throw new InvalidOperationException("Something went wrong");
+    }
+    catch (InvalidOperationException exception)
+    {
+      try
+      {
+        throw new NotSupportedException(
+          "Another exception increasing stack trace",
+          exception);
+      }
+      catch (NotSupportedException finalException)
+      {
+        ex = finalException;
+      }
+    }
+
+    // Act
+    logger.Log(
+      logLevel: LogLevel.Warning,
+      eventId: new EventId(2, "TestWarning"),
+      state: "This should go in a file.\r\nIt should be quite a long message!!\nBut this is the end!",
+      exception: ex,
+      formatter: (s, e) => s.ToString());
+
+    // Allow time for async write
+    await Task.Delay(100); // crude but avoids File.ReadAllText race
+
+    // Assert
+    LogFileSystem.AllowTestsToCloseLogFile();
+    Assert.True(File.Exists(logPath.FullName));
+    var content = await File.ReadAllTextAsync(logPath.FullName);
+    Assert.Contains("This should go in a file", content);
+  }
 }

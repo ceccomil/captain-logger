@@ -3,6 +3,20 @@
 internal static class InternalGlobals
 {
   public const string INDENT = "                                ";
+  public const int INDENT_LENGTH = 32;
+
+  public const string INDENT_NL = "\n" + INDENT;
+  public const string CRLF = "\r\n";
+  public const int CRLF_LEN = 2;
+
+  public const string ORIGINAL_FORMAT = "{OriginalFormat}";
+  public const string MESSAGE = "message";
+
+  public const string RESET = "\u001b[0m";
+
+  public static double FlushIntervalTicks { get; } = Stopwatch.Frequency * 5.0D;
+
+  public static char[] CrAndLfArray { get; } = ['\r', '\n'];
 
   public static Dictionary<LogLevel, ConsoleColor> LogLevels { get; } = new Dictionary<LogLevel, ConsoleColor>()
   {
@@ -14,59 +28,23 @@ internal static class InternalGlobals
     [LogLevel.Trace] = ConsoleColor.DarkCyan
   };
 
-  public static FileInfo GetLogFile(
-    this CaptainLoggerOptions options,
-    DateTime time,
-    int? counter = default) => options
-      .FilePath
-      .GetLogFile(options.FileRotation, time, counter);
-
-  public static FileInfo GetLogFile(
-    this string filePath,
-    LogRotation fileRotation,
-    DateTime time,
-    int? counter = default)
-  {
-    var fullPath = Path.GetFullPath(filePath);
-    var dirPath = Path.GetDirectoryName(fullPath);
-
-    if (string.IsNullOrWhiteSpace(dirPath))
-    {
-      dirPath = Path.GetFullPath("./Logs");
-    }
-
-    var file = Path.GetFileNameWithoutExtension(fullPath);
-    var ext = Path.GetExtension(fullPath);
-
-    if (!Directory.Exists(dirPath))
-    {
-      Directory.CreateDirectory(dirPath);
-    }
-
-    if (string.IsNullOrWhiteSpace(ext) || ext == ".")
-    {
-      ext = ".log";
-    }
-
-    var fileNoExt = Path.Combine(dirPath, $"{file}{fileRotation.GetTimeSuffix(time)}");
-
-    if (counter.GetValueOrDefault() > 0)
-    {
-      fileNoExt += $"_{counter:000}";
-    }
-
-    return new FileInfo($"{fileNoExt}{ext}");
-  }
-
-  public static string GetTimeSuffix(
-    this LogRotation fileRotation,
-    DateTime time) => fileRotation switch
-    {
-      LogRotation.Year => $"-{time:yyyy}",
-      LogRotation.Month => $"-{time:yyyyMM}",
-      LogRotation.Day => $"-{time:yyyyMMdd}",
-      LogRotation.Hour => $"-{time:yyyyMMddHH}",
-      LogRotation.Minute => $"-{time:yyyyMMddHHmm}",
-      _ => ""
-    };
+  public static string[] AnsiPrefix { get; } =
+  [
+    "\u001b[30m", // 0  Black
+    "\u001b[34m", // 1  DarkBlue
+    "\u001b[32m", // 2  DarkGreen
+    "\u001b[36m", // 3  DarkCyan
+    "\u001b[31m", // 4  DarkRed
+    "\u001b[35m", // 5  DarkMagenta
+    "\u001b[33m", // 6  DarkYellow
+    "\u001b[37m", // 7  Gray
+    "\u001b[90m", // 8  DarkGray   (bright black)
+    "\u001b[94m", // 9  Blue       (bright blue)
+    "\u001b[92m", // 10 Green      (bright green)
+    "\u001b[96m", // 11 Cyan       (bright cyan)
+    "\u001b[91m", // 12 Red        (bright red)
+    "\u001b[95m", // 13 Magenta    (bright magenta)
+    "\u001b[93m", // 14 Yellow     (bright yellow)
+    "\u001b[97m"  // 15 White      (bright white)
+  ];
 }

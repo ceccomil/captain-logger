@@ -199,10 +199,50 @@ public class JsonCptLoggerTests
     var lines = await File.ReadAllLinesAsync(logPath.FullName);
     Assert.Equal(logCount, lines.Length); // Expect one log entry per line
 
-    foreach (var line in lines)
+    for (var i = 0; i < logCount; i++)
     {
-      using var doc = JsonDocument.Parse(line); // Throws if corrupted
+      var tLine = lines[i];
+      using var doc = JsonDocument.Parse(lines[i]); // Throws if corrupted
       Assert.True(doc.RootElement.TryGetProperty("message", out _));
     }
+  }
+
+  [Fact]
+  public void Formatter_NeverGetsCalled()
+  {
+    // Arrange
+    static IReadOnlyList<KeyValuePair<string, object?>> GetState(double value) =>
+    [
+      new("{value1}", value),
+      new("{OriginalFormat}", "This is my value: {value1}")
+    ];
+
+    var logger = new JsonCptLogger(
+        category: "TestCategory",
+        provider: "TestProvider",
+        getCurrentConfig: () => new CaptainLoggerOptions
+        {
+          LogRecipients = Recipients.Console
+        },
+        getCurrentFilters: () => new LoggerFilterOptions(),
+        onLogEntry: args => Task.CompletedTask
+      );
+
+    var formatterCalled = false;
+
+    // Act
+    logger.Log(
+      logLevel: LogLevel.Information,
+      eventId: new EventId(0, $"MyEvent"),
+      state: GetState(100.100D),
+      exception: null,
+      formatter: (s, e) =>
+      {
+        formatterCalled = true;
+        return "";
+      });
+
+    // Assert
+    Assert.False(formatterCalled, "Formatter should not be called in JsonCptLogger");
   }
 }

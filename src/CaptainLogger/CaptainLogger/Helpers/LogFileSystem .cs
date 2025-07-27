@@ -2,13 +2,12 @@
 
 internal static class LogFileSystem
 {
-  private static byte[] _newLine = Encoding.UTF8.GetBytes(Environment.NewLine);
+  private static long _lastFlushTicks = Stopwatch.GetTimestamp();
 
   private static FileInfo? _currentLog;
   private static string _timeSuffix = "";
 
   private static FileStream? _inProcessLogFile;
-  private static StreamWriter? _inProcessLogWriter;
 
   public static FileInfo CurrentLog
   {
@@ -42,31 +41,57 @@ internal static class LogFileSystem
     }
   }
 
-  private static void CloseAndDispose(this TextWriter? stream)
-  {
-    if (stream is null)
-    {
-      return;
-    }
-
-    try
-    {
-      stream.Close();
-      stream.Dispose();
-    }
-    catch (ObjectDisposedException)
-    {
-      // Ignore if already disposed
-    }
-  }
-
   private static FileInfo InitAndLock(this FileInfo file)
   {
     _inProcessLogFile = new FileStream(file.FullName, FileMode.OpenOrCreate, FileAccess.Write);
     _inProcessLogFile.Position = _inProcessLogFile.Length;
-    _inProcessLogWriter = new StreamWriter(_inProcessLogFile, Encoding.UTF8);
 
     return file;
+  }
+
+  public static void AllowTestsToCloseLogFile()
+  {
+    _inProcessLogFile?.CloseAndDispose();
+    _currentLog = null;
+    _timeSuffix = "";
+  }
+
+  public static async Task WriteToLogFile(
+    this ArrayBufferWriter<byte> line,
+    DateTime logTime,
+    CaptainLoggerOptions config)
+  {
+    config.CheckLogFileName(logTime);
+
+    if (_inProcessLogFile is null)
+    {
+      throw new InvalidOperationException("Log filestream must be valid!");
+    }
+
+    await _inProcessLogFile.WriteAsync(line.WrittenMemory);
+
+    MaybeFlushFile();
+  }
+
+  public static async Task WriteToLogFile(
+    this LogLine line,
+    CaptainLoggerOptions config)
+  {
+    config.CheckLogFileName(line.Time);
+
+    if (_inProcessLogFile is null)
+    {
+      throw new InvalidOperationException("Log filestream must be valid!");
+    }
+
+    var data = line.AsSpan();
+    var byteCount = Encoding.UTF8.GetByteCount(data);
+    var rented = ArrayPool<byte>.Shared.Rent(byteCount);
+    var written = Encoding.UTF8.GetBytes(data, rented);
+    await _inProcessLogFile.WriteAsync(rented.AsMemory(0, written));
+    ArrayPool<byte>.Shared.Return(rented);
+
+    MaybeFlushFile();
   }
 
   private static void CheckLogFileName(
@@ -85,7 +110,6 @@ internal static class LogFileSystem
     var log = config.GetLogFile(time, counter);
 
     _inProcessLogFile.CloseAndDispose();
-    _inProcessLogWriter.CloseAndDispose();
 
     try
     {
@@ -100,46 +124,72 @@ internal static class LogFileSystem
     }
   }
 
-  public static async Task WriteToLogFile(
-    this LogLine line,
-    CaptainLoggerOptions config)
-  {
-    config.CheckLogFileName(line.Time);
+  private static FileInfo GetLogFile(
+    this CaptainLoggerOptions options,
+    DateTime time,
+    int? counter = default) => options
+      .FilePath
+      .GetLogFile(options.FileRotation, time, counter);
 
-    if (_inProcessLogWriter is null || _inProcessLogFile is null)
+  private static FileInfo GetLogFile(
+    this string filePath,
+    LogRotation fileRotation,
+    DateTime time,
+    int? counter = default)
+  {
+    var fullPath = Path.GetFullPath(filePath);
+    var dirPath = Path.GetDirectoryName(fullPath);
+
+    if (string.IsNullOrWhiteSpace(dirPath))
     {
-      throw new InvalidOperationException("Log filestream must be valid!");
+      dirPath = Path.GetFullPath("./Logs");
     }
 
-    await _inProcessLogWriter.WriteAsync(line.Content);
+    var file = Path.GetFileNameWithoutExtension(fullPath);
+    var ext = Path.GetExtension(fullPath);
 
-    _inProcessLogWriter.Flush();
-    _inProcessLogFile.Flush();
-  }
-
-  public static async Task WriteToLogFile(
-    this ArrayBufferWriter<byte> line,
-    DateTime logTime,
-    CaptainLoggerOptions config)
-  {
-    config.CheckLogFileName(logTime);
-
-    if (_inProcessLogFile is null)
+    if (!Directory.Exists(dirPath))
     {
-      throw new InvalidOperationException("Log filestream must be valid!");
+      Directory.CreateDirectory(dirPath);
     }
 
-    await _inProcessLogFile.WriteAsync(line.WrittenMemory);
-    await _inProcessLogFile.WriteAsync(_newLine);
+    if (string.IsNullOrWhiteSpace(ext) || ext == ".")
+    {
+      ext = ".log";
+    }
 
-    _inProcessLogFile.Flush();
+    var fileNoExt = Path.Combine(dirPath, $"{file}{fileRotation.GetTimeSuffix(time)}");
+
+    if (counter.GetValueOrDefault() > 0)
+    {
+      fileNoExt += $"_{counter:000}";
+    }
+
+    return new FileInfo($"{fileNoExt}{ext}");
   }
 
-  public static void AllowTestsToCloseLogFile()
+  private static string GetTimeSuffix(
+    this LogRotation fileRotation,
+    DateTime time) => fileRotation switch
+    {
+      LogRotation.Year => $"-{time:yyyy}",
+      LogRotation.Month => $"-{time:yyyyMM}",
+      LogRotation.Day => $"-{time:yyyyMMdd}",
+      LogRotation.Hour => $"-{time:yyyyMMddHH}",
+      LogRotation.Minute => $"-{time:yyyyMMddHHmm}",
+      _ => ""
+    };
+
+  private static void MaybeFlushFile()
   {
-    _inProcessLogFile?.CloseAndDispose();
-    _inProcessLogWriter?.CloseAndDispose();
-    _currentLog = null;
-    _timeSuffix = "";
+    var now = Stopwatch.GetTimestamp();
+    var prev = _lastFlushTicks;
+
+    if (now - prev < FlushIntervalTicks)
+    {
+      return;
+    }
+
+    _inProcessLogFile!.Flush();
   }
 }
