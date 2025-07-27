@@ -1,6 +1,6 @@
 ﻿namespace CaptainLogger.LoggingLogic;
 
-internal sealed class LogSegment(
+internal readonly struct LogSegment(
   string value,
   ConsoleColor color)
 {

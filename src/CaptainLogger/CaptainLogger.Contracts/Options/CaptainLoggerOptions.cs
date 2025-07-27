@@ -13,7 +13,9 @@ public class CaptainLoggerOptions : IDisposable
   /// <summary>
   /// Default Color used for messages written to the console.
   /// </summary>
-  public ConsoleColor DefaultColor { get; set; } = Console.ForegroundColor;
+  public ConsoleColor DefaultColor { get; set; } = (int)Console.ForegroundColor >= 0
+    ? Console.ForegroundColor
+    : ConsoleColor.Gray;
 
   /// <summary>
   /// If <c>true</c>, timestamps in log entries will be in UTC. Otherwise, local time is used.
