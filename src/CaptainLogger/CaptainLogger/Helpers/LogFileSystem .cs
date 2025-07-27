@@ -3,7 +3,6 @@
 internal static class LogFileSystem
 {
   private static long _lastFlushTicks = Stopwatch.GetTimestamp();
-  private static byte[] _newLine = Encoding.UTF8.GetBytes(Environment.NewLine);
 
   private static FileInfo? _currentLog;
   private static string _timeSuffix = "";
@@ -70,7 +69,6 @@ internal static class LogFileSystem
     }
 
     await _inProcessLogFile.WriteAsync(line.WrittenMemory);
-    await _inProcessLogFile.WriteAsync(_newLine);
 
     MaybeFlushFile();
   }

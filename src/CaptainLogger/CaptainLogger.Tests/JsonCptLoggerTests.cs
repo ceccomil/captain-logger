@@ -199,9 +199,10 @@ public class JsonCptLoggerTests
     var lines = await File.ReadAllLinesAsync(logPath.FullName);
     Assert.Equal(logCount, lines.Length); // Expect one log entry per line
 
-    foreach (var line in lines)
+    for (var i = 0; i < logCount; i++)
     {
-      using var doc = JsonDocument.Parse(line); // Throws if corrupted
+      var tLine = lines[i];
+      using var doc = JsonDocument.Parse(lines[i]); // Throws if corrupted
       Assert.True(doc.RootElement.TryGetProperty("message", out _));
     }
   }

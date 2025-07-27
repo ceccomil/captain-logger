@@ -33,7 +33,7 @@ internal class JsonCptLogger(
 
     if (config.LogRecipients.HasFlag(Recipients.Console))
     {
-      Console.WriteLine(Encoding.UTF8.GetString(line.WrittenSpan));
+      Console.Write(Encoding.UTF8.GetString(line.WrittenSpan));
     }
 
     if (config.LogRecipients.HasFlag(Recipients.File))
@@ -110,6 +110,9 @@ internal class JsonCptLogger(
     writer.WriteEndObject();
 
     writer.Flush();
+
+    ReadOnlySpan<byte> crAndLfBytes = [0x0D, 0x0A];
+    buffer.Write(crAndLfBytes);
 
     return buffer;
   }
