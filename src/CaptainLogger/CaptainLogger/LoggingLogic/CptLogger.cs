@@ -13,6 +13,8 @@ internal sealed class CptLogger(
     getCurrentFilters,
     onLogEntry)
 {
+  private readonly bool _useAnsi = ConsoleColourPolicy.UseAnsi;
+
   private readonly LogSegment _categorySegement = new(
     $"{INDENT}[{category}]" + CRLF,
     ConsoleColor.Magenta);
@@ -72,7 +74,7 @@ internal sealed class CptLogger(
       return;
     }
 
-    var sb = StringBuilderCache.GetNewOrCached(line.LineLength + 32);
+    var sb = new StringBuilder(line.LineLength + 32);
 
     AppendAnsi(sb, line.TimeStamp);
     AppendAnsi(sb, line.Level);
@@ -81,7 +83,7 @@ internal sealed class CptLogger(
     AppendAnsi(sb, line.Category);
     AppendAnsi(sb, line.Spacer);
 
-    Console.Write(StringBuilderCache.GetStringAndCacheIt(sb));
+    Console.Write(sb.ToString());
   }
 
   private static async Task WriteToBuffer(
