@@ -7,7 +7,11 @@ internal abstract class CptLoggerBase(
   Func<LoggerFilterOptions> getCurrentFilters,
   Func<CaptainLoggerEventArgs<object>, Task> onLogEntry) : ILogger
 {
-  private static readonly Lock _compositionLock = new();
+#if NET9_0_OR_GREATER
+  private static readonly Lock _net9Lock = new();
+#else
+  private static readonly object _net8Lock = new();
+#endif
 
   private Func<LoggerFilterOptions> GetCurrentFilters { get; } = getCurrentFilters;
   private Func<CaptainLoggerEventArgs<object>, Task> OnLogEntry { get; } = onLogEntry;
@@ -86,7 +90,10 @@ internal abstract class CptLoggerBase(
       eventId,
       exception);
 
-    lock (_compositionLock)
+#if NET9_0_OR_GREATER
+    _net9Lock.Enter();
+
+    try
     {
       _ = WriteLog(
         now,
@@ -97,6 +104,23 @@ internal abstract class CptLoggerBase(
         exception,
         formatter);
     }
+    finally
+    {
+      _net9Lock.Exit();
+    }
+#else
+    lock (_net8Lock)
+    {
+      _ = WriteLog(
+        now,
+        config,
+        logLevel,
+        state,
+        eventId,
+        exception,
+        formatter);
+    }
+#endif
   }
 
   private static DateTime GetCurrentTime(CaptainLoggerOptions config)
