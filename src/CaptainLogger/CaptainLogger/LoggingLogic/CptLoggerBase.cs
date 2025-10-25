@@ -5,7 +5,8 @@ internal abstract class CptLoggerBase(
   string provider,
   Func<CaptainLoggerOptions> getCurrentConfig,
   Func<LoggerFilterOptions> getCurrentFilters,
-  Func<CaptainLoggerEventArgs<object>, Task> onLogEntry) : ILogger
+  Func<CaptainLoggerEventArgs<object>, Task> onLogEntry,
+  IExternalScopeProvider scopes) : ILogger
 {
 #if NET9_0_OR_GREATER
   private static readonly Lock _net9Lock = new();
@@ -20,8 +21,10 @@ internal abstract class CptLoggerBase(
   public string Category { get; } = category;
   public string ProviderName { get; } = provider;
 
+  protected IExternalScopeProvider Scopes { get; } = scopes;
+
   public IDisposable? BeginScope<TState>(TState state)
-    where TState : notnull => state as IDisposable ?? null;
+    where TState : notnull => Scopes.Push(state);
 
   public bool IsEnabled(LogLevel logLevel)
   {
@@ -121,6 +124,37 @@ internal abstract class CptLoggerBase(
         formatter);
     }
 #endif
+  }
+
+  protected void ForEachScope(
+    Action<string, object?> emitKeyValue,
+    Action<object?> emitOther)
+  {
+    var config = GetCurrentConfig();
+
+    if (!config.IncludeScopes)
+    {
+      return;
+    }
+
+    Scopes?.ForEachScope((scope, state) =>
+    {
+      if (scope is IEnumerable<KeyValuePair<string, object?>> kvps)
+      {
+        foreach (var kv in kvps)
+        {
+          if (kv.Value is not null)
+          {
+            state.emitKeyValue(kv.Key, kv.Value);
+          }
+        }
+
+        return;
+      }
+
+      state.emitOther(scope);
+    }, 
+    (emitKeyValue, emitOther));
   }
 
   private static DateTime GetCurrentTime(CaptainLoggerOptions config)

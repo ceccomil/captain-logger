@@ -1,9 +1,14 @@
 ﻿namespace CaptainLogger;
 
-internal sealed class CaptainLoggerProvider : ILoggerProvider, ILogDispatcher
+internal sealed class CaptainLoggerProvider 
+  : ILoggerProvider, 
+  ILogDispatcher,
+  ISupportExternalScope
 {
   private readonly IDisposable? _onOptionsChangeToken;
   private readonly IDisposable? _onFiltersChangeToken;
+
+  private IExternalScopeProvider _scopes = new LoggerExternalScopeProvider();
 
   private volatile CaptainLoggerOptions _currentConfig;
   private volatile LoggerFilterOptions _currentFilters;
@@ -32,8 +37,15 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider, ILogDispatcher
   public ILogger CreateLogger(string categoryName) =>
     GetOrAddLogger(categoryName);
 
+  public void SetScopeProvider(IExternalScopeProvider scopeProvider)
+  {
+    scopeProvider ??= new LoggerExternalScopeProvider();
+    _scopes = scopeProvider;
+  }
+
   public void Dispose()
   {
+    LogFileSystem.FlushLogFile();
     Dispose(true);
     GC.SuppressFinalize(this);
   }
@@ -71,7 +83,8 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider, ILogDispatcher
         _currentConfig.ProviderName,
         GetCurrentConfig,
         GetCurrentFilters,
-        LogEntryCreated));
+        LogEntryCreated,
+        _scopes));
     }
 
     return Loggers.GetOrAdd(categoryName, category => new CptLogger(
@@ -79,6 +92,7 @@ internal sealed class CaptainLoggerProvider : ILoggerProvider, ILogDispatcher
       _currentConfig.ProviderName,
       GetCurrentConfig,
       GetCurrentFilters,
-      LogEntryCreated));
+      LogEntryCreated,
+      _scopes));
   }
 }

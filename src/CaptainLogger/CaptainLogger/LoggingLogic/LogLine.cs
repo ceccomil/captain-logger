@@ -7,6 +7,7 @@ internal sealed class LogLine(
   LogSegment message,
   LogSegment category,
   LogSegment correlationId,
+  LogSegment scopedValues,
   LogSegment spacer) : IDisposable
 {
   private StringBuilder? _builder;
@@ -19,6 +20,7 @@ internal sealed class LogLine(
   public LogSegment Message { get; } = message;
   public LogSegment Category { get; } = category;
   public LogSegment CorrelationId { get; } = correlationId;
+  public LogSegment ScopedValues { get; } = scopedValues;
   public LogSegment Spacer { get; } = spacer;
   public int LineLength { get; } =
     timeStamp.Value.Length +
@@ -76,10 +78,12 @@ internal sealed class LogLine(
   {
     _builder = StringBuilderCache.GetNewOrCached(LineLength);
 
-    _builder.Append(TimeStamp.Value)
+    _builder
+      .Append(TimeStamp.Value)
       .Append(Level.Value)
       .Append(Message.Value)
       .Append(CorrelationId.Value)
+      .Append(ScopedValues.Value)
       .Append(Category.Value)
       .Append(Spacer.Value);
   }

@@ -5,13 +5,15 @@ internal sealed class CptLogger(
   string provider,
   Func<CaptainLoggerOptions> getCurrentConfig,
   Func<LoggerFilterOptions> getCurrentFilters,
-  Func<CaptainLoggerEventArgs<object>, Task> onLogEntry)
+  Func<CaptainLoggerEventArgs<object>, Task> onLogEntry,
+  IExternalScopeProvider scopes)
   : CptLoggerBase(
     category,
     provider,
     getCurrentConfig,
     getCurrentFilters,
-    onLogEntry)
+    onLogEntry,
+    scopes)
 {
   private readonly bool _useAnsi = ConsoleColourPolicy.UseAnsi;
 
@@ -80,6 +82,7 @@ internal sealed class CptLogger(
     AppendAnsi(sb, line.Level);
     AppendAnsi(sb, line.Message);
     AppendAnsi(sb, line.CorrelationId);
+    AppendAnsi(sb, line.ScopedValues);
     AppendAnsi(sb, line.Category);
     AppendAnsi(sb, line.Spacer);
 
@@ -135,8 +138,55 @@ internal sealed class CptLogger(
       new(message, defaultColor),
       _categorySegement,
       new(correlationId, ConsoleColor.DarkMagenta),
+      AppendScopes(),
       _spacer);
 
     return line;
+  }
+
+  private LogSegment AppendScopes()
+  {
+    var sb = new StringBuilder();
+
+    var first = true;
+    
+    ForEachScope(
+      emitKeyValue: (k, v) =>
+      {
+        if (!first)
+        {
+          sb.Append(", ");
+        }
+
+        sb
+          .Append(k)
+          .Append('=')
+          .Append(v);
+        
+        first = false;
+      },
+      emitOther: v =>
+      {
+        if (!first)
+        {
+          sb.Append(", ");
+        }
+        
+        sb
+          .Append("scope=")
+          .Append(v);
+        
+        first = false;
+      });
+
+    if (sb.Length > 0)
+    {
+      sb.Insert(0, INDENT + "[" );
+      sb.Append(']' + CRLF);
+    }
+
+    return new LogSegment(
+      sb.ToString(),
+      ConsoleColor.Cyan);
   }
 }

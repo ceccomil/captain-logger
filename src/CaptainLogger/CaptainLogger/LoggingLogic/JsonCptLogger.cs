@@ -5,13 +5,15 @@ internal class JsonCptLogger(
   string provider,
   Func<CaptainLoggerOptions> getCurrentConfig,
   Func<LoggerFilterOptions> getCurrentFilters,
-  Func<CaptainLoggerEventArgs<object>, Task> onLogEntry)
+  Func<CaptainLoggerEventArgs<object>, Task> onLogEntry,
+  IExternalScopeProvider scopes)
   : CptLoggerBase(
     category,
     provider,
     getCurrentConfig,
     getCurrentFilters,
-    onLogEntry)
+    onLogEntry,
+    scopes)
 {
   protected override async Task WriteLog<TState>(
     DateTime time,
@@ -106,6 +108,7 @@ internal class JsonCptLogger(
     }
 
     WriteAdditionalProperties(config, writer);
+    AppendExternalScopes(writer);
 
     writer.WriteEndObject();
 
@@ -277,5 +280,22 @@ internal class JsonCptLogger(
         writer.WriteStringValue(value.ToString());
         break;
     }
+  }
+
+  private void AppendExternalScopes(Utf8JsonWriter writer)
+  {
+    ForEachScope(
+      emitKeyValue: (k, v) =>
+      {
+        v ??= "null";
+        writer.WritePropertyName(k); // or $"scope.{k}"
+        WritePrimitive(writer, v);
+      },
+      emitOther: v =>
+      {
+        v ??= "null";
+        writer.WritePropertyName("scope");
+        WritePrimitive(writer, v);
+      });
   }
 }
