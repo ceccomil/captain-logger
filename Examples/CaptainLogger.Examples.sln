@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11111.16 d18.0
+VisualStudioVersion = 18.0.11111.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{35F9EC95-1109-402E-8723-0826ABFD5898}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,6 +13,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net9.VerySimpleUseCaseNoColors", "Net9.VerySimpleUseCaseNoColors\Net9.VerySimpleUseCaseNoColors.csproj", "{34E51568-541E-7885-59F6-0F73B9D3F367}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net10.VerySimpleUseCase", "Net10.VerySimpleUseCase\Net10.VerySimpleUseCase.csproj", "{28811FB9-AA86-279C-3BC3-9C939CEF2756}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net8.WebApiUseCase", "Net8.WebApiUseCase\Net8.WebApiUseCase.csproj", "{D7F33C12-AAF1-4F26-877B-62F6099C266D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net9.WebApiUseCase", "Net9.WebApiUseCase\Net9.WebApiUseCase.csproj", "{334B15AE-52F6-C404-EAAF-5A8527266861}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net10.WebApiUseCase", "Net10.WebApiUseCase\Net10.WebApiUseCase.csproj", "{ADB0EEEF-2848-9FE2-FD12-8FA3908F4154}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +38,18 @@ Global
 		{28811FB9-AA86-279C-3BC3-9C939CEF2756}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28811FB9-AA86-279C-3BC3-9C939CEF2756}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28811FB9-AA86-279C-3BC3-9C939CEF2756}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7F33C12-AAF1-4F26-877B-62F6099C266D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7F33C12-AAF1-4F26-877B-62F6099C266D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7F33C12-AAF1-4F26-877B-62F6099C266D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7F33C12-AAF1-4F26-877B-62F6099C266D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{334B15AE-52F6-C404-EAAF-5A8527266861}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{334B15AE-52F6-C404-EAAF-5A8527266861}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{334B15AE-52F6-C404-EAAF-5A8527266861}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{334B15AE-52F6-C404-EAAF-5A8527266861}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADB0EEEF-2848-9FE2-FD12-8FA3908F4154}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADB0EEEF-2848-9FE2-FD12-8FA3908F4154}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADB0EEEF-2848-9FE2-FD12-8FA3908F4154}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADB0EEEF-2848-9FE2-FD12-8FA3908F4154}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

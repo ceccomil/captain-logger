@@ -23,32 +23,6 @@ internal static class LogFileSystem
     }
   }
 
-  private static void CloseAndDispose(this Stream? stream)
-  {
-    if (stream is null)
-    {
-      return;
-    }
-
-    try
-    {
-      stream.Close();
-      stream.Dispose();
-    }
-    catch (ObjectDisposedException)
-    {
-      // Ignore if already disposed
-    }
-  }
-
-  private static FileInfo InitAndLock(this FileInfo file)
-  {
-    _inProcessLogFile = new FileStream(file.FullName, FileMode.OpenOrCreate, FileAccess.Write);
-    _inProcessLogFile.Position = _inProcessLogFile.Length;
-
-    return file;
-  }
-
   public static void AllowTestsToCloseLogFile()
   {
     _inProcessLogFile?.CloseAndDispose();
@@ -92,6 +66,38 @@ internal static class LogFileSystem
     ArrayPool<byte>.Shared.Return(rented);
 
     MaybeFlushFile();
+  }
+
+  public static void FlushLogFile()
+  {
+    _inProcessLogFile?.Flush();
+    _lastFlushTicks = Stopwatch.GetTimestamp();
+  }
+
+  private static void CloseAndDispose(this Stream? stream)
+  {
+    if (stream is null)
+    {
+      return;
+    }
+
+    try
+    {
+      stream.Close();
+      stream.Dispose();
+    }
+    catch (ObjectDisposedException)
+    {
+      // Ignore if already disposed
+    }
+  }
+
+  private static FileInfo InitAndLock(this FileInfo file)
+  {
+    _inProcessLogFile = new FileStream(file.FullName, FileMode.OpenOrCreate, FileAccess.Write);
+    _inProcessLogFile.Position = _inProcessLogFile.Length;
+
+    return file;
   }
 
   private static void CheckLogFileName(
@@ -191,5 +197,6 @@ internal static class LogFileSystem
     }
 
     _inProcessLogFile!.Flush();
+    _lastFlushTicks = now;
   }
 }

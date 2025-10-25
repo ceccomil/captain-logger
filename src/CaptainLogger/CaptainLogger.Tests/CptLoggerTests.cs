@@ -15,7 +15,8 @@ public class CptLoggerTests
         LogRecipients = Recipients.Console
       },
       getCurrentFilters: () => new LoggerFilterOptions(),
-      onLogEntry: args => Task.CompletedTask
+      onLogEntry: args => Task.CompletedTask,
+      new LoggerExternalScopeProvider()
     );
 
     Assert.NotNull(logger); // just confirms creation
@@ -33,7 +34,8 @@ public class CptLoggerTests
         LogRecipients = Recipients.Console
       },
       getCurrentFilters: () => new LoggerFilterOptions(),
-      onLogEntry: args => Task.CompletedTask
+      onLogEntry: args => Task.CompletedTask,
+      new LoggerExternalScopeProvider()
     );
 
     using var sw = new StringWriter();
@@ -77,7 +79,8 @@ public class CptLoggerTests
         FileRotation = LogRotation.None
       },
       getCurrentFilters: () => new LoggerFilterOptions(),
-      onLogEntry: args => Task.CompletedTask
+      onLogEntry: args => Task.CompletedTask,
+      new LoggerExternalScopeProvider()
     );
 
     // Act
@@ -110,7 +113,8 @@ public class CptLoggerTests
         LogRecipients = Recipients.Console
       },
       getCurrentFilters: () => new LoggerFilterOptions(),
-      onLogEntry: args => Task.CompletedTask
+      onLogEntry: args => Task.CompletedTask,
+      new LoggerExternalScopeProvider()
     );
 
     using var sw = new StringWriter();
@@ -140,7 +144,7 @@ public class CptLoggerTests
     // Assert
     var output = sw.ToString();
     Assert.Contains("Something went wrong", output);
-    Assert.Contains("CptLoggerTests.cs:line 123", output); // part of the stack trace
+    Assert.Contains("CptLoggerTests.cs:line 127", output); // part of the stack trace
   }
 
   [Fact]
@@ -165,7 +169,8 @@ public class CptLoggerTests
         FileRotation = LogRotation.None
       },
       getCurrentFilters: () => new LoggerFilterOptions(),
-      onLogEntry: args => Task.CompletedTask
+      onLogEntry: args => Task.CompletedTask,
+      new LoggerExternalScopeProvider()
     );
 
     Exception? ex = null;
@@ -204,5 +209,44 @@ public class CptLoggerTests
     Assert.True(File.Exists(logPath.FullName));
     var content = await File.ReadAllTextAsync(logPath.FullName);
     Assert.Contains("This should go in a file", content);
+  }
+
+  [Fact]
+  public void Log_WithScope_IncludesScopeInConsoleOutput()
+  {
+    // Arrange
+    var logger = new CptLogger(
+      category: "TestCategory",
+      provider: "TestProvider",
+      getCurrentConfig: () => new CaptainLoggerOptions
+      {
+        LogRecipients = Recipients.Console,
+        IncludeScopes = true
+      },
+      getCurrentFilters: () => new LoggerFilterOptions(),
+      onLogEntry: args => Task.CompletedTask,
+      new LoggerExternalScopeProvider()
+    );
+
+    using var sw = new StringWriter();
+    Console.SetOut(sw);
+
+    var scopeValue = "MyScopeValue";
+    using (logger.BeginScope(scopeValue))
+    {
+      logger.Log(
+        logLevel: LogLevel.Information,
+        eventId: new EventId(4, "ScopeTest"),
+        state: "Message with scope",
+        exception: null,
+        formatter: (s, e) => s.ToString());
+    }
+
+    Console.Out.Flush();
+
+    // Assert
+    var output = sw.ToString();
+    Assert.Contains(scopeValue, output);
+    Assert.Contains("Message with scope", output);
   }
 }

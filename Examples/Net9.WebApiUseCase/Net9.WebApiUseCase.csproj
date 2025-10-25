@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WebApiUseCase</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CaptainLogger" Version="4.10.1" />
+    <PackageReference Include="CaptainLogger.Extensions.Generator" Version="4.10.1" />
+  </ItemGroup>
+
+</Project>

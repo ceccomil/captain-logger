@@ -110,6 +110,11 @@ public class CaptainLoggerOptions : IDisposable
   public string ProviderName { get; set; } = "CaptainLoggerProvider";
 
   /// <summary>
+  /// Gets or sets a value indicating whether to include scoped values in log entries.
+  /// </summary>
+  public bool IncludeScopes { get; set; } = false;
+
+  /// <summary>
   /// Disposes the logger options and any associated resources, such as the <see cref="LoggerBuffer"/>.
   /// </summary>
   public void Dispose()

@@ -15,7 +15,8 @@ public class JsonCptLoggerTests
         LogRecipients = Recipients.Console
       },
       getCurrentFilters: () => new LoggerFilterOptions(),
-      onLogEntry: args => Task.CompletedTask
+      onLogEntry: args => Task.CompletedTask,
+      new LoggerExternalScopeProvider()
     );
 
     Assert.NotNull(logger); // just confirms creation
@@ -33,7 +34,8 @@ public class JsonCptLoggerTests
         LogRecipients = Recipients.Console
       },
       getCurrentFilters: () => new LoggerFilterOptions(),
-      onLogEntry: args => Task.CompletedTask
+      onLogEntry: args => Task.CompletedTask,
+      new LoggerExternalScopeProvider()
     );
 
     using var sw = new StringWriter();
@@ -78,7 +80,8 @@ public class JsonCptLoggerTests
         FileRotation = LogRotation.None
       },
       getCurrentFilters: () => new LoggerFilterOptions(),
-      onLogEntry: args => Task.CompletedTask
+      onLogEntry: args => Task.CompletedTask,
+      new LoggerExternalScopeProvider()
     );
 
     // Act
@@ -112,7 +115,8 @@ public class JsonCptLoggerTests
         LogRecipients = Recipients.Console
       },
       getCurrentFilters: () => new LoggerFilterOptions(),
-      onLogEntry: args => Task.CompletedTask
+      onLogEntry: args => Task.CompletedTask,
+      new LoggerExternalScopeProvider()
     );
 
     using var sw = new StringWriter();
@@ -145,7 +149,7 @@ public class JsonCptLoggerTests
     using var doc = JsonDocument.Parse(output);
     var exObj = doc.RootElement.GetProperty("exception");
     var stackTrace = exObj.GetProperty("stackTrace").GetString();
-    Assert.Contains("CptLoggerTests.cs:line 125", stackTrace); // part of the stack trace
+    Assert.Contains("CptLoggerTests.cs:line 129", stackTrace); // part of the stack trace
   }
 
   [Fact]
@@ -172,7 +176,8 @@ public class JsonCptLoggerTests
         FileRotation = LogRotation.None
       },
       getCurrentFilters: () => new LoggerFilterOptions(),
-      onLogEntry: args => Task.CompletedTask
+      onLogEntry: args => Task.CompletedTask,
+      new LoggerExternalScopeProvider()
     );
 
     const int logCount = 1_000;
@@ -225,7 +230,8 @@ public class JsonCptLoggerTests
           LogRecipients = Recipients.Console
         },
         getCurrentFilters: () => new LoggerFilterOptions(),
-        onLogEntry: args => Task.CompletedTask
+        onLogEntry: args => Task.CompletedTask,
+        new LoggerExternalScopeProvider()
       );
 
     var formatterCalled = false;
@@ -244,5 +250,44 @@ public class JsonCptLoggerTests
 
     // Assert
     Assert.False(formatterCalled, "Formatter should not be called in JsonCptLogger");
+  }
+
+  [Fact]
+  public void Log_WithScope_IncludesScopeInConsoleOutput()
+  {
+    // Arrange
+    var logger = new JsonCptLogger(
+      category: "TestCategory",
+      provider: "TestProvider",
+      getCurrentConfig: () => new CaptainLoggerOptions
+      {
+        LogRecipients = Recipients.Console,
+        IncludeScopes = true
+      },
+      getCurrentFilters: () => new LoggerFilterOptions(),
+      onLogEntry: args => Task.CompletedTask,
+      new LoggerExternalScopeProvider()
+    );
+
+    using var sw = new StringWriter();
+    Console.SetOut(sw);
+
+    var scopeValue = "MyScopeValue";
+    using (logger.BeginScope(scopeValue))
+    {
+      logger.Log(
+        logLevel: LogLevel.Information,
+        eventId: new EventId(4, "ScopeTest"),
+        state: "Message with scope",
+        exception: null,
+        formatter: (s, e) => s.ToString());
+    }
+
+    Console.Out.Flush();
+
+    // Assert
+    var output = sw.ToString();
+    Assert.Contains(scopeValue, output);
+    Assert.Contains("Message with scope", output);
   }
 }
