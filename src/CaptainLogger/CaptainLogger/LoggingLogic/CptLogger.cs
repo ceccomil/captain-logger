@@ -51,7 +51,7 @@ internal sealed class CptLogger(
 
     if (config.LogRecipients.HasFlag(Recipients.File))
     {
-      await line.WriteToLogFile(config);
+      await WriteToFile(line, config);
     }
 
     if (config.LogRecipients.HasFlag(Recipients.Stream))
@@ -89,6 +89,13 @@ internal sealed class CptLogger(
     Console.Write(sb.ToString());
   }
 
+  private static async Task WriteToFile(
+    LogLine line,
+    CaptainLoggerOptions config)
+  {
+    await line.WriteToLogFile(config);
+  }
+
   private static async Task WriteToBuffer(
     LogLine line,
     CaptainLoggerOptions config)
@@ -99,7 +106,7 @@ internal sealed class CptLogger(
         "Log Buffer stream must be a valid opened `System.Stream`!");
     }
 
-    var data = line.AsSpan();
+    var data = line.AsSpan(config.RemoveAnsiCodes);
     var byteCount = Encoding.UTF8.GetByteCount(data);
     var rented = ArrayPool<byte>.Shared.Rent(byteCount);
     var written = Encoding.UTF8.GetBytes(data, rented);

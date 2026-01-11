@@ -249,4 +249,49 @@ public class CptLoggerTests
     Assert.Contains(scopeValue, output);
     Assert.Contains("Message with scope", output);
   }
+
+  [Fact]
+  public async Task Log_WithColoredMessage_WritesToFileNoAnsiCodes()
+  {
+    // Arrange
+    await Task.Delay(100); // Ensure any previous logs are flushed
+    var logPath = new FileInfo("./TestingLogs/Xunit-CptLogger.log");
+
+    if (logPath.Directory!.Exists)
+    {
+      logPath.Directory.Delete(recursive: true);
+    }
+
+    var logger = new CptLogger(
+      category: "TestCategory",
+      provider: "TestProvider",
+      getCurrentConfig: () => new CaptainLoggerOptions
+      {
+        LogRecipients = Recipients.File,
+        FilePath = logPath.FullName,
+        FileRotation = LogRotation.None,
+        RemoveAnsiCodes = true
+      },
+      getCurrentFilters: () => new LoggerFilterOptions(),
+      onLogEntry: args => Task.CompletedTask,
+      new LoggerExternalScopeProvider()
+    );
+
+    // Act
+    logger.Log(
+      logLevel: LogLevel.Warning,
+      eventId: new EventId(2, "TestWarning"),
+      state: "This is \x1b[34mblue\x1b[0m, and this is \x1b[33myellow\x1b[0m.",
+      exception: null,
+      formatter: (s, e) => s.ToString());
+
+    // Allow time for async write
+    await Task.Delay(100); // crude but avoids File.ReadAllText race
+
+    // Assert
+    LogFileSystem.AllowTestsToCloseLogFile();
+    Assert.True(File.Exists(logPath.FullName));
+    var content = await File.ReadAllTextAsync(logPath.FullName);
+    Assert.Contains("This is blue, and this is yellow.", content);
+  }
 }

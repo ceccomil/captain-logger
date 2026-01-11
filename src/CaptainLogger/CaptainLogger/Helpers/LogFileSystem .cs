@@ -58,7 +58,7 @@ internal static class LogFileSystem
       throw new InvalidOperationException("Log filestream must be valid!");
     }
 
-    var data = line.AsSpan();
+    var data = line.AsSpan(config.RemoveAnsiCodes);
     var byteCount = Encoding.UTF8.GetByteCount(data);
     var rented = ArrayPool<byte>.Shared.Rent(byteCount);
     var written = Encoding.UTF8.GetBytes(data, rented);

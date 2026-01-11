@@ -24,6 +24,7 @@ public static class Bootstrapping
         //x.HighPerfStructuredLogging = true;
         //x.StructuredLogMetadata.Add("Application", "WebApiUseCase");
         x.IncludeScopes = true;
+        x.RemoveAnsiCodes = true;
       });
 
     return builder;
