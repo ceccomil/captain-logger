@@ -1,6 +1,6 @@
 ﻿namespace CaptainLogger.LoggingLogic;
 
-internal sealed class LogLine(
+internal sealed partial class LogLine(
   DateTime time,
   LogSegment timeStamp,
   LogSegment level,
@@ -13,6 +13,8 @@ internal sealed class LogLine(
   private StringBuilder? _builder;
   private string? _cachedLine;
   private bool _disposed;
+
+  private static readonly Regex _ansiRegex = AnsiRegex();
 
   public DateTime Time { get; } = time;
   public LogSegment TimeStamp { get; } = timeStamp;
@@ -32,6 +34,11 @@ internal sealed class LogLine(
 
   public override string ToString()
   {
+    return ToString(removeAnsiCodes: false);
+  }
+
+  public string ToString(bool removeAnsiCodes)
+  {
     ObjectDisposedException.ThrowIf(_disposed, typeof(LogLine));
 
     if (_cachedLine is not null)
@@ -41,7 +48,7 @@ internal sealed class LogLine(
 
     if (_builder is null)
     {
-      Build();
+      Build(removeAnsiCodes);
     }
 
     _cachedLine = StringBuilderCache.GetStringAndCacheIt(_builder!);
@@ -49,7 +56,8 @@ internal sealed class LogLine(
     return _cachedLine;
   }
 
-  public ReadOnlySpan<char> AsSpan() => ToString().AsSpan();
+  public ReadOnlySpan<char> AsSpan(bool removeAnsiCodes) => ToString(removeAnsiCodes)
+    .AsSpan();
 
   public void Dispose()
   {
@@ -74,17 +82,38 @@ internal sealed class LogLine(
     _disposed = true;
   }
 
-  private void Build()
+  private void Build(bool removeAnsiCodes)
   {
     _builder = StringBuilderCache.GetNewOrCached(LineLength);
 
     _builder
       .Append(TimeStamp.Value)
-      .Append(Level.Value)
-      .Append(Message.Value)
+      .Append(Level.Value);
+
+    AppendMessage(removeAnsiCodes);
+
+    _builder
       .Append(CorrelationId.Value)
       .Append(ScopedValues.Value)
       .Append(Category.Value)
       .Append(Spacer.Value);
   }
+
+  private void AppendMessage(bool removeAnsiCodes)
+  {
+    if (!removeAnsiCodes)
+    {
+      _builder!.Append(Message.Value);
+      return;
+    }
+
+    _builder!.Append(_ansiRegex.Replace(
+      Message.Value, 
+      string.Empty));
+  }
+
+  [GeneratedRegex(
+    @"\x1B\[[0-?]*[ -/]*[@-~]|\x1B\][^\x07]*(?:\x07|\x1B\\)|\x1B[@-Z\\-_]", 
+    RegexOptions.Compiled)]
+  private static partial Regex AnsiRegex();
 }

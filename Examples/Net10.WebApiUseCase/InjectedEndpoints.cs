@@ -27,7 +27,7 @@ internal class InjectedEndpoints(
     foreach (var item in forecast)
     {
       _logger.LogInformation(
-        "Generated weather forecast for {Date}",
+        "Generated weather forecast for \x1b[33m{Date}\x1b[0m.",
         item.Date);
     }
 

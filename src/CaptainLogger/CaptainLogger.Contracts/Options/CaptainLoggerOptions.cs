@@ -115,6 +115,14 @@ public class CaptainLoggerOptions : IDisposable
   public bool IncludeScopes { get; set; } = false;
 
   /// <summary>
+  /// Gets or sets a value indicating whether ANSI escape codes should be removed from non-console log outputs.
+  /// </summary>
+  /// <remarks>
+  /// Does not affect <see cref="HighPerfStructuredLogging"/> logging behaviour where input are left untouched.
+  /// </remarks>
+  public bool RemoveAnsiCodes { get; set; }
+
+  /// <summary>
   /// Disposes the logger options and any associated resources, such as the <see cref="LoggerBuffer"/>.
   /// </summary>
   public void Dispose()
