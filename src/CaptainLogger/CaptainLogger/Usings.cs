@@ -1,4 +1,5 @@
-﻿global using CaptainLogger.Contracts.EventsArgs;
+﻿global using CaptainLogger.Contracts;
+global using CaptainLogger.Contracts.EventsArgs;
 global using CaptainLogger.Contracts.Options;
 global using CaptainLogger.Helpers;
 global using CaptainLogger.LoggingLogic;
