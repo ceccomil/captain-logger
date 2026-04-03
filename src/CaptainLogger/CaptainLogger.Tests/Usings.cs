@@ -2,5 +2,6 @@
 global using CaptainLogger.Helpers;
 global using CaptainLogger.LoggingLogic;
 global using Microsoft.Extensions.Logging;
+global using System.Reflection;
 global using System.Text.Json;
 global using Xunit;
