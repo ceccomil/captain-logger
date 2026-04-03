@@ -27,6 +27,7 @@ internal static class LogFileSystem
 
   public static void AllowTestsToCloseLogFile()
   {
+    FlushLogFile();
     _inProcessLogFile?.CloseAndDispose();
     _currentLog = null;
     _timeSuffix = "";
@@ -110,7 +111,15 @@ internal static class LogFileSystem
 
     try
     {
-      _inProcessLogFile?.Flush();
+      try
+      {
+        _inProcessLogFile?.Flush();
+      }
+      catch (ObjectDisposedException)
+      {
+        // Ignore if already disposed
+      }
+
       _lastFlushTicks = Stopwatch.GetTimestamp();
     }
     finally
