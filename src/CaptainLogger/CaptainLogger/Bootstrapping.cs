@@ -28,7 +28,8 @@ public static class Bootstrapping
       .AddSingleton<ICaptainLoggerFlusher>(x => x.GetRequiredService<CaptainLoggerProvider>())
       .TryAddEnumerable(
         ServiceDescriptor
-        .Singleton<ILoggerProvider>(x => x.GetRequiredService<CaptainLoggerProvider>()));
+        .Singleton<ILoggerProvider, CaptainLoggerProvider>(x => 
+          x.GetRequiredService<CaptainLoggerProvider>()));
 
     LoggerProviderOptions
         .RegisterProviderOptions<CaptainLoggerOptions, CaptainLoggerProvider>(builder.Services);
