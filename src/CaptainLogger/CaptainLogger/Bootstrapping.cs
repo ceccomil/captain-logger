@@ -21,6 +21,7 @@ public static class Bootstrapping
       .Services
       .AddSingleton(typeof(ICaptainLogger<>), typeof(CaptainLogger<>))
       .AddSingleton(x => (ILogDispatcher)x.GetRequiredService<ILoggerProvider>())
+      .AddSingleton(x => (ICaptainLoggerFlusher)x.GetRequiredService<ILoggerProvider>())
       .TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, CaptainLoggerProvider>());
 
     LoggerProviderOptions

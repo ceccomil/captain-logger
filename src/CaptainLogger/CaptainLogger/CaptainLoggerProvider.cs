@@ -3,7 +3,8 @@
 internal sealed class CaptainLoggerProvider 
   : ILoggerProvider, 
   ILogDispatcher,
-  ISupportExternalScope
+  ISupportExternalScope,
+  ICaptainLoggerFlusher
 {
   private readonly IDisposable? _onOptionsChangeToken;
   private readonly IDisposable? _onFiltersChangeToken;
@@ -34,6 +35,16 @@ internal sealed class CaptainLoggerProvider
   public CaptainLoggerOptions GetCurrentConfig() => _currentConfig;
   public LoggerFilterOptions GetCurrentFilters() => _currentFilters;
 
+  public void Flush()
+  {
+    LogFileSystem.FlushLogFile();
+  }
+
+  public Task FlushAsync(CancellationToken cancellationToken = default)
+  {
+    return LogFileSystem.FlushLogFileAsync(cancellationToken);
+  }
+
   public ILogger CreateLogger(string categoryName) =>
     GetOrAddLogger(categoryName);
 
@@ -45,7 +56,7 @@ internal sealed class CaptainLoggerProvider
 
   public void Dispose()
   {
-    LogFileSystem.FlushLogFile();
+    Flush();
     Dispose(true);
     GC.SuppressFinalize(this);
   }

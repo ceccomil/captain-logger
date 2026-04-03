@@ -2,6 +2,8 @@
 
 internal static class LogFileSystem
 {
+  private static readonly SemaphoreSlim _fileGate = new(1, 1);
+
   private static long _lastFlushTicks = Stopwatch.GetTimestamp();
 
   private static FileInfo? _currentLog;
@@ -35,43 +37,109 @@ internal static class LogFileSystem
     DateTime logTime,
     CaptainLoggerOptions config)
   {
-    config.CheckLogFileName(logTime);
+    await _fileGate
+      .WaitAsync()
+      .ConfigureAwait(false);
 
-    if (_inProcessLogFile is null)
+    try
     {
-      throw new InvalidOperationException("Log filestream must be valid!");
+      config.CheckLogFileName(logTime);
+
+      if (_inProcessLogFile is null)
+      {
+        throw new InvalidOperationException("Log filestream must be valid!");
+      }
+
+      await _inProcessLogFile
+        .WriteAsync(line.WrittenMemory)
+        .ConfigureAwait(false);
+
+      MaybeFlushFile();
     }
-
-    await _inProcessLogFile.WriteAsync(line.WrittenMemory);
-
-    MaybeFlushFile();
+    finally
+    {
+      _fileGate.Release();
+    }
   }
 
   public static async Task WriteToLogFile(
     this LogLine line,
     CaptainLoggerOptions config)
   {
-    config.CheckLogFileName(line.Time);
+    await _fileGate
+      .WaitAsync()
+      .ConfigureAwait(false);
 
-    if (_inProcessLogFile is null)
+    try
     {
-      throw new InvalidOperationException("Log filestream must be valid!");
+      config.CheckLogFileName(line.Time);
+
+      if (_inProcessLogFile is null)
+      {
+        throw new InvalidOperationException("Log filestream must be valid!");
+      }
+
+      var data = line.AsSpan(config.RemoveAnsiCodes);
+      var byteCount = Encoding.UTF8.GetByteCount(data);
+      var rented = ArrayPool<byte>.Shared.Rent(byteCount);
+
+      try
+      {
+        var written = Encoding.UTF8.GetBytes(data, rented);
+
+        await _inProcessLogFile
+          .WriteAsync(rented.AsMemory(0, written))
+          .ConfigureAwait(false);
+      }
+      finally
+      {
+        ArrayPool<byte>.Shared.Return(rented);
+      }
+
+      MaybeFlushFile();
     }
-
-    var data = line.AsSpan(config.RemoveAnsiCodes);
-    var byteCount = Encoding.UTF8.GetByteCount(data);
-    var rented = ArrayPool<byte>.Shared.Rent(byteCount);
-    var written = Encoding.UTF8.GetBytes(data, rented);
-    await _inProcessLogFile.WriteAsync(rented.AsMemory(0, written));
-    ArrayPool<byte>.Shared.Return(rented);
-
-    MaybeFlushFile();
+    finally
+    {
+      _fileGate.Release();
+    }
   }
 
   public static void FlushLogFile()
   {
-    _inProcessLogFile?.Flush();
-    _lastFlushTicks = Stopwatch.GetTimestamp();
+    _fileGate.Wait();
+
+    try
+    {
+      _inProcessLogFile?.Flush();
+      _lastFlushTicks = Stopwatch.GetTimestamp();
+    }
+    finally
+    {
+      _fileGate.Release();
+    }
+  }
+
+  public static async Task FlushLogFileAsync(CancellationToken cancellationToken = default)
+  {
+    await _fileGate
+      .WaitAsync(cancellationToken)
+      .ConfigureAwait(false);
+
+    try
+    {
+      if (_inProcessLogFile is not null)
+      {
+        await _inProcessLogFile
+          .FlushAsync(cancellationToken)
+          .ConfigureAwait(false);
+      }
+
+      _lastFlushTicks = Stopwatch.GetTimestamp();
+    }
+    finally
+    {
+      _fileGate.Release();
+    }
   }
 
   private static void CloseAndDispose(this Stream? stream)
