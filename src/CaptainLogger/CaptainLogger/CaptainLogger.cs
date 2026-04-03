@@ -25,18 +25,9 @@ internal sealed class CaptainLogger<TCategory>
 
   public FileInfo CurrentLogFile => LogFileSystem.CurrentLog;
 
-  public CaptainLogger(
-    ILogger<TCategory> logger,
-    ILoggerProvider loggerProvider)
+  public CaptainLogger(ILogger<TCategory> logger)
   {
     RuntimeLogger = logger;
-
-    if (loggerProvider is not CaptainLoggerProvider lp)
-    {
-      throw new ArgumentException(
-        $"The provided logger provider must be of type {nameof(CaptainLoggerProvider)}.",
-        nameof(loggerProvider));
-    }
   }
 
   public void TraceLog(string message, Exception? exception = null)
