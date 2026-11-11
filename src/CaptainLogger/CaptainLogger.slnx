@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../../.github/workflows/dotnet.yml" />
+    <File Path="../../README.md" />
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="CaptainLogger.Contracts/CaptainLogger.Contracts.csproj" />
+  <Project Path="CaptainLogger.Extensions.Generator.Tests/CaptainLogger.Extensions.Generator.Tests.csproj" />
+  <Project Path="CaptainLogger.Extensions.Generator/CaptainLogger.Extensions.Generator.csproj" />
+  <Project Path="CaptainLogger.Tests/CaptainLogger.Tests.csproj" />
+  <Project Path="CaptainLogger/CaptainLogger.csproj" />
+</Solution>
