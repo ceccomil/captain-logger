@@ -4,8 +4,4 @@
   </Folder>
   <Project Path="Net10.VerySimpleUseCase/Net10.VerySimpleUseCase.csproj" />
   <Project Path="Net10.WebApiUseCase/Net10.WebApiUseCase.csproj" />
-  <Project Path="Net8.VerySimpleUseCase/Net8.VerySimpleUseCase.csproj" />
-  <Project Path="Net8.WebApiUseCase/Net8.WebApiUseCase.csproj" />
-  <Project Path="Net9.VerySimpleUseCaseNoColors/Net9.VerySimpleUseCaseNoColors.csproj" />
-  <Project Path="Net9.WebApiUseCase/Net9.WebApiUseCase.csproj" />
 </Solution>
