@@ -4,4 +4,6 @@
   </Folder>
   <Project Path="Net10.VerySimpleUseCase/Net10.VerySimpleUseCase.csproj" />
   <Project Path="Net10.WebApiUseCase/Net10.WebApiUseCase.csproj" />
+  <Project Path="Net11.VerySimpleUseCase/Net11.VerySimpleUseCase.csproj" />
+  <Project Path="Net11.WebApiUseCase/Net11.WebApiUseCase.csproj" />
 </Solution>
