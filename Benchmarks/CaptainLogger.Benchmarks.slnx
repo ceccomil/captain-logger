@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="ReadMe.md" />
+  </Folder>
+  <Project Path="CaptainLogger.Benchmarks/CaptainLogger.Benchmarks.csproj" />
+  <Project Path="CaptainLogger.Json.Benchmarks/CaptainLogger.Json.Benchmarks.csproj" />
+  <Project Path="Serilog.Benchmarks/Serilog.Benchmarks.csproj" />
+  <Project Path="Serilog.Json.Benchmarks/Serilog.Json.Benchmarks.csproj" />
+</Solution>

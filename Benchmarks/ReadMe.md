@@ -41,3 +41,47 @@ QEMU Virtual CPU version 2.5+ 3.40GHz, 2 CPU, 24 logical and 24 physical cores
 | LogsInParallel     | 907,951,997.00 ns | 25,862,899.354 ns | 76,257,347.809 ns | 3000.0000 | 25633312 B |
 | OneLogLine         |     172,775.02 ns |      4,654.547 ns |     13,724.038 ns |    0.2441 |     3491 B |
 | OneLogLineDisabled |          10.95 ns |          0.076 ns |          0.071 ns |    0.0038 |       32 B |
+
+```
+BenchmarkDotNet v0.15.8, Windows 11 (10.0.26100.9711/24H2/2024Update/HudsonValley)
+QEMU Virtual CPU version 2.5+ 3.40GHz, 2 CPU, 24 logical and 24 physical cores
+.NET SDK 11.0.100
+  [Host]     : .NET 10.0.15 (10.0.15, 10.0.1526.53008), X64 RyuJIT x86-64-v2
+  DefaultJob : .NET 10.0.15 (10.0.15, 10.0.1526.53008), X64 RyuJIT x86-64-v2
+
+```
+# Benchmark for Pure Captain Logger (CaptainLogger.Benchmarks)
+
+| Method             | Mean                 | Error              | StdDev              | Median               | Gen0      | Gen1      | Allocated  |
+|------------------- |---------------------:|-------------------:|--------------------:|---------------------:|----------:|----------:|-----------:|
+| LogsInParallel     | 1,735,617,201.000 ns | 53,601,469.5995 ns | 158,045,153.9607 ns | 1,743,558,800.000 ns | 2000.0000 | 1000.0000 | 18969480 B |
+| OneLogLine         |       242,902.583 ns |     10,033.6376 ns |      29,584.4089 ns |       257,555.200 ns |         - |         - |     1820 B |
+| OneLogLineDisabled |             7.067 ns |          0.0837 ns |           0.0783 ns |             7.089 ns |    0.0038 |         - |       32 B |
+
+
+# Benchmark for High Perf Captain Logger (CaptainLogger.Json.Benchmarks)
+
+| Method             | Mean               | Error              | StdDev             | Gen0      | Gen1      | Gen2      | Allocated  |
+|------------------- |-------------------:|-------------------:|-------------------:|----------:|----------:|----------:|-----------:|
+| LogsInParallel     | 943,778,485.000 ns | 21,228,210.3836 ns | 62,591,861.8174 ns | 6000.0000 | 3000.0000 | 1000.0000 | 40432000 B |
+| OneLogLine         |     151,788.133 ns |      4,437.6298 ns |     13,084.4525 ns |    0.4883 |         - |         - |     5953 B |
+| OneLogLineDisabled |           7.104 ns |          0.1301 ns |          0.1217 ns |    0.0038 |         - |         - |       32 B |
+
+
+# Benchmark for Serilog Logger (Serilog.Benchmarks)
+
+| Method             | Mean                | Error             | StdDev            | Gen0      | Allocated  |
+|------------------- |--------------------:|------------------:|------------------:|----------:|-----------:|
+| LogsInParallel     | 1,046,917,277.00 ns | 26,993,668.570 ns | 79,591,446.596 ns | 2000.0000 | 18588640 B |
+| OneLogLine         |       118,687.27 ns |      4,645.008 ns |     13,695.911 ns |         - |     1865 B |
+| OneLogLineDisabled |            10.75 ns |          0.237 ns |          0.244 ns |    0.0038 |       32 B |
+
+
+# Benchmark for Serilog Json Logger (Serilog.Json.Benchmarks)
+
+| Method             | Mean              | Error             | StdDev            | Gen0      | Allocated  |
+|------------------- |------------------:|------------------:|------------------:|----------:|-----------:|
+| LogsInParallel     | 951,000,147.00 ns | 23,980,342.804 ns | 70,706,586.943 ns | 3000.0000 | 24907608 B |
+| OneLogLine         |     153,123.85 ns |      3,960.683 ns |     11,678.163 ns |    0.2441 |     3355 B |
+| OneLogLineDisabled |          10.24 ns |          0.195 ns |          0.182 ns |    0.0038 |       32 B |
+
